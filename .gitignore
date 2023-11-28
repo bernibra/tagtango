@@ -51,3 +51,5 @@ rsconnect/
 
 # Some mac annoying files
 .DS_Store
+.Rdata
+.quarto
