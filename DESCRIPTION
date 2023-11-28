@@ -11,11 +11,18 @@ License: MIT + file LICENSE
 Imports: 
     attempt,
     config (>= 0.3.2),
+    dplyr,
     DT,
+    ggplot2,
     glue,
     golem (>= 0.4.1),
     htmltools,
-    shiny (>= 1.7.5.1)
+    htmlwidgets,
+    networkD3,
+    shiny (>= 1.7.5.1),
+    shinyjs,
+    shinyWidgets,
+    tidyr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

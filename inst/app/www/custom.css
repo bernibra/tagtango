@@ -1,0 +1,185 @@
+input[type="number"] {
+  max-width: 80%;
+}
+
+div.outer {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Customize fonts */
+body, label, input, button, select {
+  //font-family: 'Menlo', sans-serif;
+  //font-family: 'Helvetica Neue', Helvetica;
+  //font-weight: 200;
+}
+
+body {
+  background-color: #3D405B;
+  width: 100%;
+  text-align: center;
+  padding-top: 25px;
+  padding-bottom: 20px;
+  padding-right: 0px;
+  padding-left: 0px;
+  color: #F4F1DE;
+}
+
+#centerContainer {
+  //border-radius: 5px;
+  background-color:  #3D405B;
+  border: none;
+  width: 70%;
+  text-align: left;
+  margin: 0px auto;
+}
+
+
+h1, h2, h3, h4 { font-weight: 400; }
+
+.btn {
+    color: #3D405B;
+    background-color: white;
+    border-color: #3D405B;
+}
+
+.btn:hover,
+.btn:active,
+.btn:focus,
+.btn.active {
+  /* let's darken #004E64 a bit for hover effect */
+  color: #3D405B;
+  border-color: #F4BA02;
+  background-color: white;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
+}
+
+
+.btn-custom {
+    color: #F4F1DE;
+    background-color: #3D405B;
+    border-color: #F4F1DE;
+}
+
+.btn-custom:hover,
+.btn-custom:active,
+.btn-custom:focus,
+.btn-custom.active {
+  /* let's darken #004E64 a bit for hover effect */
+  color: #F4BA02;
+  border-color: #F4BA02;
+  background-color: #3D405B;
+}
+
+.custom {
+    color: #F4F1DE;
+    background-color: #3D405B;
+    border-color: #F4F1DE;
+}
+
+.custom:hover,
+.custom:active,
+.custom:focus,
+.custom.active {
+  /* let's darken #004E64 a bit for hover effect */
+  color: #F4BA02;
+  border-color: #F4BA02;
+  background-color: #3D405B;
+}
+
+
+.btn-inwhite {
+    color: #3D405B;
+    background-color: white;
+    border-color: #3D405B;
+}
+
+.btn-inwhite:hover,
+.btn-inwhite:active,
+.btn-inwhite:focus,
+.btn-inwhite.active {
+  /* let's darken #004E64 a bit for hover effect */
+  color: #F4BA02;
+  border-color: #F4BA02;
+  background-color: white;
+}
+
+.inwhite {
+    color: #3D405B;
+    background-color: white;
+    border-color: #3D405B;
+}
+
+.inwhite:hover,
+.inwhite:active,
+.inwhite:focus,
+.inwhite.active {
+  /* let's darken #004E64 a bit for hover effect */
+  color: #F4BA02;
+  border-color: #F4BA02;
+  background-color: white;
+}
+
+#comment {
+    background-color: white;
+    border-color: #3D405B;
+}
+
+#comment:hover {
+    border-color: #F4BA02;
+}
+
+#controls {
+  /* Appearance */
+  padding: 10px 10px 10px 10px;
+  cursor: move;
+  /* Fade out while not hovering */
+  opacity: 0.55;
+  zoom: 0.9;
+  max-width: 400px;
+  transition: opacity 500ms 0.2s;
+  z-index: 10000;
+}
+
+.left {
+  transform: translate(-100%, 0);
+}
+
+.top {
+  transform: translate(0, -100%);
+}
+
+.topleft {
+  transform: translate(-100%, -100%);
+}
+
+.white {
+  background-color: white;
+}
+
+.color {
+  background-color: white;
+  border-color: #F4BA02;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
+}
+
+
+#controls:hover {
+  /* Fade in while hovering */
+  opacity: 1;
+  transition-delay: 0;
+  border-color: #F4BA02;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
+  z-index: 20000;
+}
+
+.form-control:focus {
+  border-color: #F4BA02;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
+}
+
