@@ -53,3 +53,6 @@ rsconnect/
 .DS_Store
 .Rdata
 .quarto
+inst/doc
+/doc/
+/Meta/

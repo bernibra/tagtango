@@ -55,10 +55,26 @@ h1, h2, h3, h4 { font-weight: 400; }
   /* let's darken #004E64 a bit for hover effect */
   color: #3D405B;
   border-color: #F4BA02;
-  background-color: white;
+  background-color: #F4F1DE;
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
 }
 
+.btn-file {
+    color: #F4F1DE;
+    background-color: #3D405B;
+    border-color: #F4F1DE;
+}
+
+.btn-file:hover,
+.btn-file:active,
+.btn-file:focus,
+.btn-file.active {
+  /* let's darken #004E64 a bit for hover effect */
+  color: #F4BA02;
+  border-color: #F4BA02;
+  background-color: #3D405B;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
+}
 
 .btn-custom {
     color: #F4F1DE;
@@ -178,8 +194,29 @@ h1, h2, h3, h4 { font-weight: 400; }
   z-index: 20000;
 }
 
+.form-control{
+  color: #F4F1DE;
+  background-color: #3D405B;
+  border-color: #F4F1DE;
+}
+
 .form-control:focus {
   border-color: #F4BA02;
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
+}
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+  color: #F4F1DE;
+  background-color: #3D405B;
+  border-color: #F4F1DE;
+}
+
+.progress-bar {
+  background-color: #F4BA02;
+  color: #3D405B;
+}
+
+label {
+  font-weight: normal;
 }
 

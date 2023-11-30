@@ -10,8 +10,25 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # Your application UI logic
     fluidPage(
-      h1("tagtango")
-    )
+      shinyjs::useShinyjs(),
+      div(id = "centerContainer",
+        fluidRow(
+          column(10, offset = 1,
+            div(style="width:100%; justify-content: center;",
+              h2("Comparing different annotations")
+            )
+          )
+        ),
+        uiOutput("content"),
+        fluidRow(
+          column(10, align = "right",
+                 shiny::textOutput("error")),
+          column(2, align = "right",
+                 shiny::actionButton(inputId = "load", label = "Load data", class = "custom")
+          )
+        )
+      ),
+    ),
   )
 }
 

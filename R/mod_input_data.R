@@ -10,38 +10,39 @@
 mod_input_data_ui <- function(id){
   ns <- NS(id)
   tagList(
-    div(id = "centerContainer",
-        fluidRow(
-          fluidRow(
-            column(10, offset = 1,
-                   div(style="width:100%; justify-content: center;",
-                       h2("Comparing different annotations"),
-                       div(style="text-align: justify;", p("This is a web app for comparing annotations in single-cell data. The app expects a `SingleCellExperiment` object or `data.frame` with multiple annotations."))
-                   ))
-          ),
-          br(),
-          br(),
-          fluidRow(
-            column(12, align = "center",
-                  shiny::fileInput(
-                     "data",
-                     "rds object:",
-                     multiple = FALSE,
-                     accept = NULL,
-                     width = NULL,
-                     buttonLabel = "Browse...",
-                     placeholder = "No file selected",
-                     capture = NULL
-                   ),
-            ),
-            fluidRow(
-              column(12, align = "right",
-                     shiny::actionButton(outputId = "load", label = "Load data", class = "custom")
-                     )
-            )
-          )
-        )
-    )
+    fluidRow(
+      column(10, offset = 1,
+             div(style="width:100%; justify-content: center;",
+                 div(style="text-align: justify;", p("This is a web app for comparing annotations in single-cell data. The app expects a `SingleCellExperiment` object or `data.frame` with multiple annotations."))
+             ))
+    ),
+    br(),
+    fluidRow(
+      column(6, align = "left",
+            shiny::fileInput(
+               ns("data"),
+               "rds object:",
+               multiple = FALSE,
+               accept = NULL,
+               width = NULL,
+               buttonLabel = "Browse...",
+               placeholder = "No file selected",
+               capture = NULL
+             ),
+      ),
+    ),
+    fluidRow(
+      column(4, align = "left",
+             uiOutput(ns("left_input"))
+      ),
+      column(4, offset = 4, align = "right",
+             uiOutput(ns("right_input"))
+      ),
+    ),
+    fluidRow(
+      uiOutput(ns("UMAP"))
+    ),
+
   )
 }
 
@@ -52,6 +53,53 @@ mod_input_data_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    values <- reactiveValues()
+    values$data <- list(adt = NULL, norm = NULL, dat = NULL, ReadError = "No data")
+    values$umap <- data.frame(rna_first = NULL, rna_second = NULL, adt_first = NULL, adt_second = NULL)
+
+    shinyjs::disable("load", asis = T)
+
+    dataListen <- reactive({
+      list(input$data)
+    })
+
+    observeEvent(dataListen(),{
+      values$data <- read_input(input$data$datapath)
+
+      if(!is.null(values$data$dat)){
+        output$left_input <- renderUI(shinyWidgets::pickerInput(ns("left"),"annotation #1:",
+                                          choices = colnames(values$data$dat), multiple = T,
+                                          selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom")))
+        output$right_input <- renderUI(shinyWidgets::pickerInput(ns("right"),"annotation #2:",
+                                          choices = colnames(values$data$dat), multiple = T,
+                                          selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom")))
+      }
+
+    })
+
+    annotationsListen <- reactive({
+      list(input$left, input$right)
+    })
+
+    umap <- mod_input_data_UMAP_server("input_data_UMAP_1")
+
+    observeEvent(annotationsListen(),{
+      if(!(is.null(input$left) || is.null(input$right))){
+        shinyjs::enable("load", asis = T)
+        output$UMAP <- renderUI(mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)))
+      }
+    })
+
+    return(
+      reactive(
+        list(
+          annotation_left = input$left,
+          annotation_right = input$right,
+          umap = umap(),
+          ErrorMessage = values$data$ReadError
+        )
+      )
+    )
   })
 }
 
