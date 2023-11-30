@@ -56,6 +56,7 @@ mod_input_data_server <- function(id){
     values <- reactiveValues()
     values$data <- list(adt = NULL, norm = NULL, dat = NULL, ReadError = "No data")
     values$umap <- data.frame(rna_first = NULL, rna_second = NULL, adt_first = NULL, adt_second = NULL)
+    values$ReadError <- "No data"
 
     shinyjs::disable("load", asis = T)
 
@@ -64,7 +65,9 @@ mod_input_data_server <- function(id){
     })
 
     observeEvent(dataListen(),{
+      print("Data read")
       values$data <- read_input(input$data$datapath)
+      values$ReadError <- values$data$ReadError
 
       if(!is.null(values$data$dat)){
         output$left_input <- renderUI(shinyWidgets::pickerInput(ns("left"),"annotation #1:",
@@ -85,8 +88,15 @@ mod_input_data_server <- function(id){
 
     observeEvent(annotationsListen(),{
       if(!(is.null(input$left) || is.null(input$right))){
-        shinyjs::enable("load", asis = T)
-        output$UMAP <- renderUI(mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)))
+        maxlabels <- max(c(length(unique(values$data$dat[,input$left])),length(unique(values$data$dat[,input$right]))))
+
+        if(maxlabels>1000){
+          values$ReadError <- "One of the annotations have more than 1000 labels. That seems unreasonable..."
+        }else{
+          values$ReadError <- "Valid data"
+          shinyjs::enable("load", asis = T)
+          output$UMAP <- renderUI(mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)))
+        }
       }
     })
 
@@ -96,7 +106,7 @@ mod_input_data_server <- function(id){
           annotation_left = input$left,
           annotation_right = input$right,
           umap = umap(),
-          ErrorMessage = values$data$ReadError
+          ErrorMessage = values$ReadError
         )
       )
     )
