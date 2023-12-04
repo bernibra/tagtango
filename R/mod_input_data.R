@@ -13,15 +13,21 @@ mod_input_data_ui <- function(id){
     fluidRow(
       column(10, offset = 1,
              div(style="width:100%; justify-content: center;",
-                 div(style="text-align: justify;", p("This is a web app for comparing annotations in single-cell data. The app expects a `SingleCellExperiment` object or `data.frame` with multiple annotations."))
+                 div(style="text-align: justify;", p("Welcome to our web app for comparing annotations for single-cell data. Trying to compare annotations generated using different strategies/data is akin to orchestrating a dance-off among immune cells \u2014 everyone's moving in different directions, some are doing their own interpretative dance, and the floor transforms into a captivating whirlwind of immune activity. It's a genomic dance party where the only rule is that there are no rules, and the real puzzle is discovering who brought salsa to the immune tango showdown. Let the annotation extravaganza begin!"))
              ))
     ),
-    br(),
+    conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+                     uiOutput(ns("spinner")),
+    ),
     fluidRow(
-      column(6, align = "left",
+      br(),
+      h4("Main data entry"),
+      br(),
+      column(12, align = "left",
+            p("The app expects a `SingleCellExperiment` object or `data.frame` with annotations as colData or columns, respectively."),
             shiny::fileInput(
                ns("data"),
-               "rds object:",
+               label = "",
                multiple = FALSE,
                accept = NULL,
                width = NULL,
@@ -29,7 +35,7 @@ mod_input_data_ui <- function(id){
                placeholder = "No file selected",
                capture = NULL
              ),
-      ),
+      )
     ),
     fluidRow(
       column(4, align = "left",
@@ -40,9 +46,8 @@ mod_input_data_ui <- function(id){
       ),
     ),
     fluidRow(
-      uiOutput(ns("UMAP"))
-    ),
-
+      uiOutput(ns("additional_info"))
+    )
   )
 }
 
@@ -65,17 +70,22 @@ mod_input_data_server <- function(id){
     })
 
     observeEvent(dataListen(),{
-      print("Data read")
+
       values$data <- read_input(input$data$datapath)
       values$ReadError <- values$data$ReadError
 
       if(!is.null(values$data$dat)){
-        output$left_input <- renderUI(shinyWidgets::pickerInput(ns("left"),"annotation #1:",
+        output$left_input <- renderUI(shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
                                           choices = colnames(values$data$dat), multiple = T,
                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom")))
-        output$right_input <- renderUI(shinyWidgets::pickerInput(ns("right"),"annotation #2:",
+        output$right_input <- renderUI(shinyWidgets::pickerInput(ns("right"),labelMandatory("annotation #2"),
                                           choices = colnames(values$data$dat), multiple = T,
                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom")))
+      }
+
+      if(!(values$data$ReadError %in% c("Valid data", "No data"))){
+        shinyalert::shinyalert(title = "Oups!", type = "warning", text = values$data$ReadError,
+                               closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
       }
 
     })
@@ -84,29 +94,52 @@ mod_input_data_server <- function(id){
       list(input$left, input$right)
     })
 
-    umap <- mod_input_data_UMAP_server("input_data_UMAP_1")
-
     observeEvent(annotationsListen(),{
       if(!(is.null(input$left) || is.null(input$right))){
         maxlabels <- max(c(length(unique(values$data$dat[,input$left])),length(unique(values$data$dat[,input$right]))))
 
         if(maxlabels>1000){
-          values$ReadError <- "One of the annotations have more than 1000 labels. That seems unreasonable..."
+          values$ReadError <- "One of the two annotations have more than 1000 labels. Change it to something more managable as this seems unreasonable..."
+          output$additional_info <- renderUI({})
+          shinyjs::disable("load", asis = T)
+          shinyalert::shinyalert(title = "Oups!", type = "warning", text = values$ReadError,
+                                 closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
         }else{
           values$ReadError <- "Valid data"
           shinyjs::enable("load", asis = T)
-          output$UMAP <- renderUI(mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)))
+          output$additional_info <- renderUI({
+            tagList(
+              h4("Additional Information"),
+              mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)),
+              mod_cell_grouping_ui(ns("cell_grouping_1"), choices = colnames(values$data$dat)),
+              mod_cell_filtering_ui(ns("cell_filtering_1"), choices = colnames(values$data$dat)),
+              )
+          })
         }
       }
     })
 
+    umap <- mod_input_data_UMAP_server("input_data_UMAP_1", dat = values$data$dat)
+    grouping <- mod_cell_grouping_server("cell_grouping_1", dat = values$data$dat)
+    filtering <- mod_cell_filtering_server("cell_filtering_1", dat = values$data$dat)
+
+    output$spinner <- renderUI(shiny::absolutePanel(top = "3%", right =  "3%", width = "auto", height = "auto", draggable = F, fixed = T,
+                                           shiny::HTML("<span class='loader'></span>")))
+
     return(
       reactive(
-        list(
-          annotation_left = input$left,
-          annotation_right = input$right,
-          umap = umap(),
+        c(list(
+          dat = values$data$dat,
+          left = input$left,
+          right = input$right,
+          adt = values$data$adt,
+          norm = values$data$norm,
+          rna_umap = umap()$rna,
+          adt_umap = umap()$adt,
           ErrorMessage = values$ReadError
+        ),
+        grouping(),
+        filtering()
         )
       )
     )

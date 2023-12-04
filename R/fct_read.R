@@ -76,7 +76,7 @@ read_input.csv <- function(filename, ...){
 
   # Load file as matrix using readr and tibble
   dat <- tryCatch({
-    list(adt = NULL, norm = NULL, dat = as.data.frame(read.csv(file = filename, header = T)), ReadError = "Valid data")
+    list(adt = NULL, norm = NULL, dat = as.data.frame(utils::read.csv(file = filename, header = T)), ReadError = "Valid data")
   }, error = function(e) {
     list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Wrong file type")
   })
