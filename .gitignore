@@ -56,3 +56,6 @@ rsconnect/
 inst/doc
 /doc/
 /Meta/
+
+# Do not store data as of yet
+data
