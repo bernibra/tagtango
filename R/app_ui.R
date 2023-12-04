@@ -13,19 +13,23 @@ app_ui <- function(request) {
       shinyjs::useShinyjs(),
       div(id = "centerContainer",
         fluidRow(
-          column(10, offset = 1,
+          column(10, offset = 1, align = "center",
             div(style="width:100%; justify-content: center;",
               h2("Comparing different annotations")
             )
           )
         ),
         uiOutput("content"),
+        br(),
+        br(),
         fluidRow(
-          column(10, align = "right",
-                 shiny::textOutput("error")),
-          column(2, align = "right",
-                 shiny::actionButton(inputId = "load", label = "Load data", class = "custom")
-          )
+          # column(10, align = "right",
+          #        shiny::textOutput("error")),
+          # column(2, align = "right",
+          #        shiny::actionButton(inputId = "load", label = "Load data", class = "custom")
+          # )
+          shiny::absolutePanel(bottom = "3%", right = "3%", height = "auto", width = "auto",draggable = F, fixed = T,
+                               shiny::actionButton(inputId = "load", label = "Load data", class = "custom"))
         )
       ),
     ),
