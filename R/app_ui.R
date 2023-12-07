@@ -13,11 +13,10 @@ app_ui <- function(request) {
       shinyjs::useShinyjs(),
       div(id = "centerContainer",
         fluidRow(
-          column(10, offset = 1, align = "center",
-            div(style="width:100%; justify-content: center;",
-              h2("Comparing different annotations")
+            div(style="width:100%; justify-content: center; align: center;",
+              h2("Comparing different annotations"),
+              br()
             )
-          )
         ),
         uiOutput("content"),
         br(),

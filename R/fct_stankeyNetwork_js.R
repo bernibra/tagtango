@@ -109,8 +109,8 @@ stankeyNetwork_js <- function(){
                                               }).
                                       style("stroke-opacity", highopacity);
 
-                              Shiny.onInputChange("target2", selection.target2);
-                              Shiny.onInputChange("source2", selection.source2);
+                              Shiny.onInputChange("sankeyNetwork_1-target2", selection.target2);
+                              Shiny.onInputChange("sankeyNetwork_1-source2", selection.source2);
                               console.log(window.innerHeight);
 
                             }else{
@@ -118,18 +118,18 @@ stankeyNetwork_js <- function(){
                                       style("stroke", color1).
                                       style("stroke-opacity", highopacity);
 
-                                Shiny.onInputChange("target1", selection.target1);
-                                Shiny.onInputChange("source1", selection.source1);
+                                Shiny.onInputChange("sankeyNetwork_1-target1", selection.target1);
+                                Shiny.onInputChange("sankeyNetwork_1-source1", selection.source1);
                                 console.log(window.innerHeight);
 
                             }
                           }else{
                             links.style("stroke",colorbase).style("stroke-opacity", lowopacity);
 
-                            Shiny.onInputChange("target1", selection.target1);
-                            Shiny.onInputChange("target2", selection.target2);
-                            Shiny.onInputChange("source1", selection.source1);
-                            Shiny.onInputChange("source2", selection.source2);
+                            Shiny.onInputChange("sankeyNetwork_1-target1", selection.target1);
+                            Shiny.onInputChange("sankeyNetwork_1-target2", selection.target2);
+                            Shiny.onInputChange("sankeyNetwork_1-source1", selection.source1);
+                            Shiny.onInputChange("sankeyNetwork_1-source2", selection.source2);
                             console.log(window.innerHeight);
 
                           }
@@ -142,26 +142,26 @@ stankeyNetwork_js <- function(){
                                               }).
                                       style("stroke-opacity", highopacity);
 
-                                Shiny.onInputChange("target2", selection.target2);
-                                Shiny.onInputChange("source2", selection.source2);
+                                Shiny.onInputChange("sankeyNetwork_1-target2", selection.target2);
+                                Shiny.onInputChange("sankeyNetwork_1-source2", selection.source2);
                                 console.log(window.innerHeight);
 
                             }else{
                                 links.filter(function(k){return (k.target.name == d.name);}).
                                       style("stroke", color1).style("stroke-opacity", highopacity);
 
-                                Shiny.onInputChange("target1", selection.target1);
-                                Shiny.onInputChange("source1", selection.source1);
+                                Shiny.onInputChange("sankeyNetwork_1-target1", selection.target1);
+                                Shiny.onInputChange("sankeyNetwork_1-source1", selection.source1);
                                 console.log(window.innerHeight);
 
                             }
                           }else{
                             links.style("stroke",colorbase).style("stroke-opacity", lowopacity);
 
-                            Shiny.onInputChange("target1", selection.target1);
-                            Shiny.onInputChange("target2", selection.target2);
-                            Shiny.onInputChange("source1", selection.source1);
-                            Shiny.onInputChange("source2", selection.source2);
+                            Shiny.onInputChange("sankeyNetwork_1-target1", selection.target1);
+                            Shiny.onInputChange("sankeyNetwork_1-target2", selection.target2);
+                            Shiny.onInputChange("sankeyNetwork_1-source1", selection.source1);
+                            Shiny.onInputChange("sankeyNetwork_1-source2", selection.source2);
                             console.log(window.innerHeight);
 
                           }
@@ -189,8 +189,8 @@ stankeyNetwork_js <- function(){
                                               }).
                                               style("stroke-opacity", highopacity);
 
-                                        Shiny.onInputChange("target2", selection.target2);
-                                        Shiny.onInputChange("source2", selection.source2);
+                                        Shiny.onInputChange("sankeyNetwork_1-target2", selection.target2);
+                                        Shiny.onInputChange("sankeyNetwork_1-source2", selection.source2);
                                         console.log(window.innerHeight);
 
                                       }else{
@@ -198,18 +198,18 @@ stankeyNetwork_js <- function(){
                                               style("stroke", color1).
                                               style("stroke-opacity", highopacity);
 
-                                        Shiny.onInputChange("target1", selection.target1);
-                                        Shiny.onInputChange("source1", selection.source1);
+                                        Shiny.onInputChange("sankeyNetwork_1-target1", selection.target1);
+                                        Shiny.onInputChange("sankeyNetwork_1-source1", selection.source1);
                                         console.log(window.innerHeight);
 
                                       }
                                     }else{
                                       links.style("stroke",colorbase).style("stroke-opacity", lowopacity);
 
-                                      Shiny.onInputChange("target1", selection.target1);
-                                      Shiny.onInputChange("target2", selection.target2);
-                                      Shiny.onInputChange("source1", selection.source1);
-                                      Shiny.onInputChange("source2", selection.source2);
+                                      Shiny.onInputChange("sankeyNetwork_1-target1", selection.target1);
+                                      Shiny.onInputChange("sankeyNetwork_1-target2", selection.target2);
+                                      Shiny.onInputChange("sankeyNetwork_1-source1", selection.source1);
+                                      Shiny.onInputChange("sankeyNetwork_1-source2", selection.source2);
                                       console.log(window.innerHeight);
                                     }
                             });

@@ -11,7 +11,7 @@ mod_input_data_ui <- function(id){
   ns <- NS(id)
   tagList(
     fluidRow(
-      column(10, offset = 1,
+      column(12,
              div(style="width:100%; justify-content: center;",
                  div(style="text-align: justify;", p("Welcome to our web app for comparing annotations for single-cell data. Trying to compare annotations generated using different strategies/data is akin to orchestrating a dance-off among immune cells \u2014 everyone's moving in different directions, some are doing their own interpretative dance, and the floor transforms into a captivating whirlwind of immune activity. It's a genomic dance party where the only rule is that there are no rules, and the real puzzle is discovering who brought salsa to the immune tango showdown. Let the annotation extravaganza begin!"))
              ))
@@ -75,6 +75,7 @@ mod_input_data_server <- function(id){
       values$ReadError <- values$data$ReadError
 
       if(!is.null(values$data$dat)){
+
         output$left_input <- renderUI(shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
                                           choices = colnames(values$data$dat), multiple = T,
                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom")))

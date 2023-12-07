@@ -44,8 +44,8 @@ mod_cell_grouping_server <- function(id, dat){
     observeEvent(dataListen(), {
       if(!is.null(input$grouping)){
         choices <- unique(dat[,input$grouping])
-        print(choices)
-        if(length(choices)>20){
+        # print(choices)
+        if(length(choices)>100){
           values$variable <- NULL
           shinyalert::shinyalert(title = "Oups!", type = "warning", text = "There are too many unique values to group cells by this variable.",
                                  closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")

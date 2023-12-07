@@ -49,16 +49,16 @@ read_input.rds <- function(filename, ...){
 
   if (class(mat)[1]=="SingleCellExperiment"){
     if("counts" %in% names(SummarizedExperiment::assays(mat))){
-      adt <- SingleCellExperiment::counts(mat)
+      adt <- t(SingleCellExperiment::counts(mat))
     }else{
       adt <- NULL
     }
     if("logcounts" %in% names(SummarizedExperiment::assays(mat))){
-      norm <- SingleCellExperiment::logcounts(mat)
+      norm <- t(SingleCellExperiment::logcounts(mat))
     }else{
       norm <- NULL
     }
-    dat <- list(adt = adt, norm = norm, dat = SingleCellExperiment::colData(mat), ReadError = "Valid data")
+    dat <- list(adt = adt, norm = norm, dat = as.data.frame(SingleCellExperiment::colData(mat)), ReadError = "Valid data")
   }else{
     dat <- tryCatch({
       list(adt = NULL, norm = NULL, dat = as.data.frame(mat), ReadError = "Valid data")
