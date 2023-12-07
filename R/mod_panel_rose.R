@@ -18,26 +18,10 @@ mod_panel_rose_ui <- function(id){
 #'
 #' @noRd
 mod_panel_rose_server <- function(id, adt, dat, selection, title = "title", class = "topleft white",
-                                  height = 350, width = 350, top = "99%", left = "1%"){
+                                  height = 350, width = 350, panel_padding = 20,
+                                  top = "99%", left = "1%"){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-
-    output$panel <- renderUI({})
-
-    shinyjs::hide("panel")
-
-    output$panel <- renderUI({
-      absolutePanel(id = "controls", class = paste0("panel panel-default ", class),
-                    top = top, left = left, width = "auto", fixed=TRUE,
-                    draggable = TRUE, height = "auto",
-                    fluidRow(
-                      column(12,
-                             plotOutput(ns("rose"))
-                      )
-                    ),
-                    uiOutput(ns("options_tab"))
-      )
-    })
 
     dataListen <- reactive({
       list(adt, selection)
@@ -45,23 +29,37 @@ mod_panel_rose_server <- function(id, adt, dat, selection, title = "title", clas
 
     observeEvent(dataListen(),{
       if(is.null(adt)){
-        output$rose <- renderPlot({}, bg="transparent", height = height, width = width)
+        output$panel <- renderUI({})
+        output$rose <- renderPlot({}, bg="transparent", height = height-panel_padding, width = width-panel_padding)
         output$options_tab <- renderUI({})
-        shinyjs::hide("panel")
       }else{
-        # browser()
+
+        output$panel <- renderUI({
+          absolutePanel(id = "controls", class = paste0("panel panel-default ", class),
+                        top = top, left = left, width = width, fixed=TRUE,
+                        draggable = TRUE, height = "auto",
+                        fluidRow(
+                          column(12,
+                                 plotOutput(ns("rose"),
+                                            width = width-panel_padding,
+                                            height = height-panel_padding)
+                          )
+                        ),
+                        uiOutput(ns("options_tab"))
+          )
+        })
         fexp <- adt[(rownames(adt) %in% dat$cells[selection]), ]
         ncell <- nrow(fexp)
         data <- find_markers(extra = 0, n = 15, mat = fexp)
 
         output$options_tab <- renderUI({
           tagList(
-            fluidRow(column(5, offset = 7,
-                            pickerInput(
+            fluidRow(column(7, offset = 5, align="right",
+                            shinyWidgets::pickerInput(
                               inputId = ns("nmark"),
                               label = "",
                               choices = data$all,
-                              options = pickerOptions(
+                              options = shinyWidgets::pickerOptions(
                                 actionsBox = FALSE,
                                 countSelectedText = "show {0}",
                                 selectedTextFormat = "count > 2"
@@ -73,12 +71,11 @@ mod_panel_rose_server <- function(id, adt, dat, selection, title = "title", clas
           )
         })
         output$rose <- renderPlot({
-          rose_plot(data = data$data, selected = input$nmark,
+          rose_plot(data = data$data, selected = if(is.null(input$nmark)){data$selected}else{input$nmark},
                     title = paste0(ncell, " cells"),
                     maintitle = title, palette="RdYlGn")
-        }, bg="transparent", height = height, width = width)
+        }, bg="transparent", height = height, width = width-panel_padding)
 
-        shinyjs::show("panel")
       }
     })
 

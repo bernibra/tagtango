@@ -49,7 +49,7 @@ h4{
 
 .btn {
     color: #3D405B;
-    background-color: #F4F1DE;
+    background-color: white;
     border-color: #3D405B;
 }
 
@@ -61,7 +61,7 @@ h4{
   color: #3D405B;
   border-color: #F4BA02;
   outline: 0;
-  background-color: #F4F1DE;
+  background-color: white;
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
 }
 

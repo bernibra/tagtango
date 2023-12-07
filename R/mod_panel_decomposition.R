@@ -17,27 +17,11 @@ mod_panel_decomposition_ui <- function(id){
 #' panel_decomposition Server Functions
 #'
 #' @noRd
-mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selection, second_selection = NULL, height = 350, width = 350){
+mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selection, second_selection = NULL,
+                                           height = 350, width = 350, panel_padding = 20){
   moduleServer( id, function(input, output, session){
+
     ns <- session$ns
-
-    output$panel <- renderUI({})
-
-    shinyjs::hide("panel")
-
-    output$panel <- renderUI({
-      absolutePanel(id = "controls", class = "panel panel-default topleft white",
-                    top = "99%", left = "99%", width = "auto", fixed=TRUE,
-                    draggable = TRUE, height = "auto",
-                    fluidRow(
-                      uiOutput(ns("options_tab")),
-                      column(12,
-                             plotOutput(ns("decomposition"))
-                      )
-                    )
-      )
-    })
-
 
     if(is.null(second_selection)){
       labels = ifelse(first_selection, "selected", "other")
@@ -52,10 +36,33 @@ mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selecti
     })
 
     observeEvent(dataListen(),{
+      if(!is.null(umap_rna) || !is.null(umap_adt)){
+        output$panel <- renderUI({
+          absolutePanel(id = "controls", class = "panel panel-default topleft white",
+                        top = "99%", left = "99%", width = width, fixed=TRUE,
+                        draggable = TRUE, height = "auto",
+                        fluidRow(
+                          uiOutput(ns("options_tab")),
+                          column(12,
+                                 plotOutput(ns("decomposition"),
+                                            height = height-panel_padding,
+                                            width = width-panel_padding)
+                          )
+                        )
+          )
+        })
+        output$decomposition <- renderPlot({}, bg="transparent",
+                                           height = height-panel_padding,
+                                           width = width-panel_padding)
+      }else{
+        output$panel <- renderUI({})
+      }
+
       if(is.null(umap_rna) && is.null(umap_adt)){
-        output$decomposition <- renderPlot({}, bg="transparent", height = height, width = width)
+        output$decomposition <- renderPlot({}, bg="transparent",
+                                           height = height-panel_padding,
+                                           width = width-panel_padding)
         output$options_tab <- renderUI({})
-        shinyjs::hide("panel")
       }else if(is.null(umap_rna)){
         output$options_tab <- renderUI({})
         output$decomposition <- renderPlot({
@@ -63,8 +70,7 @@ mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selecti
                     labels = labels,
                     values = values,
                     title = "ADT decomposition"
-          ))}, bg="transparent", height = height, width = width)
-        shinyjs::show("panel")
+          ))}, bg="transparent", height = height-panel_padding, width = width-panel_padding)
       }else if(is.null(umap_adt)){
         output$options_tab <- renderUI({})
         output$decomposition <- renderPlot({
@@ -72,11 +78,13 @@ mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selecti
                            labels = labels,
                            values = values,
                            title = "RNA decomposition"
-          ))}, bg="transparent", height = height, width = width)
+          ))}, bg="transparent",
+          height = height-panel_padding,
+          width = width-panel_padding)
         shinyjs::show("panel")
       }else{
         output$options_tab <- renderUI({tagList(
-          column(4, offset = 8,
+          column(12, align = "right",
                  shinyWidgets::radioGroupButtons(
                    inputId = ns("adtvsrna"),
                    choices = c("rna", "adt"),
@@ -95,8 +103,9 @@ mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selecti
                            labels = labels,
                            values = values,
                            title = title
-          ))}, bg="transparent", height = height, width = width)
-        shinyjs::show("panel")
+          ))}, bg="transparent",
+          height = height-panel_padding,
+          width = width-panel_padding)
       }
     })
 

@@ -47,7 +47,7 @@ mod_sankeyNetwork_ui <- function(id){
       # uiOutput(ns("decomposition")),
       mod_panel_decomposition_ui(ns("panel_decomposition_1")),
       mod_panel_rose_ui(ns("panel_rose_1")),
-      mod_panel_diff_ui(ns("panel_diff_1")),
+      # mod_panel_diff_ui(ns("panel_diff_1")),
     )
   )
 }
@@ -130,7 +130,7 @@ mod_sankeyNetwork_server <- function(id, data){
       list(input$target1,input$source1, input$cells)
     })
 
-   mod_panel_diff_server("panel_diff_1", data = NULL)
+   # mod_panel_diff_server("panel_diff_1", data = NULL)
 
     observeEvent(firstselection(), {
       if(!is.null(input$target1) | !is.null(input$source1)){
@@ -150,19 +150,19 @@ mod_sankeyNetwork_server <- function(id, data){
           mod_panel_decomposition_server("panel_decomposition_1",
                                          umap_rna = values$network$rna_umap, umap_adt = values$network$adt_umap, first_selection = values$fselect)
 
-          # mod_panel_rose_server("panel_rose_1", adt = values$norm, dat = values$network$dat, title = maintitle, selection = values$fselect, class = "top white")
+          mod_panel_rose_server("panel_rose_1", adt = values$norm, dat = values$network$dat, title = maintitle, selection = values$fselect, class = "top white")
 
         }else{
           mod_panel_decomposition_server("panel_decomposition_1",
                                          umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
-          # mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, title = NULL, selection = NULL,
-          #                       class = "top white")
+          mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, title = NULL, selection = NULL,
+                                class = "top white")
         }
       }else{
         mod_panel_decomposition_server("panel_decomposition_1",
                                        umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
-        # mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, title = NULL, selection = NULL,
-        #                       class = "top white")
+        mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, title = NULL, selection = NULL,
+                              class = "top white")
       }
     })
 
