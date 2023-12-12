@@ -21,7 +21,10 @@ mod_sankeyNetwork_ui <- function(id){
       fluidRow(
         uiOutput(ns("grouping")),
         # uiOutput(ns("decomposition")),
-        column(5,offset = 7, align= "left",
+        column(5, align="right",
+               uiOutput(ns("num_holder")),
+               ),
+        column(5,offset = 2, align= "left",
                      shinyWidgets::materialSwitch(
                        inputId = ns("sort"),
                        label = "sort by abundance",
@@ -47,6 +50,7 @@ mod_sankeyNetwork_ui <- function(id){
       # uiOutput(ns("decomposition")),
       mod_panel_decomposition_ui(ns("panel_decomposition_1")),
       mod_panel_rose_ui(ns("panel_rose_1")),
+      # mod_panel_rose_ui(ns("panel_rose_2")),
       # mod_panel_diff_ui(ns("panel_diff_1")),
     )
   )
@@ -85,6 +89,8 @@ mod_sankeyNetwork_server <- function(id, data){
     values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                                 rna_umap = values$rna_umap, adt_umap = values$adt_umap)
 
+    values$max_value <- max(values$network$links$value)
+
     if(!is.null(data$grouping_variable)){
       output$grouping <- renderUI({
         tagList(
@@ -100,15 +106,20 @@ mod_sankeyNetwork_server <- function(id, data){
       })
     }
 
+    output$num_holder <- renderUI({
+      sliderInput(ns("num"), label = NULL, value = 1, min = 1, max = values$max_value-1, step = 1)
+      })
 
     dataListen <- reactive({
-      list(input$cells)
+      list(input$cells, input$num)
     })
 
     observeEvent(dataListen(), {
-      values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
+       values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                                   rna_umap = values$rna_umap, adt_umap = values$adt_umap,
-                                  grouping_variable = data$grouping_variable, grouping_values = input$cells)
+                                  grouping_variable = data$grouping_variable, grouping_values = input$cells,
+                                  min_counts = input$num)
+       values$max_value <- max(values$network$links$value)
     })
 
     output$plot <- networkD3::renderSankeyNetwork({
@@ -130,10 +141,17 @@ mod_sankeyNetwork_server <- function(id, data){
       list(input$target1,input$source1, input$cells)
     })
 
-   # mod_panel_diff_server("panel_diff_1", data = NULL)
 
     observeEvent(firstselection(), {
       if(!is.null(input$target1) | !is.null(input$source1)){
+
+        # height <- min(c(input$height*0.45, (input$width - (8/12) * 0.7 * input$width)/2))
+        # width <- min(c(input$height*0.45, (input$width - (8/12) * 0.7 * input$width)/2))
+        width <- (input$width - (8/12) * 0.7 * input$width)/2
+        height <- (input$width - (8/12) * 0.7 * input$width)/2
+
+        # print(c(width, height))
+
         if(is.null(input$target1)){
           values$fselect <- values$network$dat$i==input$source1
           maintitle <- input$source1
@@ -145,23 +163,28 @@ mod_sankeyNetwork_server <- function(id, data){
           maintitle <- paste0(input$source1, " \u27A4 ", input$target1)
         }
 
+        values$ftitle <- maintitle
+
         if(any(values$fselect)){
 
           mod_panel_decomposition_server("panel_decomposition_1",
-                                         umap_rna = values$network$rna_umap, umap_adt = values$network$adt_umap, first_selection = values$fselect)
+                                         umap_rna = values$network$rna_umap, umap_adt = values$network$adt_umap,
+                                         first_selection = values$fselect, height = height, width = width)
 
-          mod_panel_rose_server("panel_rose_1", adt = values$norm, dat = values$network$dat, title = maintitle, selection = values$fselect, class = "top white")
+          mod_panel_rose_server("panel_rose_1", adt = values$norm, dat = values$network$dat,
+                                ftitle = values$ftitle, fselection = values$fselect,
+                                class = "top white", height = height, width = width)
 
         }else{
           mod_panel_decomposition_server("panel_decomposition_1",
                                          umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
-          mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, title = NULL, selection = NULL,
+          mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
                                 class = "top white")
         }
       }else{
         mod_panel_decomposition_server("panel_decomposition_1",
                                        umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
-        mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, title = NULL, selection = NULL,
+        mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
                               class = "top white")
       }
     })
@@ -173,6 +196,14 @@ mod_sankeyNetwork_server <- function(id, data){
 
     observeEvent(secondselection(), {
       if(!is.null(input$target2) | !is.null(input$source2)){
+
+        # height <- min(c(input$height*0.45, (input$width - (8/12) * 0.7 * input$width)/2))
+        # width <- min(c(input$height*0.45, (input$width - (8/12) * 0.7 * input$width)/2))
+        width <- (input$width - (8/12) * 0.7 * input$width)/2
+        height <- (input$width - (8/12) * 0.7 * input$width)/2
+
+        # print(c(width, height))
+
         if(is.null(input$target2)){
           values$sselect <- values$network$dat$i==input$source2
           maintitle <- input$source2
@@ -184,21 +215,32 @@ mod_sankeyNetwork_server <- function(id, data){
           maintitle <- paste0(input$source2, " \u27A4 ", input$target2)
         }
 
+        values$stitle <- maintitle
+
         if(any(values$sselect)){
 
           mod_panel_decomposition_server("panel_decomposition_1",
                                          umap_rna = values$network$rna_umap, umap_adt = values$network$adt_umap,
-                                         first_selection = values$fselect, second_selection = values$sselect)
+                                         first_selection = values$fselect, second_selection = values$sselect, height = height, width = width)
+
+          mod_panel_rose_server("panel_rose_1", adt = values$norm, dat = values$network$dat,
+                                stitle = values$stitle, ftitle = values$ftitle,
+                                fselection = values$fselect, sselection = values$sselect,
+                                class = "top white", height = height, width = width)
+
         }else{
           mod_panel_decomposition_server("panel_decomposition_1",
                                          umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
+          mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
+                                class = "top white")
 
         }
 
       }else{
         mod_panel_decomposition_server("panel_decomposition_1",
                                        umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
-
+        mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
+                              class = "top white")
       }
     })
 

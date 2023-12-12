@@ -7,7 +7,7 @@
 #' @noRd
 
 load_data <- function(dat, left, right, rna_umap, adt_umap,
-                      grouping_variable = NULL, grouping_values = NULL){
+                      grouping_variable = NULL, grouping_values = NULL, min_counts = NULL){
 
   if(!is.null(grouping_values)){
     grouping_values <- if(grouping_values=="All") NULL else {grouping_values}
@@ -25,6 +25,18 @@ load_data <- function(dat, left, right, rna_umap, adt_umap,
 
     dat <- dat %>% dplyr::filter(!!rlang::sym(grouping_variable) == !!grouping_values)
 
+  }
+
+  # browser()
+
+  dat <- dat %>%
+    dplyr::group_by(!!sym(left), !!sym(right)) %>%
+    dplyr::mutate(n_min_counts = dplyr::n()) %>%
+    dplyr::rowwise() %>%
+    as.data.frame()
+
+  if(!is.null(min_counts)){
+    dat <- dat %>% dplyr::filter(n_min_counts>=min_counts)
   }
 
   dat$i <- factor(dat[,left], levels = data.frame(x=dat[,left]) %>% dplyr::count(x) %>% dplyr::arrange(n) %>% dplyr::pull(x))

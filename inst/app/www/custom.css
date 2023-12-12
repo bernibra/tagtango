@@ -168,7 +168,7 @@ h4{
   /* Fade out while not hovering */
   opacity: 0.55;
   zoom: 0.9;
-  max-width: 400px;
+  /* max-width: 400px; */
   transition: opacity 500ms 0.2s;
   z-index: 10000;
 }
@@ -332,4 +332,38 @@ summary {
 .sweet-alert h2 {
     color: #3D405B;
     font-size: 30px;
+}
+
+/*--------------------------------*/
+/*CSS code for the Nav panels    */
+/*-----------------------------*/
+
+.tab-content {margin-top: 20px;}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    color: #F4BA02;
+    cursor: default;
+    background-color: white;
+    border: 1px solid #F4BA02;
+    border-bottom-color: transparent;
+}
+
+.nav-tabs>li>a {
+    border-bottom: 1px solid #bdbdbd;
+    color: #3D405B;
+}
+
+.nav-tabs>li>a:focus, .nav-tabs>li>a:hover {
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #bdbdbd;
+    color: #3D405B;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid transparent;
+}
+
+a {
+    color: #3D405B;
+    text-decoration: none;
 }

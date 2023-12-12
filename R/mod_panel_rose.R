@@ -17,65 +17,137 @@ mod_panel_rose_ui <- function(id){
 #' panel_rose Server Functions
 #'
 #' @noRd
-mod_panel_rose_server <- function(id, adt, dat, selection, title = "title", class = "topleft white",
+mod_panel_rose_server <- function(id, adt, dat, fselection, sselection = NULL, ftitle = "title", stitle = "title", class = "topleft white",
                                   height = 350, width = 350, panel_padding = 20,
                                   top = "99%", left = "1%"){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     dataListen <- reactive({
-      list(adt, selection)
+      list(adt, fselection, sselection)
     })
 
     observeEvent(dataListen(),{
       if(is.null(adt)){
-        output$panel <- renderUI({})
-        output$rose <- renderPlot({}, bg="transparent", height = height-panel_padding, width = width-panel_padding)
+        output$rose <- renderUI({})
+        output$rose2 <- renderUI({})
+        output$diff <- renderUI({})
         output$options_tab <- renderUI({})
+        output$panel <- renderUI({})
       }else{
 
-        output$panel <- renderUI({
-          absolutePanel(id = "controls", class = paste0("panel panel-default ", class),
-                        top = top, left = left, width = width, fixed=TRUE,
-                        draggable = TRUE, height = "auto",
-                        fluidRow(
-                          column(12,
-                                 plotOutput(ns("rose"),
-                                            width = width-panel_padding,
-                                            height = height-panel_padding)
-                          )
-                        ),
-                        uiOutput(ns("options_tab"))
-          )
-        })
-        fexp <- adt[(rownames(adt) %in% dat$cells[selection]), ]
-        ncell <- nrow(fexp)
-        data <- find_markers(extra = 0, n = 15, mat = fexp)
-
-        output$options_tab <- renderUI({
-          tagList(
-            fluidRow(column(7, offset = 5, align="right",
-                            shinyWidgets::pickerInput(
-                              inputId = ns("nmark"),
-                              label = "",
-                              choices = data$all,
-                              options = shinyWidgets::pickerOptions(
-                                actionsBox = FALSE,
-                                countSelectedText = "show {0}",
-                                selectedTextFormat = "count > 2"
-                              ),
-                              multiple = TRUE, selected = data$selected
+        if(is.null(sselection)){
+          output$panel <- renderUI({
+            absolutePanel(id = "controls", class = paste0("panel panel-default ", class),
+                          top = top, left = left, width = width, fixed=TRUE,
+                          draggable = F, height = "auto",
+                          fluidRow(
+                            column(12,
+                                   plotOutput(ns("rose"),
+                                              width = width-panel_padding,
+                                              height = height-panel_padding)
                             )
-              ),
+                          ),
+                          uiOutput(ns("options_tab"))
             )
-          )
-        })
-        output$rose <- renderPlot({
-          rose_plot(data = data$data, selected = if(is.null(input$nmark)){data$selected}else{input$nmark},
-                    title = paste0(ncell, " cells"),
-                    maintitle = title, palette="RdYlGn")
-        }, bg="transparent", height = height, width = width-panel_padding)
+          })
+          fexp <- adt[(rownames(adt) %in% dat$cells[fselection]), ]
+          ncell <- nrow(fexp)
+          data <- find_markers(extra = 0, n = 15, mat = fexp)
 
+          output$options_tab <- renderUI({
+            tagList(
+              fluidRow(column(7, offset = 5, align="right",
+                              shinyWidgets::pickerInput(
+                                inputId = ns("nmark"),
+                                label = "",
+                                choices = data$all,
+                                options = shinyWidgets::pickerOptions(
+                                  actionsBox = FALSE,
+                                  countSelectedText = "show {0}",
+                                  selectedTextFormat = "count > 2"
+                                ),
+                                multiple = TRUE, selected = data$selected
+                              )
+              ),
+              )
+            )
+          })
+          output$rose <- renderPlot({
+            rose_plot(data = data$data, selected = if(is.null(input$nmark)){data$selected}else{input$nmark},
+                      title = paste0(ncell, " cells"),
+                      maintitle = ftitle, palette="RdYlGn")
+          }, bg="transparent", height = height, width = width-panel_padding)
+        }else{
+          output$panel <- renderUI({
+            absolutePanel(id = "controls", class = paste0("panel panel-default ", class),
+                          top = top, left = left, width = width, fixed=TRUE,
+                          draggable = F, height = "auto",
+                          shiny::tabsetPanel(
+                            shiny::tabPanel("1st selection",plotOutput(ns("rose"),
+                                                                  width = width-panel_padding,
+                                                                  height = height-panel_padding)),
+                            shiny::tabPanel("2nd selection", plotOutput(ns("rose2"),
+                                                                           width = width-panel_padding,
+                                                                           height = height-panel_padding)),
+                            shiny::tabPanel("Difference", plotOutput(ns("diff"),
+                                                                           width = width-panel_padding,
+                                                                           height = height-panel_padding)),
+                          ),
+                          uiOutput(ns("options_tab"))
+            )
+          })
+
+          # browser()
+          # First selection
+          fexp <- adt[(rownames(adt) %in% dat$cells[fselection]), ]
+          fncell <- nrow(fexp)
+          fdata <- find_markers(extra = 0, n = 10, mat = fexp)
+
+          # Second selection
+          sexp <- adt[(rownames(adt) %in% dat$cells[sselection]), ]
+          sncell <- nrow(sexp)
+          sdata <- find_markers(extra = 0, n = 10, mat = sexp)
+
+          #Difference
+          data_diff <- find_markers_diff(extra = 0, n = 10, mat_left = fexp, mat_right = sexp)
+          data_diff_ <- find_markers_diff_PI(mat_left = fexp, mat_right = sexp)
+
+          output$options_tab <- renderUI({
+            tagList(
+              fluidRow(column(7, offset = 5, align="right",
+                              shinyWidgets::pickerInput(
+                                inputId = ns("nmark"),
+                                label = "",
+                                choices = data_diff$all,
+                                options = shinyWidgets::pickerOptions(
+                                  actionsBox = FALSE,
+                                  countSelectedText = "show {0}",
+                                  selectedTextFormat = "count > 2"
+                                ),
+                                multiple = TRUE, selected = data_diff$selected
+                              )
+              ),
+              )
+            )
+          })
+          output$rose <- renderPlot({
+            rose_plot(data = fdata$data, selected = if(is.null(input$nmark)){data_diff$selected}else{input$nmark},
+                      title = paste0(fncell, " cells"),
+                      maintitle = ftitle, palette="RdYlGn")
+          }, bg="transparent", height = height, width = width-panel_padding)
+          output$rose2 <- renderPlot({
+            rose_plot(data = sdata$data, selected = if(is.null(input$nmark)){data_diff$selected}else{input$nmark},
+                      title = paste0(sncell, " cells"),
+                      maintitle = stitle, palette="RdYlGn")
+          }, bg="transparent", height = height, width = width-panel_padding)
+          output$diff <- renderPlot({box_plot(data = data_diff_,
+                     selected = if(is.null(input$nmark)){data_diff$selected}else{input$nmark},
+                     values = c("first"="#35978f", "second"="#bf812d"),
+                     title = NULL, maintitle = "Differences: <span style = 'color:#35978f;'>**first**</span> vs <span style = 'color:#bf812d;'>**second**</span> selection",
+                     palette="BrBG", colortitle = TRUE)
+          }, bg="transparent", height = height, width = width-panel_padding)
+        }
       }
     })
 

@@ -133,3 +133,58 @@ rose_plot <- function(data, selected, title = " ", maintitle = NULL, palette="Rd
     return(p + ggtitle(label = "", subtitle = title))
   }
 }
+
+#' box_plot
+#'
+#' @description A fct function to generate a box plot
+#'
+#' @return The return value, if any, from executing the function.
+#'
+#' @import ggplot2
+#' @noRd
+#'
+box_plot <- function(data, selected, title = " ", values = c("first" = "red", "second"= "blue"), maintitle = NULL, palette="RdYlGn", colortitle = F){
+  data_ <- data %>% dplyr::filter(variable %in% selected)
+
+  data_$id <- 1:nrow(data_)
+
+  p <- ggplot(data = data_, aes(x= variable, ymin = y0, lower = y25, middle = y50, upper = y75, ymax = y100, g = label, fill = label))+
+    geom_boxplot(stat = "identity", alpha = 0.4, position=position_dodge(0.6), width=0.5) +
+    # geom_errorbar(position=position_dodge(0.6), width=0.5) +
+    # facet_grid(.~label) +
+    scale_fill_manual(values = values) +
+    theme_bw() +
+    theme(      panel.grid = element_blank(),
+                # panel.spacing = element_blank() ,
+                # panel.border = element_blank(),
+                axis.text.x = element_text(size = fontsize-2, colour = color.background, angle = 45, hjust = 1),
+                # axis.ticks.x = element_blank(),
+                axis.text.y = element_text(size = fontsize-2, colour = color.background),
+                axis.title.x = element_blank(),
+                # axis.ticks = element_blank(),
+                panel.background = element_rect(fill=NA),
+                plot.background = element_rect(fill=NA, color=NA), #,panel.border = element_blank()
+                # plot.title=element_text(hjust=0, vjust=0.5, size = fontsize-1, colour = color.background, face = "italic"),
+                # plot.subtitle = element_text(hjust=1, vjust=0.5, size = fontsize-3, colour = color.background, face = "italic"),
+                # plot.title.position = "plot"
+                strip.background = element_blank(),
+                strip.text = element_text(size = fontsize-3)
+    )
+
+  if(colortitle){
+    p <- p +
+      ggtitle(label = maintitle) +
+      theme(plot.title = ggtext::element_markdown(),
+            legend.position = "none")
+    return(p)
+  }else{
+    p <- p + theme(legend.position = "none")
+  }
+
+  if(!is.null(maintitle)){
+    return(p + ggtitle(label = maintitle, subtitle = title))
+  }else{
+    return(p + ggtitle(label = "", subtitle = title))
+  }
+
+}
