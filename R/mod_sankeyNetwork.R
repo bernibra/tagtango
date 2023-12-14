@@ -13,25 +13,42 @@ mod_sankeyNetwork_ui <- function(id){
     fluidRow(
       column(12,
              div(style="width:100%; justify-content: center;",
-                 div(style="text-align: justify;", p("Interact with the diagram to visualize the different cell populations."))
+                 div(style="text-align: justify;", p("Interact with the diagram to visualize the different cell populations. Selecting specific multiple links from the diagram you can compare cell populations and understand the differences and similarities across annotations."))
              ))
     ),
     br(),
     fluidRow(
       fluidRow(
+        uiOutput(ns("subtitle")),
         uiOutput(ns("grouping")),
-        # uiOutput(ns("decomposition")),
-        column(5, align="right",
-               uiOutput(ns("num_holder")),
-               ),
-        column(5,offset = 2, align= "left",
-                     shinyWidgets::materialSwitch(
-                       inputId = ns("sort"),
-                       label = "sort by abundance",
-                       value = FALSE,
-                       status = "danger"
-                     )
-        )
+        uiOutput(ns("decomposition")),
+        shinyWidgets::dropdownButton(
+          tags$h4("Filter data:"),
+          uiOutput(ns("num_holder")),
+          shinyWidgets::materialSwitch(
+            inputId = ns("sort"),
+            label = "sort by abundance",
+            value = FALSE,
+            status = "danger"
+          ),
+          circle = TRUE,
+          icon = icon("filter", class = "filtering-icon"),
+          size = "sm",
+          width = "300px",
+          tooltip = shinyWidgets::tooltipOptions(title = "Click to filter the data!"),
+          status = "custom"
+        ),
+        # column(5, align="right",
+        #        uiOutput(ns("num_holder")),
+        #        ),
+        # column(5,offset = 2, align= "left",
+        #              shinyWidgets::materialSwitch(
+        #                inputId = ns("sort"),
+        #                label = "sort by abundance",
+        #                value = FALSE,
+        #                status = "danger"
+        #              )
+        # )
       ),
       br(),
       fluidRow(
@@ -70,6 +87,23 @@ mod_sankeyNetwork_server <- function(id, data){
     values$rna_umap <- data$rna_umap
     values$adt_umap <- data$adt_umap
     values$p <- NULL
+    values$max_value <- list(numVal = 1, numMin = 0, numMax = 100)
+    left_color <- "#fff7f3"
+    right_color <- "#f7fbff"
+
+    output$subtitle <- renderUI({tagList(
+      div(class ="outerDiv_container", div(class = "outerDiv",
+          column(4, align = "right",
+                        h4(stringr::str_to_title(gsub("[\\._-]", " ", data$left)), style = paste0("color: ", left_color,"; margin: 0px; padding: 0px; border: none;"))
+          ),
+          column(1, align="center",
+               h3("VS", style ="margin: 0px; padding: 0px;")
+          ),
+          column(4, align = "left",
+               h4(stringr::str_to_title(gsub("[\\._-]", " ", data$right)), style = paste0("color:  ", right_color,"; margin: 0px; padding: 0px; border: none;"))
+          )
+      ))
+    )})
 
     # filter dat
     if(!is.null(data$filter_variable)){
@@ -89,7 +123,17 @@ mod_sankeyNetwork_server <- function(id, data){
     values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                                 rna_umap = values$rna_umap, adt_umap = values$adt_umap)
 
-    values$max_value <- max(values$network$links$value)
+    values$max_value$numMax <- max(values$network$links$value)
+
+    numVal_d <- reactive({
+      if(!is.null(input$num) && !is.na(input$num)){
+        if(input$num < values$max_value$numMin) return(values$max_value$numMin)
+        if(input$num > values$max_value$numMax) return(values$max_value$numMax)
+        return(input$num)
+      }else{
+        return(values$max_value$numVal)
+      }
+    })
 
     if(!is.null(data$grouping_variable)){
       output$grouping <- renderUI({
@@ -107,7 +151,7 @@ mod_sankeyNetwork_server <- function(id, data){
     }
 
     output$num_holder <- renderUI({
-      sliderInput(ns("num"), label = NULL, value = 1, min = 1, max = values$max_value-1, step = 1)
+      numericInput(ns("num"), label = "Minimum number of cells per link:", value = numVal_d(), min = values$max_value$numMin, max = values$max_value$numMax-1) %>% smallInput(class = "filtering")
       })
 
     dataListen <- reactive({
@@ -115,11 +159,22 @@ mod_sankeyNetwork_server <- function(id, data){
     })
 
     observeEvent(dataListen(), {
-       values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
-                                  rna_umap = values$rna_umap, adt_umap = values$adt_umap,
-                                  grouping_variable = data$grouping_variable, grouping_values = input$cells,
-                                  min_counts = input$num)
-       values$max_value <- max(values$network$links$value)
+      if(is.null(input$num) || is.na(input$num)){
+        vnum <- 1
+      }else{
+        vnum <- input$num
+      }
+
+      vnum <- ifelse(vnum>values$max_value$numMax-1, values$max_value$numMax-1, vnum)
+
+      values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
+                            rna_umap = values$rna_umap, adt_umap = values$adt_umap,
+                            grouping_variable = data$grouping_variable, grouping_values = input$cells,
+                            min_counts = vnum)
+    })
+
+    observeEvent(input$cells, {
+      values$max_value$numMax <- max(values$network$links$value)
     })
 
     output$plot <- networkD3::renderSankeyNetwork({
@@ -127,7 +182,7 @@ mod_sankeyNetwork_server <- function(id, data){
       san <- networkD3::sankeyNetwork(Links = values$network$links, Nodes = values$network$nodes,
                            Source = "source", Target = "target",
                            Value = "value", NodeID = "name",NodeGroup = "groups",
-                           colourScale = 'd3.scaleOrdinal() .domain(["source", "target"]) .range(["#D3D1C6", "#909097"])',
+                           colourScale = paste0('d3.scaleOrdinal() .domain(["source", "target"]) .range(["', left_color,'", "', right_color,'"])'),
                            fontSize= 12, nodeWidth = 30, iterations = iterations)
 
       htmlwidgets::onRender(san, stankeyNetwork_js())

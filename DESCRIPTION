@@ -27,6 +27,7 @@ Imports:
     shinyjs,
     shinyWidgets,
     SingleCellExperiment,
+    stringr,
     SummarizedExperiment,
     tidyr
 Encoding: UTF-8

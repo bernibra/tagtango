@@ -1,4 +1,4 @@
-#' load data
+#' load_data
 #'
 #' @description A fct function to prepare the data for the stankey network
 #'
@@ -60,4 +60,16 @@ load_data <- function(dat, left, right, rna_umap, adt_umap,
   links <- links %>% dplyr::arrange(dplyr::desc(value))
 
   return(list(dat = dat, links = links, nodes = nodes, rna_umap = rna_umap, adt_umap = adt_umap))
+}
+
+#' smallInput
+#'
+#' @description A fct function to prepare the data for the stankey network
+#'
+#' @return Returns a list with the different elements for the stankey network.
+#'
+#' @noRd
+smallInput <- function(tag, class = "primary") {
+  tag$children[[2]] <- htmltools::tagAppendAttributes(tag$children[[2]], class = class)
+  tag
 }

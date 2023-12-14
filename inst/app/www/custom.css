@@ -249,6 +249,21 @@ summary {
     background-color: #F4BA02;
 }
 
+.outerDiv_container{
+  width: 100%;
+  margin: 0 auto;
+  border: none;
+  padding: 0px;
+}
+
+.outerDiv {
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
 /*-------------------------*/
 /*CSS code for the spinner*/
 /*-----------------------*/
@@ -367,3 +382,55 @@ a {
     color: #3D405B;
     text-decoration: none;
 }
+
+/*--------------------------------*/
+/*CSS code for filtering panel  */
+/*-----------------------------*/
+
+.dropdown-shinyWidgets {
+  color: #3D405B;
+  background-color: white;
+  opacity: 0.95;
+  z-index: 10000;
+}
+
+.dropdown-shinyWidgets:hover,
+.dropdown-shinyWidgets:active,
+.dropdown-shinyWidgets:focus,
+.dropdown-shinyWidgets.active{
+  border-color: #F4BA02;
+  z-index: 20000;
+}
+
+
+.filtering {
+  color: #3D405B;
+  background-color: white;
+  border-color: #3D405B;
+}
+
+.filtering-icon {
+  color: #F4F1DE;
+  background-color: #3D405B;
+}
+
+.filtering-icon:hover,
+.filtering-icon:active,
+.filtering-icon:focus,
+.filtering-icon.active{
+  color: #F4BA02;
+  background-color: #3D405B;
+}
+
+.label-filtering {
+    background-color: #F4BA02;
+}
+
+.filtering:hover,
+.filtering:active,
+.filtering:focus,
+.filtering.active{
+  border-color: #F4BA02;
+}
+
+
