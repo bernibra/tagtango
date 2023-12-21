@@ -17,6 +17,7 @@ body, label, input, button, select {
   //font-family: 'Menlo', sans-serif;
   //font-family: 'Helvetica Neue', Helvetica;
   //font-weight: 200;
+  //font-size: 14px;
 }
 
 body {
@@ -98,6 +99,7 @@ h4{
   outline: 0;
   border-color: #F4BA02;
   background-color: #3D405B;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
 }
 
 .custom {
@@ -115,6 +117,7 @@ h4{
   border-color: #F4BA02;
   outline: 0;
   background-color: #3D405B;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
 }
 
 
@@ -133,6 +136,7 @@ h4{
   outline: 0;
   border-color: #F4BA02;
   background-color: white;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
 }
 
 .inwhite {
@@ -150,6 +154,7 @@ h4{
   outline: 0;
   border-color: #F4BA02;
   background-color: white;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
 }
 
 #comment {
@@ -221,11 +226,6 @@ h4{
   color: #F4F1DE;
   background-color: #3D405B;
   border-color: #F4F1DE;
-}
-
-.progress-bar {
-  background-color: #F4BA02;
-  color: #3D405B;
 }
 
 label {
@@ -387,50 +387,78 @@ a {
 /*CSS code for filtering panel  */
 /*-----------------------------*/
 
-.dropdown-shinyWidgets {
+.dropdown {
+  display: inline;
+}
+
+.dropdown-menu {
   color: #3D405B;
   background-color: white;
-  opacity: 0.95;
+  border-color:  #3D405B;
+  font-size: 14px;
+  opacity: 0.9;
   z-index: 10000;
 }
 
-.dropdown-shinyWidgets:hover,
-.dropdown-shinyWidgets:active,
-.dropdown-shinyWidgets:focus,
-.dropdown-shinyWidgets.active{
-  border-color: #F4BA02;
+.dropdown-menu:hover {
+  /* let's darken #004E64 a bit for hover effect */
+  border-color:  #F4BA02;
   z-index: 20000;
+  opacity: 1;
 }
 
-
-.filtering {
-  color: #3D405B;
-  background-color: white;
-  border-color: #3D405B;
+h5 {
+  border-bottom:1px solid #3D405B;
+  width: 100%;
 }
 
-.filtering-icon {
-  color: #F4F1DE;
-  background-color: #3D405B;
+.btn-custom_filtering {
+    color: #F4F1DE;
+    background-color: #3D405B;
+    border-color: #ABAAAA;
+    padding: 1pt;
+    padding-right: 5px;
+    padding-left: 7px;
+    margin: 0px;
+    margin-bottom: 3px;
+    font-size: 14px;
+    font-weight: 800;
 }
 
-.filtering-icon:hover,
-.filtering-icon:active,
-.filtering-icon:focus,
-.filtering-icon.active{
+.btn-custom_filtering:hover,
+.btn-custom_filtering:active,
+.btn-custom_filtering:focus,
+.btn-custom_filtering.active {
+  /* let's darken #004E64 a bit for hover effect */
   color: #F4BA02;
+  outline: 0;
   background-color: #3D405B;
+  border-color:  #F4BA02;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(244, 186, 2);
 }
 
-.label-filtering {
-    background-color: #F4BA02;
+
+.inline label{ display: table-cell; text-align: left; vertical-align: middle; }
+                 .inline .form-group{display: table-row;}
+
+
+.form_filtering {
+    color: #3D405B !important;
+    background-color: white !important;
+    border-color: #3D405B !important;
 }
 
-.filtering:hover,
-.filtering:active,
-.filtering:focus,
-.filtering.active{
-  border-color: #F4BA02;
+/*--------------------------------*/
+/*CSS progress bar  */
+/*-----------------------------*/
+
+
+.progress.shiny-file-input-progress {
+  background-color:#3D405B;
 }
 
+.progress-bar {
+  background-color:#F4BA02;
+  color: #3D405B;
+}
 

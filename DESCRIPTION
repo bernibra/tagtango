@@ -1,12 +1,12 @@
 Package: tagtango
-Title: An Amazing Shiny App
+Title: A web app for comparing cell annotations
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "firstname",
-           family = "lastname",
+    person(given = "Bernat",
+           family = "Bramon Mora",
            role = c("aut", "cre"),
-           email = "your@email.com")
-Description: What the package does (one paragraph).
+           email = "bernat.bramon@gmail.com")
+Description: Importing a SingleCellExperiment or a data.frame, tagtango will allow you to understand the differences and similarities across cell populations. 
 License: MIT + file LICENSE
 Imports: 
     attempt,

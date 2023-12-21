@@ -106,16 +106,24 @@ mod_input_data_server <- function(id){
           shinyalert::shinyalert(title = "Oups!", type = "warning", text = values$ReadError,
                                  closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
         }else{
-          values$ReadError <- "Valid data"
-          shinyjs::enable("load", asis = T)
-          output$additional_info <- renderUI({
-            tagList(
-              h4("Additional Information"),
-              mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)),
-              mod_cell_grouping_ui(ns("cell_grouping_1"), choices = colnames(values$data$dat)),
-              mod_cell_filtering_ui(ns("cell_filtering_1"), choices = colnames(values$data$dat)),
+          if(input$left==input$right){
+            values$ReadError <- "You chose the same annotation for both variables. Change it to something different..."
+            output$additional_info <- renderUI({})
+            shinyjs::disable("load", asis = T)
+            shinyalert::shinyalert(title = "Oups!", type = "warning", text = values$ReadError,
+                                   closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
+          }else{
+            values$ReadError <- "Valid data"
+            shinyjs::enable("load", asis = T)
+            output$additional_info <- renderUI({
+              tagList(
+                h4("Additional Information"),
+                mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)),
+                mod_cell_grouping_ui(ns("cell_grouping_1"), choices = colnames(values$data$dat)),
+                mod_cell_filtering_ui(ns("cell_filtering_1"), choices = colnames(values$data$dat)),
               )
-          })
+            })
+          }
         }
       }
     })

@@ -48,17 +48,27 @@ read_input.rds <- function(filename, ...){
   }
 
   if (class(mat)[1]=="SingleCellExperiment"){
+
     if("counts" %in% names(SummarizedExperiment::assays(mat))){
       adt <- t(SingleCellExperiment::counts(mat))
     }else{
       adt <- NULL
     }
+
     if("logcounts" %in% names(SummarizedExperiment::assays(mat))){
       norm <- t(SingleCellExperiment::logcounts(mat))
     }else{
       norm <- NULL
     }
-    dat <- list(adt = adt, norm = norm, dat = as.data.frame(SingleCellExperiment::colData(mat)), ReadError = "Valid data")
+
+    dat <- as.data.frame(SingleCellExperiment::colData(mat))
+    if(length(SingleCellExperiment::reducedDimNames(mat))!=0){
+      for(i in SingleCellExperiment::reducedDimNames(mat)){
+        dat <- cbind(dat, reducedDim(mat, type = i)[,1:2])
+      }
+    }
+
+    dat <- list(adt = adt, norm = norm, dat = dat, ReadError = "Valid data")
   }else{
     dat <- tryCatch({
       list(adt = NULL, norm = NULL, dat = as.data.frame(mat), ReadError = "Valid data")

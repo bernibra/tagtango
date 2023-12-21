@@ -13,46 +13,83 @@ mod_sankeyNetwork_ui <- function(id){
     fluidRow(
       column(12,
              div(style="width:100%; justify-content: center;",
-                 div(style="text-align: justify;", p("Interact with the diagram to visualize the different cell populations. Selecting specific multiple links from the diagram you can compare cell populations and understand the differences and similarities across annotations."))
-             ))
+                 div(style="text-align: justify;",
+                    span(
+                      shinyWidgets::dropdownButton(
+                        h5("Filter data:"),
+                        uiOutput(ns("num_holder")),
+                        shinyWidgets::materialSwitch(
+                          inputId = ns("sort"),
+                          label = "sort nodes by abundance",
+                          value = FALSE,
+                          status = "danger"
+                        ),
+                        circle = FALSE,
+                        label = "Filter and sort",
+                        #icon = icon("filter"),
+                        size = "sm",
+                        width = "300px",
+                        #tooltip = shinyWidgets::tooltipOptions(title = "Click to filter the data!"),
+                        status = "custom_filtering"
+                      ),
+                      " the data to identify interesting cell populations and ",
+                      span(
+                        shinyWidgets::dropdownButton(
+                          p("Click on specific links to understand the cell composition of each label and on multiple links to compare their cell populations."),
+                          circle = FALSE,
+                          label = "select links",
+                          size = "sm",
+                          width = "300px",
+                          status = "custom_filtering"
+                        ),
+                      ),
+                      #span("click on specific links", style = "font-weight: 800; border-bottom: 1px solid #F4F1DE;"),
+                      " to understand differences/similarities across annotations."
+                    ),
+                    br(),
+                    br()
+                  ),
+                )
+             )
     ),
     br(),
     fluidRow(
       fluidRow(
         uiOutput(ns("subtitle")),
         uiOutput(ns("grouping")),
-        uiOutput(ns("decomposition")),
-        shinyWidgets::dropdownButton(
-          tags$h4("Filter data:"),
-          uiOutput(ns("num_holder")),
-          shinyWidgets::materialSwitch(
-            inputId = ns("sort"),
-            label = "sort by abundance",
-            value = FALSE,
-            status = "danger"
-          ),
-          circle = TRUE,
-          icon = icon("filter", class = "filtering-icon"),
-          size = "sm",
-          width = "300px",
-          tooltip = shinyWidgets::tooltipOptions(title = "Click to filter the data!"),
-          status = "custom"
-        ),
-        # column(5, align="right",
-        #        uiOutput(ns("num_holder")),
-        #        ),
-        # column(5,offset = 2, align= "left",
-        #              shinyWidgets::materialSwitch(
-        #                inputId = ns("sort"),
-        #                label = "sort by abundance",
-        #                value = FALSE,
-        #                status = "danger"
-        #              )
-        # )
+        # br(),
+        # div(class ="outerDiv_container", div(class = "outerDiv",
+        #   uiOutput(ns("num_holder")),
+        #   shinyWidgets::materialSwitch(
+        #     inputId = ns("sort"),
+        #     label = "sort nodes by abundance",
+        #     value = FALSE,
+        #     status = "danger"
+        #   )
+        # ))
       ),
       br(),
       fluidRow(
         column(8, offset = 2, align="center",
+              # fluidRow(align = "right",
+              #         shinyWidgets::dropdownButton(
+              #           tags$h4("Filter data:"),
+              #           uiOutput(ns("num_holder")),
+              #           shinyWidgets::materialSwitch(
+              #             inputId = ns("sort"),
+              #             label = "sort nodes by abundance",
+              #             value = FALSE,
+              #             status = "danger"
+              #           ),
+              #           circle = FALSE,
+              #           label = "modify visualization",
+              #           icon = icon("filter"),
+              #           size = "sm",
+              #           width = "300px",
+              #           #tooltip = shinyWidgets::tooltipOptions(title = "Click to filter the data!"),
+              #           status = "custom_filtering"
+              #         ),
+              #   ),
                uiOutput(ns("diagram"))
         )
       ),
@@ -88,8 +125,8 @@ mod_sankeyNetwork_server <- function(id, data){
     values$adt_umap <- data$adt_umap
     values$p <- NULL
     values$max_value <- list(numVal = 1, numMin = 0, numMax = 100)
-    left_color <- "#fff7f3"
-    right_color <- "#f7fbff"
+    left_color <- "#fbb4ae"
+    right_color <- "#b3cde3"
 
     output$subtitle <- renderUI({tagList(
       div(class ="outerDiv_container", div(class = "outerDiv",
@@ -97,7 +134,7 @@ mod_sankeyNetwork_server <- function(id, data){
                         h4(stringr::str_to_title(gsub("[\\._-]", " ", data$left)), style = paste0("color: ", left_color,"; margin: 0px; padding: 0px; border: none;"))
           ),
           column(1, align="center",
-               h3("VS", style ="margin: 0px; padding: 0px;")
+               h3("VS", style ="color: #F4F1DE; margin: 0px; padding: 0px;")
           ),
           column(4, align = "left",
                h4(stringr::str_to_title(gsub("[\\._-]", " ", data$right)), style = paste0("color:  ", right_color,"; margin: 0px; padding: 0px; border: none;"))
@@ -138,6 +175,7 @@ mod_sankeyNetwork_server <- function(id, data){
     if(!is.null(data$grouping_variable)){
       output$grouping <- renderUI({
         tagList(
+          br(),
           column(12, align = "center",
                  shinyWidgets::radioGroupButtons(
                    inputId = ns("cells"),
@@ -151,7 +189,7 @@ mod_sankeyNetwork_server <- function(id, data){
     }
 
     output$num_holder <- renderUI({
-      numericInput(ns("num"), label = "Minimum number of cells per link:", value = numVal_d(), min = values$max_value$numMin, max = values$max_value$numMax-1) %>% smallInput(class = "filtering")
+      numericInput(ns("num"), label = "Minimum number of cells per link:", value = numVal_d(), min = values$max_value$numMin, max = values$max_value$numMax-1) %>% smallInput(class = "form_filtering")
       })
 
     dataListen <- reactive({
@@ -159,22 +197,16 @@ mod_sankeyNetwork_server <- function(id, data){
     })
 
     observeEvent(dataListen(), {
-      if(is.null(input$num) || is.na(input$num)){
-        vnum <- 1
-      }else{
-        vnum <- input$num
-      }
-
-      vnum <- ifelse(vnum>values$max_value$numMax-1, values$max_value$numMax-1, vnum)
-
+      shinyjs::disable(id = "num")
       values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                             rna_umap = values$rna_umap, adt_umap = values$adt_umap,
                             grouping_variable = data$grouping_variable, grouping_values = input$cells,
-                            min_counts = vnum)
+                            min_counts = numVal_d())
     })
 
     observeEvent(input$cells, {
       values$max_value$numMax <- max(values$network$links$value)
+      shinyjs::enable(id = "num")
     })
 
     output$plot <- networkD3::renderSankeyNetwork({
