@@ -1,5 +1,17 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 # tagtango
 
@@ -9,9 +21,7 @@
 A web app to compare single-cell annotations. Soon available online.
 
 ## Install the app locally
-
-If you prefer running the app locally, you can also install it from
-Github
+If you prefer running the app locally, you can also install it from Github
 
 ``` r
 # install.packages("remotes")
@@ -23,3 +33,5 @@ and run:
 ``` r
 tagtango::run_app()
 ```
+
+
