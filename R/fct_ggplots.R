@@ -94,7 +94,7 @@ rose_plot <- function(data, selected, title = " ", maintitle = NULL, palette="Rd
 
   # browser()
   # labels=c("first",rep("", length(unique(data$color))-2), "second")
-  p <- ggplot(data=data,aes(x=factor(id, level=id, label=variable),y=y, fill = factor(color, levels = 1:m)))+
+  p <- ggplot(data=data,aes(x=factor(id, levels=id, labels=variable),y=y, fill = factor(color, levels = 1:m)))+
     geom_bar(stat="identity", alpha = 0.5)+
     geom_text(aes(label = variable, y=y+extradist, hjust=hjust, angle=angle), size = 4, color = color.background) +
     scale_fill_brewer(type = "div", palette = palette, direction = -1) +

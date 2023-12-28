@@ -24,17 +24,21 @@ mod_input_data_ui <- function(id){
       h4("Main data entry"),
       br(),
       column(12, align = "left",
-            p("The app expects a `SingleCellExperiment` object or `data.frame` with annotations as colData or columns, respectively."),
-            shiny::fileInput(
-               ns("data"),
-               label = "",
-               multiple = FALSE,
-               accept = NULL,
-               width = NULL,
-               buttonLabel = "Browse...",
-               placeholder = "No file selected",
-               capture = NULL
-             ),
+        p("The app expects a `SingleCellExperiment` object or `data.frame` with annotations as colData or columns, respectively."),
+        div(class ="outerDiv_container",
+            div(class = "outerDiv", style = "align-items: flex-start; justify-content: flex-start;",
+                uiOutput(ns("data_holder")),
+                div(style = "margin: 0px; padding: 0px; padding-left: 2pt;",
+                 shinyWidgets::radioGroupButtons(
+                   inputId = ns("test_data"),
+                   label = "",
+                   selected = character(0),
+                   choices = c("Test data"),
+                   status = "custom"
+                 )
+               )
+          )
+        ),
       )
     ),
     fluidRow(
@@ -65,16 +69,69 @@ mod_input_data_server <- function(id){
 
     shinyjs::disable("load", asis = T)
 
-    dataListen <- reactive({
-      list(input$data)
+    output$data_holder <- renderUI({
+      shiny::fileInput(
+        ns("data"),
+        label = "",
+        multiple = FALSE,
+        accept = c(".csv", ".tsv", ".txt", ".rds", ".Rds"),
+        width = NULL,
+        buttonLabel = "Browse...",
+        placeholder = "No file selected",
+        capture = NULL
+      )
     })
 
-    observeEvent(dataListen(),{
+    observeEvent(input$test_data,{
+
+      coldat <- as.data.frame(SingleCellExperiment::colData(test_data))
+      if(length(SingleCellExperiment::reducedDimNames(test_data))!=0){
+        for(i in SingleCellExperiment::reducedDimNames(test_data)){
+          d <- as.data.frame(reducedDim(test_data, type = i)[,1:2])
+          colnames(d) <- paste0(i, c("_first_axis", "_second_axis"))
+          coldat <- cbind(coldat, d)
+        }
+      }
+
+      values$data <- list(
+          adt = t(as.matrix(SingleCellExperiment::counts(test_data))),
+          norm = t(as.matrix(SingleCellExperiment::logcounts(test_data))),
+          dat = coldat,
+          ReadError = "Valid data"
+        )
+
+      output$data_holder <- renderUI({
+        shiny::fileInput(
+          ns("data"),
+          label = "",
+          multiple = FALSE,
+          accept = c(".csv", ".tsv", ".txt", ".rds", ".Rds"),
+          width = NULL,
+          buttonLabel = "Browse...",
+          placeholder = "No file selected",
+          capture = NULL
+        )
+      })
+
+      output$left_input <- renderUI(shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
+                                                              choices = colnames(values$data$dat), multiple = T,
+                                                              selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom")))
+      output$right_input <- renderUI(shinyWidgets::pickerInput(ns("right"),labelMandatory("annotation #2"),
+                                                               choices = colnames(values$data$dat), multiple = T,
+                                                               selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom")))
+    })
+
+    observeEvent(input$data,{
 
       values$data <- read_input(input$data$datapath)
       values$ReadError <- values$data$ReadError
 
       if(!is.null(values$data$dat)){
+
+        updateRadioGroupButtons(
+          session = session, inputId = "test_data",
+          selected = character(0)
+        )
 
         output$left_input <- renderUI(shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
                                           choices = colnames(values$data$dat), multiple = T,
@@ -87,6 +144,12 @@ mod_input_data_server <- function(id){
       if(!(values$data$ReadError %in% c("Valid data", "No data"))){
         shinyalert::shinyalert(title = "Oups!", type = "warning", text = values$data$ReadError,
                                closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
+      }
+
+      if(values$data$ReadError != "Valid data"){
+        output$left_input <- renderUI({})
+        output$right_input <- renderUI({})
+        output$additional_info <- renderUI({})
       }
 
     })
@@ -134,6 +197,8 @@ mod_input_data_server <- function(id){
 
     output$spinner <- renderUI(shiny::absolutePanel(top = "3%", right =  "3%", width = "auto", height = "auto", draggable = F, fixed = T,
                                            shiny::HTML("<span class='loader'></span>")))
+
+
 
     return(
       reactive(

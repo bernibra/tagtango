@@ -22,7 +22,7 @@ read_input.default <- function(filename, ...){
   }
 
   # File formatted csv, tsv or txt
-  if (grepl(".csv$|.tsv$|.txt$|.csv.gz$|.tsv.gz$|.txt.gz$", filename)){
+  if (grepl(".csv$|.tsv$|.txt$", filename)){
     return(check_dim(read_input.csv(filename), collimit = collimit))
   }
 
@@ -50,13 +50,13 @@ read_input.rds <- function(filename, ...){
   if (class(mat)[1]=="SingleCellExperiment"){
 
     if("counts" %in% names(SummarizedExperiment::assays(mat))){
-      adt <- t(SingleCellExperiment::counts(mat))
+      adt <- t(as.matrix(SingleCellExperiment::counts(mat)))
     }else{
       adt <- NULL
     }
 
     if("logcounts" %in% names(SummarizedExperiment::assays(mat))){
-      norm <- t(SingleCellExperiment::logcounts(mat))
+      norm <- t(as.matrix(SingleCellExperiment::logcounts(mat)))
     }else{
       norm <- NULL
     }
@@ -64,7 +64,9 @@ read_input.rds <- function(filename, ...){
     dat <- as.data.frame(SingleCellExperiment::colData(mat))
     if(length(SingleCellExperiment::reducedDimNames(mat))!=0){
       for(i in SingleCellExperiment::reducedDimNames(mat)){
-        dat <- cbind(dat, reducedDim(mat, type = i)[,1:2])
+        d <- as.data.frame(reducedDim(mat, type = i)[,1:2])
+        colnames(d) <- paste0(i, c("_first_axis", "_second_axis"))
+        dat <- cbind(dat, d)
       }
     }
 
