@@ -57,39 +57,10 @@ mod_sankeyNetwork_ui <- function(id){
       fluidRow(
         uiOutput(ns("subtitle")),
         uiOutput(ns("grouping")),
-        # br(),
-        # div(class ="outerDiv_container", div(class = "outerDiv",
-        #   uiOutput(ns("num_holder")),
-        #   shinyWidgets::materialSwitch(
-        #     inputId = ns("sort"),
-        #     label = "sort nodes by abundance",
-        #     value = FALSE,
-        #     status = "danger"
-        #   )
-        # ))
       ),
       br(),
       fluidRow(
         column(8, offset = 2, align="center",
-              # fluidRow(align = "right",
-              #         shinyWidgets::dropdownButton(
-              #           tags$h4("Filter data:"),
-              #           uiOutput(ns("num_holder")),
-              #           shinyWidgets::materialSwitch(
-              #             inputId = ns("sort"),
-              #             label = "sort nodes by abundance",
-              #             value = FALSE,
-              #             status = "danger"
-              #           ),
-              #           circle = FALSE,
-              #           label = "modify visualization",
-              #           icon = icon("filter"),
-              #           size = "sm",
-              #           width = "300px",
-              #           #tooltip = shinyWidgets::tooltipOptions(title = "Click to filter the data!"),
-              #           status = "custom_filtering"
-              #         ),
-              #   ),
                uiOutput(ns("diagram"))
         )
       ),
@@ -101,11 +72,8 @@ mod_sankeyNetwork_ui <- function(id){
       )
     ),
     fluidRow(
-      # uiOutput(ns("decomposition")),
       mod_panel_decomposition_ui(ns("panel_decomposition_1")),
       mod_panel_rose_ui(ns("panel_rose_1")),
-      # mod_panel_rose_ui(ns("panel_rose_2")),
-      # mod_panel_diff_ui(ns("panel_diff_1")),
     )
   )
 }
@@ -232,12 +200,8 @@ mod_sankeyNetwork_server <- function(id, data){
     observeEvent(firstselection(), {
       if(!is.null(input$target1) | !is.null(input$source1)){
 
-        # height <- min(c(input$height*0.45, (input$width - (8/12) * 0.7 * input$width)/2))
-        # width <- min(c(input$height*0.45, (input$width - (8/12) * 0.7 * input$width)/2))
         width <- (input$width - (8/12) * 0.7 * input$width)/2
         height <- (input$width - (8/12) * 0.7 * input$width)/2
-
-        # print(c(width, height))
 
         if(is.null(input$target1)){
           values$fselect <- values$network$dat$i==input$source1
