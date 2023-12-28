@@ -27,13 +27,13 @@ load_data <- function(dat, left, right, rna_umap, adt_umap,
 
   }
 
-  # browser()
-
+  cells_tagtango <- rownames(dat)
   dat <- dat %>%
     dplyr::group_by(!!sym(left), !!sym(right)) %>%
     dplyr::mutate(n_min_counts = dplyr::n()) %>%
     dplyr::rowwise() %>%
     as.data.frame()
+  rownames(dat) <- cells_tagtango
 
   if(!is.null(min_counts)){
     dat <- dat %>% dplyr::filter(n_min_counts>=min_counts)
