@@ -47,7 +47,7 @@ tagtango::run_app()
 ## Input Data Requirements
 
 As of now, please be aware that the hosting server has limitations, and
-the dataset size should not exceed 3GB to ensure optimal performance.
+the dataset size should not exceed 1GB.
 
 ### Accepted Data Formats
 

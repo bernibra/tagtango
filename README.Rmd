@@ -45,7 +45,7 @@ tagtango::run_app()
 ```
 
 ## Input Data Requirements
-As of now, please be aware that the hosting server has limitations, and the dataset size should not exceed 3GB to ensure optimal performance.
+As of now, please be aware that the hosting server has limitations, and the dataset size should not exceed 1GB.
 
 ### Accepted Data Formats
 The `tagtango` app is flexible in handling various data formats. For now, however, it only accepts input in the form of either a `SingleCellExperiment` object stored as an RDS file in R, or a `data.frame` stored as an RDS, CSV, or TSV file. I expect this to change in the near future.
