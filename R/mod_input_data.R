@@ -79,18 +79,18 @@ mod_input_data_server <- function(id){
 
     observeEvent(input$test_data,{
 
-      coldat <- as.data.frame(SingleCellExperiment::colData(test_data))
-      if(length(SingleCellExperiment::reducedDimNames(test_data))!=0){
-        for(i in SingleCellExperiment::reducedDimNames(test_data)){
-          d <- as.data.frame(reducedDim(test_data, type = i)[,1:2])
+      coldat <- as.data.frame(SingleCellExperiment::colData(test_sce))
+      if(length(SingleCellExperiment::reducedDimNames(test_sce))!=0){
+        for(i in SingleCellExperiment::reducedDimNames(test_sce)){
+          d <- as.data.frame(reducedDim(test_sce, type = i)[,1:2])
           colnames(d) <- paste0(i, c("_first_axis", "_second_axis"))
           coldat <- cbind(coldat, d)
         }
       }
 
       values$data <- list(
-          adt = t(as.matrix(SingleCellExperiment::counts(test_data))),
-          norm = t(as.matrix(SingleCellExperiment::logcounts(test_data))),
+          adt = t(as.matrix(SingleCellExperiment::counts(test_sce))),
+          norm = t(as.matrix(SingleCellExperiment::logcounts(test_sce))),
           dat = coldat,
           ReadError = "Valid data"
         )
