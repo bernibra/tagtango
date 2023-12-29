@@ -34,14 +34,17 @@ theme_set(
 #' @import ggplot2
 #' @noRd
 
-plot_UMAP <- function(data, labels, sampling = 0.2, values = c("a", "b"), title = "UMAP of the RNA data"){
-  # browser()
+plot_UMAP <- function(data, labels, values = c("a", "b"), title = "UMAP of the RNA data"){
+
   data$labels <- labels
+  sampling <- 40000
 
-  data_ <- data[sample(nrow(data), round(nrow(data) * sampling)), ]
+  if( nrow(data) >= sampling ){
+    data <- data[sample(nrow(data), sampling), ]
+  }
 
-  return(data_ %>% dplyr::arrange(labels) %>% ggplot(aes(x=V1, y=V2, color = labels)) +
-           geom_point(size = 0.1, alpha = 0.2) +
+  return(data %>% dplyr::arrange(labels) %>% ggplot(aes(x=V1, y=V2, color = labels)) +
+           geom_point(size = 0.5, alpha = 0.2) +
            scale_colour_manual(values = values) +
            xlab("first axis") +
            ylab("second axis") +
