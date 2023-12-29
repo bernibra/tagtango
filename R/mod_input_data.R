@@ -114,12 +114,12 @@ mod_input_data_server <- function(id){
           column(4, align = "left",
                  shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
                                            choices = colnames(values$data$dat), multiple = T,
-                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom", title = "e.g. Main.labels"))
+                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom", title = "e.g. Main.ADT"))
           ),
           column(4, offset = 4, align = "right",
                  shinyWidgets::pickerInput(ns("right"),labelMandatory("annotation #2"),
                                            choices = colnames(values$data$dat), multiple = T,
-                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom", title = "e.g. Fine.labels"))
+                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom", title = "e.g. Main.RNA"))
           ),
         )
       })

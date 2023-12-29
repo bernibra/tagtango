@@ -99,13 +99,13 @@ mod_sankeyNetwork_server <- function(id, data){
     output$subtitle <- renderUI({tagList(
       div(class ="outerDiv_container", div(class = "outerDiv",
           column(4, align = "right",
-                        h4(stringr::str_to_title(gsub("[\\._-]", " ", data$left)), style = paste0("color: ", left_color,"; margin: 0px; padding: 0px; border: none;"))
+                        h4(sentenceUp(gsub("[\\._-]", " ", data$left)), style = paste0("color: ", left_color,"; margin: 0px; padding: 0px; border: none;"))
           ),
           column(1, align="center",
                h3("VS", style ="color: #F4F1DE; margin: 0px; padding: 0px;")
           ),
           column(4, align = "left",
-               h4(stringr::str_to_title(gsub("[\\._-]", " ", data$right)), style = paste0("color:  ", right_color,"; margin: 0px; padding: 0px; border: none;"))
+               h4(sentenceUp(gsub("[\\._-]", " ", data$right)), style = paste0("color:  ", right_color,"; margin: 0px; padding: 0px; border: none;"))
           )
       ))
     )})

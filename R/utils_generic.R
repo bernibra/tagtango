@@ -5,7 +5,6 @@
 #' @return The return value, if any, from executing the utility.
 #'
 #' @noRd
-
 plotsize <- function(number){
   height <- number*30
   if(height<600){
@@ -14,7 +13,6 @@ plotsize <- function(number){
     return(height)
   }
 }
-
 
 #' labelMandatory
 #'
@@ -30,3 +28,30 @@ labelMandatory <- function(label) {
     span("*", class = "mandatory_star")
   )
 }
+
+#' firstUp
+#'
+#' @description A utils function to capitalize the first letter of a word while keeping acronyms
+#'
+#' @return The return value, if any, from executing the utility.
+#'
+#' @noRd
+#'
+firstUp <- function(x) {
+   substr(x, 1, 1) <- toupper(substr(x, 1, 1))
+   x
+}
+
+#' sentenceUp
+#'
+#' @description A utils function to capitalize the first letter of a word while keeping acronyms
+#'
+#' @return The return value, if any, from executing the utility.
+#'
+#' @noRd
+#'
+sentenceUp <- function(x) {
+  x <- paste(firstUp(strsplit(x, split = " ")[[1]]), collapse = " ")
+  x
+}
+
