@@ -58,12 +58,21 @@ If providing a `SingleCellExperiment` object, ensure the following criteria are 
 
 As test dataset, a preprocessed and annotated [10x dataset](https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/pbmc_10k_protein_v3) is provided  with the package. This is a `SingleCellExperiment` with Peripheral Blood Mononuclear Cells (PBMCs) from a healthy donor stained with a few TotalSeq-B antibodies, and is readily accessible via:
 
-```{r 'sce', eval = FALSE}
-tagtango::test_sce
+```{r 'sce', eval = TRUE, message=FALSE, warning=FALSE}
+library(tagtango)
+test_sce
 ```
+
+Notice that the column and row names in the `SingleCellExperiment` are not `NULL`, and that the different annotations are stored in `SingleCellExperiment::colData(test_sce)`.
 
 ### `data.frame` Expectations
 If providing a `data.frame`, the app expects different annotations to be stored as columns.
+
+An example of a `data.frame` that can be used as input by `tagtango` can be generated as:
+
+```{r 'df', eval = FALSE}
+SingleCellExperiment::colData(test_sce)
+```
 
 ## Code of Conduct
   
