@@ -56,3 +56,5 @@ rsconnect/
 inst/doc
 /doc/
 /Meta/
+^renv$
+^renv\.lock$
