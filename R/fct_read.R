@@ -64,7 +64,7 @@ read_input.rds <- function(filename, ...){
     dat <- as.data.frame(SingleCellExperiment::colData(mat))
     if(length(SingleCellExperiment::reducedDimNames(mat))!=0){
       for(i in SingleCellExperiment::reducedDimNames(mat)){
-        d <- as.data.frame(reducedDim(mat, type = i)[,1:2])
+        d <- as.data.frame(SingleCellExperiment::reducedDim(mat, type = i)[,1:2])
         colnames(d) <- paste0(i, c("_first_axis", "_second_axis"))
         dat <- cbind(dat, d)
       }

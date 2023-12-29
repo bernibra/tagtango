@@ -9,34 +9,30 @@ Authors@R:
 Description: Importing a SingleCellExperiment or a data.frame, tagtango will allow you to understand the differences and similarities across cell populations. 
 License: MIT + file LICENSE
 Imports: 
-    attempt,
     config (>= 0.3.2),
     dplyr,
-    DT,
     ggplot2,
     ggtext,
-    glue,
     golem (>= 0.4.1),
     htmltools,
     htmlwidgets,
     magrittr,
     networkD3,
+    pkgload,
     rlang,
     shiny (>= 1.7.5.1),
     shinyalert,
     shinyjs,
     shinyWidgets,
     SingleCellExperiment,
-    stringr,
-    SummarizedExperiment,
-    tidyr
+    spelling,
+    SummarizedExperiment
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
 Suggests: 
     knitr,
     rmarkdown,
-    spelling,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Language: en-US

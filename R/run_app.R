@@ -14,7 +14,8 @@ run_app <- function(
   uiPattern = "/",
   ...
 ) {
-  options(shiny.maxRequestSize = 3000*1024^2, shiny.launch.browser = .rs.invokeShinyWindowExternal)
+  # options(shiny.maxRequestSize = 3000*1024^2, shiny.launch.browser = .rs.invokeShinyWindowExternal)
+  options(shiny.maxRequestSize = 3000*1024^2)
   with_golem_options(
     app = shinyApp(
       ui = app_ui,

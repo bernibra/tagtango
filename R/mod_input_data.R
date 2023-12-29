@@ -82,7 +82,7 @@ mod_input_data_server <- function(id){
       coldat <- as.data.frame(SingleCellExperiment::colData(test_sce))
       if(length(SingleCellExperiment::reducedDimNames(test_sce))!=0){
         for(i in SingleCellExperiment::reducedDimNames(test_sce)){
-          d <- as.data.frame(reducedDim(test_sce, type = i)[,1:2])
+          d <- as.data.frame(SingleCellExperiment::reducedDim(test_sce, type = i)[,1:2])
           colnames(d) <- paste0(i, c("_first_axis", "_second_axis"))
           coldat <- cbind(coldat, d)
         }
