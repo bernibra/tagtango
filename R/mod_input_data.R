@@ -42,12 +42,7 @@ mod_input_data_ui <- function(id){
       )
     ),
     fluidRow(
-      column(4, align = "left",
-             uiOutput(ns("left_input"))
-      ),
-      column(4, offset = 4, align = "right",
-             uiOutput(ns("right_input"))
-      ),
+      uiOutput(ns("annotations"))
     ),
     fluidRow(
       uiOutput(ns("additional_info"))
@@ -113,12 +108,22 @@ mod_input_data_server <- function(id){
         )
       })
 
-      output$left_input <- renderUI(shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
-                                                              choices = colnames(values$data$dat), multiple = T,
-                                                              selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom")))
-      output$right_input <- renderUI(shinyWidgets::pickerInput(ns("right"),labelMandatory("annotation #2"),
-                                                               choices = colnames(values$data$dat), multiple = T,
-                                                               selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom")))
+      output$annotations <- renderUI({
+        tagList(
+          column(12, p("Pick two annotations to compare:")),
+          column(4, align = "left",
+                 shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
+                                           choices = colnames(values$data$dat), multiple = T,
+                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom", title = "e.g. Main.labels"))
+          ),
+          column(4, offset = 4, align = "right",
+                 shinyWidgets::pickerInput(ns("right"),labelMandatory("annotation #2"),
+                                           choices = colnames(values$data$dat), multiple = T,
+                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom", title = "e.g. Fine.labels"))
+          ),
+        )
+      })
+
     })
 
     observeEvent(input$data,{
@@ -133,12 +138,22 @@ mod_input_data_server <- function(id){
           selected = character(0)
         )
 
-        output$left_input <- renderUI(shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
-                                          choices = colnames(values$data$dat), multiple = T,
-                                          selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom")))
-        output$right_input <- renderUI(shinyWidgets::pickerInput(ns("right"),labelMandatory("annotation #2"),
-                                          choices = colnames(values$data$dat), multiple = T,
-                                          selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom")))
+        output$annotations <- renderUI({
+          tagList(
+            column(12, p("Pick two annotations to compare:")),
+            column(4, align = "left",
+                   shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
+                                             choices = colnames(values$data$dat), multiple = T,
+                                             selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom"))
+            ),
+            column(4, offset = 4, align = "right",
+                   shinyWidgets::pickerInput(ns("right"),labelMandatory("annotation #2"),
+                                             choices = colnames(values$data$dat), multiple = T,
+                                             selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom"))
+            ),
+          )
+        })
+
       }
 
       if(!(values$data$ReadError %in% c("Valid data", "No data"))){
@@ -147,8 +162,7 @@ mod_input_data_server <- function(id){
       }
 
       if(values$data$ReadError != "Valid data"){
-        output$left_input <- renderUI({})
-        output$right_input <- renderUI({})
+        output$annotations <- renderUI({})
         output$additional_info <- renderUI({})
       }
 

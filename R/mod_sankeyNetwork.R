@@ -166,6 +166,10 @@ mod_sankeyNetwork_server <- function(id, data){
 
     observeEvent(dataListen(), {
       shinyjs::disable(id = "num")
+      mod_panel_decomposition_server("panel_decomposition_1",
+                                     umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
+      mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
+                            class = "top white")
       values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                             rna_umap = values$rna_umap, adt_umap = values$adt_umap,
                             grouping_variable = data$grouping_variable, grouping_values = input$cells,
