@@ -47,10 +47,11 @@ tagtango::run_app()
 ## Input Data Requirements
 
 As of now, please be aware that the hosting server has limitations, and
-the dataset size should not exceed 1GB. We advise against accessing the
-web application on a phone screen as the visualization may not be
-optimal. For the best user experience, we recommend using a desktop or
-tablet device.
+the dataset size should not exceed 1GB (use the `maxRequestSize`
+parameter when running the application locally to increase this limit at
+your own risk). We advise against accessing the web application on a
+phone screen as the visualization may not be optimal. For the best user
+experience, we recommend using a desktop or tablet device.
 
 ### Accepted Data Formats
 

@@ -9,6 +9,7 @@ run_app(
   options = list(),
   enableBookmarking = NULL,
   uiPattern = "/",
+  maxRequestSize = 3000 * 1024^2,
   ...
 )
 }
@@ -32,6 +33,8 @@ for more information on bookmarking your app.}
 request to determine whether the \code{ui} should be used to handle the
 request. Note that the entire request path must match the regular
 expression in order for the match to be considered successful.}
+
+\item{maxRequestSize}{maximum file size allowed in the application, in bytes. Default is 3Gb. Icrease at your own risk.}
 
 \item{...}{arguments to pass to golem_opts.
 See `?golem::get_golem_options` for more details.}
