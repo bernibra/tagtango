@@ -58,7 +58,9 @@ mod_input_data_server <- function(id){
     ns <- session$ns
 
     values <- reactiveValues()
-    values$data <- list(adt = NULL, norm = NULL, dat = NULL, ReadError = "No data")
+    values$data <- list(sce = NULL,
+                        # adt = NULL, norm = NULL,
+                        dat = NULL, ReadError = "No data")
     values$umap <- data.frame(rna_first = NULL, rna_second = NULL, adt_first = NULL, adt_second = NULL)
     values$ReadError <- "No data"
 
@@ -78,6 +80,8 @@ mod_input_data_server <- function(id){
     })
 
     observeEvent(input$test_data,{
+      output$annotations <- renderUI({})
+      output$additional_info <- renderUI({})
 
       coldat <- as.data.frame(SingleCellExperiment::colData(test_sce))
       if(length(SingleCellExperiment::reducedDimNames(test_sce))!=0){
@@ -89,8 +93,9 @@ mod_input_data_server <- function(id){
       }
 
       values$data <- list(
-          adt = t(as.matrix(SingleCellExperiment::counts(test_sce))),
-          norm = t(as.matrix(SingleCellExperiment::logcounts(test_sce))),
+          # adt = t(as.matrix(SingleCellExperiment::counts(test_sce))),
+          # norm = t(as.matrix(SingleCellExperiment::logcounts(test_sce))),
+          sce = test_sce,
           dat = coldat,
           ReadError = "Valid data"
         )
@@ -110,7 +115,7 @@ mod_input_data_server <- function(id){
 
       output$annotations <- renderUI({
         tagList(
-          column(12, p("Pick two annotations to compare:")),
+          column(12, p("The data has been loaded! Now, pick two annotations to compare.")),
           column(4, align = "left",
                  shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
                                            choices = colnames(values$data$dat), multiple = T,
@@ -133,14 +138,14 @@ mod_input_data_server <- function(id){
 
       if(!is.null(values$data$dat)){
 
-        updateRadioGroupButtons(
+        shinyWidgets::updateRadioGroupButtons(
           session = session, inputId = "test_data",
           selected = character(0)
         )
 
         output$annotations <- renderUI({
           tagList(
-            column(12, p("Pick two annotations to compare:")),
+            column(12, p("The data has been loaded! Now, pick two annotations to compare.")),
             column(4, align = "left",
                    shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
                                              choices = colnames(values$data$dat), multiple = T,
@@ -198,8 +203,11 @@ mod_input_data_server <- function(id){
                 mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)),
                 mod_cell_grouping_ui(ns("cell_grouping_1"), choices = colnames(values$data$dat)),
                 mod_cell_filtering_ui(ns("cell_filtering_1"), choices = colnames(values$data$dat)),
+                mod_data_definition_ui(ns("data_definition_1"))
               )
             })
+
+            datatype <- mod_data_definition_server("data_definition_1", show = !is.null(values$data$sce))
           }
         }
       }
@@ -208,11 +216,10 @@ mod_input_data_server <- function(id){
     umap <- mod_input_data_UMAP_server("input_data_UMAP_1", dat = values$data$dat)
     grouping <- mod_cell_grouping_server("cell_grouping_1", dat = values$data$dat)
     filtering <- mod_cell_filtering_server("cell_filtering_1", dat = values$data$dat)
+    datatype <- mod_data_definition_server("data_definition_1", show = FALSE)
 
     output$spinner <- renderUI(shiny::absolutePanel(top = "3%", right =  "3%", width = "auto", height = "auto", draggable = F, fixed = T,
                                            shiny::HTML("<span class='loader'></span>")))
-
-
 
     return(
       reactive(
@@ -220,10 +227,12 @@ mod_input_data_server <- function(id){
           dat = values$data$dat,
           left = input$left,
           right = input$right,
-          adt = values$data$adt,
-          norm = values$data$norm,
+          # adt = values$data$adt,
+          # norm = values$data$norm,
+          sce = values$data$sce,
           rna_umap = umap()$rna,
           adt_umap = umap()$adt,
+          data_type = datatype(),
           ErrorMessage = values$ReadError
         ),
         grouping(),

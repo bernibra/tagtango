@@ -13,7 +13,9 @@ read_input.default <- function(filename, ...){
   collimit <- 3000
 
   if(is.null(filename)){
-    return(list(adt = NULL, norm = NULL, dat = NULL, ReadError = "No data"))
+    return(list(sce = NULL,
+                # adt = NULL, norm = NULL,
+                dat = NULL, ReadError = "No data"))
   }
 
   # File formatted as rds
@@ -31,7 +33,10 @@ read_input.default <- function(filename, ...){
   #   return(read_input.h5(filename))
   # }
 
-  return(list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Wrong file type"))
+  return(list(
+    sce = NULL,
+    # adt = NULL, norm = NULL,
+    dat = NULL, ReadError = "Wrong file type"))
 }
 
 # Read rds and consider it a csv
@@ -44,21 +49,26 @@ read_input.rds <- function(filename, ...){
   })
 
   if(is.null(mat)){
-    return(list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Wrong object type"))
+    return(list(
+      sce = NULL,
+      # adt = NULL, norm = NULL,
+      dat = NULL, ReadError = "Wrong object type"))
   }
 
   if (class(mat)[1]=="SingleCellExperiment"){
 
-    if("counts" %in% names(SummarizedExperiment::assays(mat))){
-      adt <- t(as.matrix(SingleCellExperiment::counts(mat)))
-    }else{
-      adt <- NULL
-    }
+    # if("counts" %in% names(SummarizedExperiment::assays(mat))){
+    #   adt <- t(as.matrix(SingleCellExperiment::counts(mat)))
+    # }else{
+    #   adt <- NULL
+    # }
 
     if("logcounts" %in% names(SummarizedExperiment::assays(mat))){
-      norm <- t(as.matrix(SingleCellExperiment::logcounts(mat)))
+      # norm <- t(as.matrix(SingleCellExperiment::logcounts(mat)))
+      sce <- mat
     }else{
-      norm <- NULL
+      # norm <- NULL
+      sce <- NULL
     }
 
     dat <- as.data.frame(SingleCellExperiment::colData(mat))
@@ -70,12 +80,17 @@ read_input.rds <- function(filename, ...){
       }
     }
 
-    dat <- list(adt = adt, norm = norm, dat = dat, ReadError = "Valid data")
+    dat <- list(
+      sce = sce,
+      # adt = adt, norm = norm,
+      dat = dat, ReadError = "Valid data")
   }else{
     dat <- tryCatch({
-      list(adt = NULL, norm = NULL, dat = as.data.frame(mat), ReadError = "Valid data")
+      # list(adt = NULL, norm = NULL, dat = as.data.frame(mat), ReadError = "Valid data")
+      list(sce = NULL, dat = as.data.frame(mat), ReadError = "Valid data")
     }, error = function(e) {
-      list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Wrong file type")
+      # list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Wrong file type")
+      list(sce = NULL, dat = NULL, ReadError = "Wrong file type")
     })
   }
 
@@ -88,9 +103,11 @@ read_input.csv <- function(filename, ...){
 
   # Load file as matrix using readr and tibble
   dat <- tryCatch({
-    list(adt = NULL, norm = NULL, dat = as.data.frame(utils::read.csv(file = filename, header = T)), ReadError = "Valid data")
+    # list(adt = NULL, norm = NULL, dat = as.data.frame(utils::read.csv(file = filename, header = T)), ReadError = "Valid data")
+    list(sce = NULL, dat = as.data.frame(utils::read.csv(file = filename, header = T)), ReadError = "Valid data")
   }, error = function(e) {
-    list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Wrong file type")
+    # list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Wrong file type")
+    list(sce = NULL, dat = NULL, ReadError = "Wrong file type")
   })
 
   return(dat)
@@ -102,11 +119,13 @@ check_dim <- function(x, collimit){
   }
 
   if(nrow(x$dat)==0){
-    return(list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Empty data"))
+    # return(list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Empty data"))
+    return(list(sce = NULL, dat = NULL, ReadError = "Empty data"))
   }
 
   if(ncol(x$dat)>collimit){
-    return(list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Too many columns"))
+    # return(list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Too many columns"))
+    return(list(sce = NULL, dat = NULL, ReadError = "Too many columns"))
   }
   return(x)
 }

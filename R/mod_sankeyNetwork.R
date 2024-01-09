@@ -87,7 +87,7 @@ mod_sankeyNetwork_server <- function(id, data){
 
     values <- reactiveValues()
     values$dat <- data$dat
-    values$adt <- data$adt
+    # values$adt <- data$adt
     values$norm <- data$norm
     values$rna_umap <- data$rna_umap
     values$adt_umap <- data$adt_umap
@@ -189,7 +189,7 @@ mod_sankeyNetwork_server <- function(id, data){
                            colourScale = paste0('d3.scaleOrdinal() .domain(["source", "target"]) .range(["', left_color,'", "', right_color,'"])'),
                            fontSize= 12, nodeWidth = 30, iterations = iterations)
 
-      htmlwidgets::onRender(san, stankeyNetwork_js())
+      htmlwidgets::onRender(san, stankeyNetwork_js(links = TRUE))
     })
 
     output$diagram <- renderUI({
@@ -228,7 +228,7 @@ mod_sankeyNetwork_server <- function(id, data){
 
           mod_panel_rose_server("panel_rose_1", adt = values$norm, dat = values$network$dat,
                                 ftitle = values$ftitle, fselection = values$fselect,
-                                class = "top white", height = height, width = width)
+                                class = "top white", height = height, width = width, isRNA = data$data_type=="RNA")
 
         }else{
           mod_panel_decomposition_server("panel_decomposition_1",
@@ -281,7 +281,7 @@ mod_sankeyNetwork_server <- function(id, data){
           mod_panel_rose_server("panel_rose_1", adt = values$norm, dat = values$network$dat,
                                 stitle = values$stitle, ftitle = values$ftitle,
                                 fselection = values$fselect, sselection = values$sselect,
-                                class = "top white", height = height, width = width)
+                                class = "top white", height = height, width = width, isRNA = data$data_type=="RNA")
 
         }else{
           mod_panel_decomposition_server("panel_decomposition_1",
