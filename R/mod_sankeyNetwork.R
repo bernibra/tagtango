@@ -67,7 +67,8 @@ mod_sankeyNetwork_ui <- function(id){
       br(),
       fluidRow(
         column(8, offset = 2, align="right",
-               shiny::downloadButton(outputId = ns("download"), label = "Download", class = "custom")
+               shiny::downloadButton(outputId = ns("download"), label = "Download", class = "custom"),
+               shiny::actionButton(inputId = ns("restart"), label = "Restart", class = "custom")
         ),
       )
     ),
@@ -299,6 +300,11 @@ mod_sankeyNetwork_server <- function(id, data){
       }
     })
 
+
+
+    observeEvent(input$restart,{
+      session$reload()
+    })
 
 
   })

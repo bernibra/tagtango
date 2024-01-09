@@ -19,7 +19,7 @@ mod_panel_rose_ui <- function(id){
 #' @noRd
 mod_panel_rose_server <- function(id, adt, dat, fselection, sselection = NULL, ftitle = "title", stitle = "title", class = "topleft white",
                                   height = 350, width = 350, panel_padding = 20,
-                                  top = "99%", left = "1%", isRNA = FALSE){
+                                  top = "98%", left = "1%", isRNA = FALSE){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 

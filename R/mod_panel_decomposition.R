@@ -39,7 +39,7 @@ mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selecti
       if(!is.null(umap_rna) || !is.null(umap_adt)){
         output$panel <- renderUI({
           absolutePanel(id = "controls", class = "panel panel-default topleft white",
-                        top = "99%", left = "99%", width = width, fixed=TRUE,
+                        top = "98%", left = "99%", width = width, fixed=TRUE,
                         draggable = TRUE, height = "auto",
                         fluidRow(
                           uiOutput(ns("options_tab")),
