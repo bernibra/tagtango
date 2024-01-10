@@ -25,9 +25,7 @@ Welcome to the `tagtango` project!
 
 `tagtango` is a powerful web application designed for the comprehensive analysis and comparison of multiple cell annotations performed on a single-cell dataset. Leveraging both RNA and CITE-seq data, this tool allows you to untangle the differences and similarities of cell populations, effectively distinguishing real differences across cell annotations from background noise.
 
-The web application is available online here. At this point, the server hosting the app has little RAM memory and can't handle high trafic, but this will soon be upgraded to a better site.
-
-The web application is currently accessible online [here](https://bernibra.shinyapps.io/tagtango/). Please note that the server hosting the app is operating with limited RAM memory and may experience difficulties handling high traffic. We will soon be upgrading to a more robust hosting solution."
+The web application is currently accessible online [here](https://bernibra.shinyapps.io/tagtango/). Please note that the server hosting the app is operating with limited RAM memory and may experience difficulties handling high traffic. We will soon be upgrading to a more robust hosting solution.
 
 ## Running the app locally
 
