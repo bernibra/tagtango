@@ -46,13 +46,14 @@ tagtango::run_app()
 As of now, please be aware that the hosting server has limitations, and the dataset size should not exceed 1GB (use the `maxRequestSize` parameter when running the application locally to increase this limit at your own risk). We advise against accessing the web application on a phone screen as the visualization may not be optimal. For the best user experience, we recommend using a desktop or tablet device.
 
 ### Accepted Data Formats
-The `tagtango` app is flexible in handling various data formats. For now, however, it only accepts input in the form of either a `SingleCellExperiment` object stored as an RDS file in R, or a `data.frame` stored as an RDS, CSV, or TSV file. I expect this to change in the near future.
+The `tagtango` app is flexible in handling various data types. For now, however, it only accepts input in the form of either a `SingleCellExperiment` object stored as an RDS file in R, or a `data.frame` stored as an RDS, CSV, or TSV file. Expect this to change in the near future.
 
 ### `SingleCellExperiment` Object Expectations
 If providing a `SingleCellExperiment` object, ensure the following criteria are met:
-- The CITE-seq data should be normalized using the R package `ADTnorm` and stored as a `logcounts` assay within the `SingleCellExperiment` object.
-- Define row and column names within the `SingleCellExperiment` object.
-- Different annotations should be stored as columns of the `colData` data.frame within the object.
+
+* The CITE-seq data should be normalized using the R package `ADTnorm` and stored as a `logcounts` assay within the `SingleCellExperiment` object.
+* Define row and column names within the `SingleCellExperiment` object.
+* Different annotations should be stored as columns of the `colData` data.frame within the object.
 
 As test dataset, a preprocessed and annotated [10x dataset](https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/pbmc_10k_protein_v3) is provided  with the package. This is a `SingleCellExperiment` with Peripheral Blood Mononuclear Cells (PBMCs) from a healthy donor stained with a few TotalSeq-B antibodies, and is readily accessible via:
 

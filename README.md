@@ -51,20 +51,23 @@ experience, we recommend using a desktop or tablet device.
 
 ### Accepted Data Formats
 
-The `tagtango` app is flexible in handling various data formats. For
-now, however, it only accepts input in the form of either a
+The `tagtango` app is flexible in handling various data types. For now,
+however, it only accepts input in the form of either a
 `SingleCellExperiment` object stored as an RDS file in R, or a
-`data.frame` stored as an RDS, CSV, or TSV file. I expect this to change
+`data.frame` stored as an RDS, CSV, or TSV file. Expect this to change
 in the near future.
 
 ### `SingleCellExperiment` Object Expectations
 
 If providing a `SingleCellExperiment` object, ensure the following
-criteria are met: - The CITE-seq data should be normalized using the R
-package `ADTnorm` and stored as a `logcounts` assay within the
-`SingleCellExperiment` object. - Define row and column names within the
-`SingleCellExperiment` object. - Different annotations should be stored
-as columns of the `colData` data.frame within the object.
+criteria are met:
+
+- The CITE-seq data should be normalized using the R package `ADTnorm`
+  and stored as a `logcounts` assay within the `SingleCellExperiment`
+  object.
+- Define row and column names within the `SingleCellExperiment` object.
+- Different annotations should be stored as columns of the `colData`
+  data.frame within the object.
 
 As test dataset, a preprocessed and annotated [10x
 dataset](https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/pbmc_10k_protein_v3)
