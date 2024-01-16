@@ -8,6 +8,8 @@
 read_input <- function(filename) UseMethod("read_input", filename)
 
 # Default read raw, guessing file type and loading data
+#'
+#' @noRd
 read_input.default <- function(filename, ...){
 
   collimit <- 3000
@@ -28,18 +30,14 @@ read_input.default <- function(filename, ...){
     return(check_dim(read_input.csv(filename), collimit = collimit))
   }
 
-  # # File formatted as h5
-  # if (grepl(".h5$", filename)){
-  #   return(read_input.h5(filename))
-  # }
-
   return(list(
     sce = NULL,
-    # adt = NULL, norm = NULL,
     dat = NULL, ReadError = "Wrong file type"))
 }
 
 # Read rds and consider it a csv
+#'
+#' @noRd
 read_input.rds <- function(filename, ...){
 
   mat <- tryCatch({
@@ -51,23 +49,14 @@ read_input.rds <- function(filename, ...){
   if(is.null(mat)){
     return(list(
       sce = NULL,
-      # adt = NULL, norm = NULL,
       dat = NULL, ReadError = "Wrong object type"))
   }
 
-  if (class(mat)[1]=="SingleCellExperiment"){
-
-    # if("counts" %in% names(SummarizedExperiment::assays(mat))){
-    #   adt <- t(as.matrix(SingleCellExperiment::counts(mat)))
-    # }else{
-    #   adt <- NULL
-    # }
+  if(class(mat)[1]=="SingleCellExperiment"){
 
     if("logcounts" %in% names(SummarizedExperiment::assays(mat))){
-      # norm <- t(as.matrix(SingleCellExperiment::logcounts(mat)))
       sce <- mat
     }else{
-      # norm <- NULL
       sce <- NULL
     }
 
@@ -81,16 +70,35 @@ read_input.rds <- function(filename, ...){
     }
 
     dat <- list(
-      sce = sce,
-      # adt = adt, norm = norm,
+      sce = sce, mae = NULL,
       dat = dat, ReadError = "Valid data")
+
+  }else if (class(mat)[1]=="MultiAssayExperiment"){
+
+    mae <- mat
+
+    dat <- as.data.frame(MultiAssayExperiment::colData(mae))
+    for (j in names(MultiAssayExperiment::experiments(mae))){
+      sce <- MultiAssayExperiment::experiments(mae)[[j]]
+      if(length(SingleCellExperiment::reducedDimNames(sce))!=0){
+        for(i in SingleCellExperiment::reducedDimNames(sce)){
+          d <- as.data.frame(SingleCellExperiment::reducedDim(sce, type = i)[,1:2])
+          colnames(d) <- paste0(j, "_", i, c("_first_axis", "_second_axis"))
+          dat <- cbind(dat, d)
+        }
+      }
+    }
+
+    dat <- list(
+      sce = NULL,
+      mae = mae,
+      dat = dat,
+      ReadError = "Valid data")
   }else{
     dat <- tryCatch({
-      # list(adt = NULL, norm = NULL, dat = as.data.frame(mat), ReadError = "Valid data")
-      list(sce = NULL, dat = as.data.frame(mat), ReadError = "Valid data")
+      list(sce = NULL, mae = NULL, dat = as.data.frame(mat), ReadError = "Valid data")
     }, error = function(e) {
-      # list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Wrong file type")
-      list(sce = NULL, dat = NULL, ReadError = "Wrong file type")
+      list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Wrong file type")
     })
   }
 
@@ -99,33 +107,34 @@ read_input.rds <- function(filename, ...){
 }
 
 # Function turning a matrix type object to SingleCellExperiment class
+#'
+#' @noRd
 read_input.csv <- function(filename, ...){
 
   # Load file as matrix using readr and tibble
   dat <- tryCatch({
-    # list(adt = NULL, norm = NULL, dat = as.data.frame(utils::read.csv(file = filename, header = T)), ReadError = "Valid data")
-    list(sce = NULL, dat = as.data.frame(utils::read.csv(file = filename, header = T)), ReadError = "Valid data")
+    list(sce = NULL, mae = NULL, dat = as.data.frame(utils::read.csv(file = filename, header = T)), ReadError = "Valid data")
   }, error = function(e) {
-    # list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Wrong file type")
-    list(sce = NULL, dat = NULL, ReadError = "Wrong file type")
+    list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Wrong file type")
   })
 
   return(dat)
 }
 
+# Check dimensions
+#'
+#' @noRd
 check_dim <- function(x, collimit){
   if(is.null(x$dat)){
     return(x)
   }
 
   if(nrow(x$dat)==0){
-    # return(list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Empty data"))
-    return(list(sce = NULL, dat = NULL, ReadError = "Empty data"))
+    return(list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Empty data"))
   }
 
   if(ncol(x$dat)>collimit){
-    # return(list(adt = NULL, norm = NULL, dat = NULL, ReadError = "Too many columns"))
-    return(list(sce = NULL, dat = NULL, ReadError = "Too many columns"))
+    return(list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Too many columns"))
   }
   return(x)
 }

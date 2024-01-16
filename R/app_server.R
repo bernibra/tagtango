@@ -20,11 +20,12 @@ app_server <- function(input, output, session) {
     dat <- data()
     toomanycolumns <- FALSE
 
-    if(dat$data_type == "ADT"){
+    if(any(gsub("[[:punct:]]", " ", tolower(dat$data_type)) == c("adt", "antibody capture", "protein data", "antibody derived tags"))){
       dat$norm <- t(as.matrix(SingleCellExperiment::logcounts(dat$sce)))
       toomanycolumns <- ifelse(ncol(dat$norm)>2000, TRUE, FALSE)
-
-    }else if(dat$data_type == "RNA"){
+    }else if(dat$data_type == "No expression data"){
+      dat$norm <- NULL
+    }else{
       leftmat <- scran::scoreMarkers(dat$sce, SingleCellExperiment::colData(dat$sce)[,dat$left])
       leftgenes <- lapply(leftmat, function(x){
         ordered <- x[order(x$median.logFC.cohen,decreasing=TRUE),]
@@ -42,8 +43,6 @@ app_server <- function(input, output, session) {
       genes <- unique(c(leftgenes, rightgenes))
       dat$norm <- t(as.matrix(SingleCellExperiment::logcounts(dat$sce)[rownames(dat$sce) %in% genes,]))
 
-    }else{
-      dat$norm <- NULL
     }
 
     if(toomanycolumns){

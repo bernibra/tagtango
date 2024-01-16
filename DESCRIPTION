@@ -26,10 +26,11 @@ Imports:
     shinyalert,
     shinyjs,
     shinyWidgets,
+    SingleCellExperiment,
     spelling,
     SummarizedExperiment
 Encoding: UTF-8
-LazyData: false
+LazyData: true
 RoxygenNote: 7.3.0
 Suggests: 
     knitr,

@@ -24,7 +24,7 @@ mod_input_data_ui <- function(id){
       h4("Main data entry"),
       br(),
       column(12, align = "left",
-        p("The app expects a `SingleCellExperiment` object or `data.frame` with annotations as colData or columns, respectively."),
+        p("The app expects a `MultiAssayExperiment` object, a `SingleCellExperiment` or `data.frame` with annotations as colData or columns, respectively."),
         div(class ="outerDiv_container",
             div(class = "outerDiv", style = "align-items: flex-start; justify-content: flex-start;",
                 uiOutput(ns("data_holder")),
@@ -83,19 +83,21 @@ mod_input_data_server <- function(id){
       output$annotations <- renderUI({})
       output$additional_info <- renderUI({})
 
-      coldat <- as.data.frame(SingleCellExperiment::colData(test_sce))
-      if(length(SingleCellExperiment::reducedDimNames(test_sce))!=0){
-        for(i in SingleCellExperiment::reducedDimNames(test_sce)){
-          d <- as.data.frame(SingleCellExperiment::reducedDim(test_sce, type = i)[,1:2])
-          colnames(d) <- paste0(i, c("_first_axis", "_second_axis"))
-          coldat <- cbind(coldat, d)
+      coldat <- as.data.frame(MultiAssayExperiment::colData(test_data))
+      for (j in names(MultiAssayExperiment::experiments(test_data))){
+        sce <- MultiAssayExperiment::experiments(test_data)[[j]]
+        if(length(SingleCellExperiment::reducedDimNames(sce))!=0){
+          for(i in SingleCellExperiment::reducedDimNames(sce)){
+            d <- as.data.frame(SingleCellExperiment::reducedDim(sce, type = i)[,1:2])
+            colnames(d) <- paste0(j, "_", i, c("_first_axis", "_second_axis"))
+            coldat <- cbind(coldat, d)
+          }
         }
       }
 
       values$data <- list(
-          # adt = t(as.matrix(SingleCellExperiment::counts(test_sce))),
-          # norm = t(as.matrix(SingleCellExperiment::logcounts(test_sce))),
-          sce = test_sce,
+          mae = test_data,
+          sce = NULL,
           dat = coldat,
           ReadError = "Valid data"
         )
@@ -115,28 +117,58 @@ mod_input_data_server <- function(id){
 
       output$annotations <- renderUI({
         tagList(
-          column(12, p("The data has been loaded! Now, pick two annotations to compare.")),
-          column(4, align = "left",
-                 shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
-                                           choices = colnames(values$data$dat), multiple = T,
-                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom", title = "e.g. Main.ADT"))
-          ),
-          column(4, offset = 4, align = "right",
-                 shinyWidgets::pickerInput(ns("right"),labelMandatory("annotation #2"),
-                                           choices = colnames(values$data$dat), multiple = T,
-                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom", title = "e.g. Main.RNA"))
-          ),
+            column(12, p("The data has been loaded! Now, you need to define the basic aspects of the comparision between annotations.")),
+            column(4, align = "left", style = "padding: 1em; vertical-align: middle;",
+                   column(12, class = "inner_box",
+                            shinyWidgets::pickerInput(
+                              ns("data_type"),labelMandatory("Data type"),
+                              choices = names(MultiAssayExperiment::experiments(values$data$mae)),
+                              multiple = T,
+                              selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "e.g. ADT")
+                            )
+                          )
+                   ),
+            column(8, align = "left", style = "padding: 1em;",
+                   column(12, class = "inner_box",
+                              column(6, align = "left",
+                                     shinyWidgets::pickerInput(ns("left"),labelMandatory("Annotation #1"),
+                                                               choices = colnames(values$data$dat), multiple = T,
+                                                               selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "e.g. Main.ADT"))
+                              ),
+                              column(6, align = "right",
+                                     shinyWidgets::pickerInput(ns("right"),labelMandatory("Annotation #2"),
+                                                               choices = colnames(values$data$dat), multiple = T,
+                                                               selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "e.g. Main.RNA"))
+                              ),
+                          )
+                   ),
         )
       })
 
     })
 
     observeEvent(input$data,{
+      output$annotations <- renderUI({})
+      output$additional_info <- renderUI({})
 
       values$data <- read_input(input$data$datapath)
       values$ReadError <- values$data$ReadError
 
       if(!is.null(values$data$dat)){
+
+        if(!is.null(values$data$mae)){
+          choices <- names(MultiAssayExperiment::experiments(values$data$mae))
+          selected <- NULL
+          multiple <- T
+        }else if(!is.null(values$data$sce)){
+          choices <- c("RNA", "ADT")
+          selected <- NULL
+          multiple <- T
+        }else{
+          choices <- c("No expression data")
+          selected <- "No expression data"
+          multiple <- F
+        }
 
         shinyWidgets::updateRadioGroupButtons(
           session = session, inputId = "test_data",
@@ -145,17 +177,33 @@ mod_input_data_server <- function(id){
 
         output$annotations <- renderUI({
           tagList(
-            column(12, p("The data has been loaded! Now, pick two annotations to compare.")),
-            column(4, align = "left",
-                   shinyWidgets::pickerInput(ns("left"),labelMandatory("annotation #1"),
-                                             choices = colnames(values$data$dat), multiple = T,
-                                             selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom"))
+            column(12, p("The data has been loaded! Now, you need to define the basic aspects of the comparision between annotations.")),
+            column(4, align = "left", style = "padding: 1em; vertical-align: middle;",
+                   column(12, class = "inner_box",
+                          shinyWidgets::pickerInput(
+                            ns("data_type"),labelMandatory("Data type"),
+                            choices = choices,
+                            multiple = multiple,
+                            selected = selected, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner")
+                          )
+                   )
             ),
-            column(4, offset = 4, align = "right",
-                   shinyWidgets::pickerInput(ns("right"),labelMandatory("annotation #2"),
-                                             choices = colnames(values$data$dat), multiple = T,
-                                             selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom"))
+            column(8, align = "left", style = "padding: 1em;",
+                   column(12, class = "inner_box",
+                          column(6, align = "left",
+                                 shinyWidgets::pickerInput(ns("left"),labelMandatory("Annotation #1"),
+                                                           choices = colnames(values$data$dat), multiple = T,
+                                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner"))
+                          ),
+                          column(6, align = "right",
+                                 shinyWidgets::pickerInput(ns("right"),labelMandatory("Annotation #2"),
+                                                           choices = colnames(values$data$dat), multiple = T,
+                                                           selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner"))
+                          ),
+                   )
             ),
+
+
           )
         })
 
@@ -178,7 +226,7 @@ mod_input_data_server <- function(id){
     })
 
     observeEvent(annotationsListen(),{
-      if(!(is.null(input$left) || is.null(input$right))){
+      if(!(is.null(input$left) || is.null(input$right) || is.null(input$data_type))){
         maxlabels <- max(c(length(unique(values$data$dat[,input$left])),length(unique(values$data$dat[,input$right]))))
 
         if(maxlabels>1000){
@@ -199,24 +247,21 @@ mod_input_data_server <- function(id){
             shinyjs::enable("load", asis = T)
             output$additional_info <- renderUI({
               tagList(
+                br(),
                 h4("Additional Information"),
-                mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)),
                 mod_cell_grouping_ui(ns("cell_grouping_1"), choices = colnames(values$data$dat)),
                 mod_cell_filtering_ui(ns("cell_filtering_1"), choices = colnames(values$data$dat)),
-                mod_data_definition_ui(ns("data_definition_1"))
+                mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)),
               )
             })
-
-            datatype <- mod_data_definition_server("data_definition_1", show = !is.null(values$data$sce))
           }
         }
       }
     })
 
-    umap <- mod_input_data_UMAP_server("input_data_UMAP_1", dat = values$data$dat)
     grouping <- mod_cell_grouping_server("cell_grouping_1", dat = values$data$dat)
     filtering <- mod_cell_filtering_server("cell_filtering_1", dat = values$data$dat)
-    datatype <- mod_data_definition_server("data_definition_1", show = FALSE)
+    umap <- mod_input_data_UMAP_server("input_data_UMAP_1", dat = values$data$dat)
 
     output$spinner <- renderUI(shiny::absolutePanel(top = "3%", right =  "3%", width = "auto", height = "auto", draggable = F, fixed = T,
                                            shiny::HTML("<span class='loader'></span>")))
@@ -227,12 +272,11 @@ mod_input_data_server <- function(id){
           dat = values$data$dat,
           left = input$left,
           right = input$right,
-          # adt = values$data$adt,
-          # norm = values$data$norm,
-          sce = values$data$sce,
+          sce = if(!is.null(values$data$mae)){values$data$mae[[input$data_type]]}else if(!is.null(values$data$sce)){values$data$sce}else{NULL},
+          norm = NULL,
           rna_umap = umap()$rna,
           adt_umap = umap()$adt,
-          data_type = datatype(),
+          data_type = input$data_type,
           ErrorMessage = values$ReadError
         ),
         grouping(),

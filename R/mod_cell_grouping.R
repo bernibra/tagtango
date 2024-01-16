@@ -10,7 +10,7 @@
 mod_cell_grouping_ui <- function(id, choices){
   ns <- NS(id)
   tagList(
-    div(style = "padding: 1em; padding-top: 0em;",
+    div(style = "padding: 1em;",
         tags$details(
           tags$summary("Cell organization"),
           column(12, align = "left", style = "padding: 1em; vertical-align: middle;",

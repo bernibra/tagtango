@@ -10,7 +10,7 @@
 mod_input_data_UMAP_ui <- function(id, choices){
   ns <- NS(id)
   tagList(
-    div(style = "padding: 1em;",
+    div(style = "padding: 1em; padding-top: 0em;",
       tags$details(
         tags$summary("Dimension reduction"),
           column(6, align = "left", style = "padding: 1em; vertical-align: middle;",
@@ -19,12 +19,12 @@ mod_input_data_UMAP_ui <- function(id, choices){
                   column(6,
                          shinyWidgets::pickerInput(ns("RNA_first_axis"),"First axis:",
                                                    choices = choices, multiple = T,
-                                                   selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom", title = "None"))
+                                                   selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "None"))
                   ),
                   column(6,
                          shinyWidgets::pickerInput(ns("RNA_second_axis"),"Second axis:",
                                                    choices = choices, multiple = T,
-                                                   selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom", title = "None"))
+                                                   selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "None"))
                   )
           ),
         ),
@@ -34,12 +34,12 @@ mod_input_data_UMAP_ui <- function(id, choices){
                  column(6,
                         shinyWidgets::pickerInput(ns("ADT_first_axis"),"First axis:",
                                                   choices = choices, multiple = T,
-                                                  selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom", title = "None"))
+                                                  selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "None"))
                  ),
                  column(6,
                         shinyWidgets::pickerInput(ns("ADT_second_axis"),"Second axis:",
                                                   choices = choices, multiple = T,
-                                                  selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom", title = "None"))
+                                                  selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "None"))
                  )
           ),
         ),
