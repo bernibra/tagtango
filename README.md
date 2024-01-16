@@ -53,9 +53,55 @@ experience, we recommend using a desktop or tablet device.
 
 The `tagtango` app is flexible in handling various data types. For now,
 however, it only accepts input in the form of either a
-`SingleCellExperiment` object stored as an RDS file in R, or a
-`data.frame` stored as an RDS, CSV, or TSV file. Expect this to change
-in the near future.
+`MultiAssayExperiment` object stored as an RDS file, a
+`SingleCellExperiment` object stored as an RDS file, or a `data.frame`
+stored as an RDS, CSV, or TSV file. Expect this to change in the near
+future.
+
+### `MultiAssayExperiment` Object Expectations
+
+If providing a `MultiAssayExperiment` object, ensure the following
+criteria are met:
+
+- The elements of the
+  [`ExperimentList`](https://rdrr.io/bioc/MultiAssayExperiment/f/vignettes/MultiAssayExperiment.Rmd)
+  container should be `SingleCellExperiments` following the
+  specifications stated below.
+- The cells in all elements of the `ExperimentList` should be the same
+  (and have matching names).
+- The name of the element in `ExperimentList` corresponding to the
+  CITE-seq data should be either ‘ADT’ or ‘Antibody-Derived tags’. Any
+  other name won’t be considered as ADT data.
+- Different annotations should be stored as columns of the `colData`
+  data.frame within the object.
+
+As test dataset, a preprocessed and annotated [10x
+dataset](https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/pbmc_10k_protein_v3)
+is provided with the package. This is a `MultiAssayExperiment` with
+Peripheral Blood Mononuclear Cells (PBMCs) from a healthy donor stained
+with a few TotalSeq-B antibodies, and is readily accessible via:
+
+``` r
+library(tagtango)
+test_data
+#> A MultiAssayExperiment object of 2 listed
+#>  experiments with user-defined names and respective classes.
+#>  Containing an ExperimentList class object of length 2:
+#>  [1] RNA: SingleCellExperiment with 33538 rows and 7472 columns
+#>  [2] ADT: SingleCellExperiment with 17 rows and 7472 columns
+#> Functionality:
+#>  experiments() - obtain the ExperimentList instance
+#>  colData() - the primary/phenotype DataFrame
+#>  sampleMap() - the sample coordination DataFrame
+#>  `$`, `[`, `[[` - extract colData columns, subset, or experiment
+#>  *Format() - convert into a long or wide DataFrame
+#>  assays() - convert ExperimentList to a SimpleList of matrices
+#>  exportClass() - save data to flat files
+```
+
+Notice that the column and row names of each `SingleCellExperiment` in
+the `ExperimentList` object are not `NULL`, and that the different
+annotations are stored in `MultiAssayExperiment::colData(test_sce)`.
 
 ### `SingleCellExperiment` Object Expectations
 
@@ -68,33 +114,6 @@ criteria are met:
 - Define row and column names within the `SingleCellExperiment` object.
 - Different annotations should be stored as columns of the `colData`
   data.frame within the object.
-
-As test dataset, a preprocessed and annotated [10x
-dataset](https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/pbmc_10k_protein_v3)
-is provided with the package. This is a `SingleCellExperiment` with
-Peripheral Blood Mononuclear Cells (PBMCs) from a healthy donor stained
-with a few TotalSeq-B antibodies, and is readily accessible via:
-
-``` r
-library(tagtango)
-test_sce
-#> class: SingleCellExperiment 
-#> dim: 17 7472 
-#> metadata(1): Samples
-#> assays(2): counts logcounts
-#> rownames(17): CD3 CD4 ... IgG1 IgG2b
-#> rowData names(3): ID Symbol Type
-#> colnames(7472): AAACCCAAGATTGTGA-1 AAACCCACATCGGTTA-1 ...
-#>   TTTGTTGTCGAGTGAG-1 TTTGTTGTCGTTCAGA-1
-#> colData names(16): Sample Barcode ... Main.ADT Fine.ADT
-#> reducedDimNames(3): UMAP UMAP_rna TSNE_rna
-#> mainExpName: NULL
-#> altExpNames(0):
-```
-
-Notice that the column and row names in the `SingleCellExperiment` are
-not `NULL`, and that the different annotations are stored in
-`SingleCellExperiment::colData(test_sce)`.
 
 ### `data.frame` Expectations
 

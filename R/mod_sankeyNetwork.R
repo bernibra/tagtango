@@ -73,8 +73,8 @@ mod_sankeyNetwork_ui <- function(id){
       )
     ),
     fluidRow(
-      mod_panel_decomposition_ui(ns("panel_decomposition_1")),
-      mod_panel_rose_ui(ns("panel_rose_1")),
+      uiOutput(ns("panel_right")),
+      uiOutput(ns("panel_left"))
     )
   )
 }
@@ -167,10 +167,16 @@ mod_sankeyNetwork_server <- function(id, data){
 
     observeEvent(dataListen(), {
       shinyjs::disable(id = "num")
+      # print("change!")
+
+      output$panel_right <- renderUI({})
+      output$panel_left <- renderUI({})
+
       mod_panel_decomposition_server("panel_decomposition_1",
                                      umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
       mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
                             class = "top white")
+
       values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                             rna_umap = values$rna_umap, adt_umap = values$adt_umap,
                             grouping_variable = data$grouping_variable, grouping_values = input$cells,
@@ -204,6 +210,10 @@ mod_sankeyNetwork_server <- function(id, data){
 
     observeEvent(firstselection(), {
       if(!is.null(input$target1) | !is.null(input$source1)){
+
+        output$panel_right <- renderUI({mod_panel_decomposition_ui(ns("panel_decomposition_1"))})
+        output$panel_left <- renderUI({mod_panel_rose_ui(ns("panel_rose_1"))})
+
 
         width <- (input$width - (8/12) * 0.7 * input$width)/2
         height <- (input$width - (8/12) * 0.7 * input$width)/2
