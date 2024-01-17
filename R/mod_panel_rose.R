@@ -75,7 +75,7 @@ mod_panel_rose_server <- function(id, adt, dat, fselection, sselection = NULL, f
           })
           output$rose <- renderPlot({
             rose_plot(data = data$data, selected = if(is.null(input$nmark)){data$selected}else{input$nmark},
-                      title = paste0(ncell, " cells"),
+                      title = ifelse(is.null(ncell), "1 cell", paste0(ncell, " cells")),
                       maintitle = ftitle, palette="RdYlGn")
           }, bg="transparent", height = height, width = width-panel_padding)
         }else{
@@ -132,12 +132,12 @@ mod_panel_rose_server <- function(id, adt, dat, fselection, sselection = NULL, f
           })
           output$rose <- renderPlot({
             rose_plot(data = fdata$data, selected = if(is.null(input$nmark)){data_diff$selected}else{input$nmark},
-                      title = paste0(fncell, " cells"),
+                      title = ifelse(is.null(fncell), "1 cell", paste0(fncell, " cells")),
                       maintitle = ftitle, palette="RdYlGn")
           }, bg="transparent", height = height, width = width-panel_padding)
           output$rose2 <- renderPlot({
             rose_plot(data = sdata$data, selected = if(is.null(input$nmark)){data_diff$selected}else{input$nmark},
-                      title = paste0(sncell, " cells"),
+                      title = ifelse(is.null(sncell), "1 cell", paste0(sncell, " cells")),
                       maintitle = stitle, palette="RdYlGn")
           }, bg="transparent", height = height, width = width-panel_padding)
           output$diff <- renderPlot({box_plot(data = data_diff_,
