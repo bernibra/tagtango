@@ -60,6 +60,7 @@ As test dataset, a preprocessed and annotated [10x dataset](https://support.10xg
 
 ```{r 'sce', eval = TRUE, message=FALSE, warning=FALSE}
 library(tagtango)
+data(test_data)
 test_data
 ```
 

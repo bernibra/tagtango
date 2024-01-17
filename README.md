@@ -83,6 +83,7 @@ with a few TotalSeq-B antibodies, and is readily accessible via:
 
 ``` r
 library(tagtango)
+data(test_data)
 test_data
 #> A MultiAssayExperiment object of 2 listed
 #>  experiments with user-defined names and respective classes.
