@@ -14,9 +14,15 @@ read_input.default <- function(filename, ...){
 
   collimit <- 3000
 
+  if(is.na(filename)){
+    return(list(sce = NULL,
+                mae = NULL,
+                dat = NULL, ReadError = "Error loading the data. Refer to the app's manual and README page for specifications on the input format."))
+  }
+
   if(is.null(filename)){
     return(list(sce = NULL,
-                # adt = NULL, norm = NULL,
+                mae = NULL,
                 dat = NULL, ReadError = "No data"))
   }
 
@@ -36,6 +42,7 @@ read_input.default <- function(filename, ...){
 
   return(list(
     sce = NULL,
+    mae = NULL,
     dat = NULL, ReadError = "Wrong file type"))
 }
 
@@ -79,6 +86,7 @@ read_input.rds <- function(filename, ...){
   if(is.null(mat)){
     return(list(
       sce = NULL,
+      mae = NULL,
       dat = NULL, ReadError = "Wrong object type"))
   }
 

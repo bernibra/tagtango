@@ -134,7 +134,11 @@ mod_input_data_server <- function(id){
       output$annotations <- renderUI({})
       output$additional_info <- renderUI({})
 
-      values$data <- read_input(input$data$datapath)
+      values$data <- tryCatch({
+            read_input(input$data$datapath)
+          }, error = function(e) {
+            read_input(NULL)
+        })
       values$ReadError <- values$data$ReadError
 
       if(!is.null(values$data$dat)){
