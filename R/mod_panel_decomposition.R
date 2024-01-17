@@ -36,6 +36,7 @@ mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selecti
     })
 
     observeEvent(dataListen(),{
+      # browser()
       if(!is.null(umap_rna) || !is.null(umap_adt)){
         output$panel <- renderUI({
           absolutePanel(id = "controls", class = "panel panel-default topleft white",
