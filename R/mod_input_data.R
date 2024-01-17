@@ -83,24 +83,7 @@ mod_input_data_server <- function(id){
       output$annotations <- renderUI({})
       output$additional_info <- renderUI({})
 
-      coldat <- as.data.frame(MultiAssayExperiment::colData(test_data))
-      for (j in names(MultiAssayExperiment::experiments(test_data))){
-        sce <- MultiAssayExperiment::experiments(test_data)[[j]]
-        if(length(SingleCellExperiment::reducedDimNames(sce))!=0){
-          for(i in SingleCellExperiment::reducedDimNames(sce)){
-            d <- as.data.frame(SingleCellExperiment::reducedDim(sce, type = i)[,1:2])
-            colnames(d) <- paste0(j, "_", i, c("_first_axis", "_second_axis"))
-            coldat <- cbind(coldat, d)
-          }
-        }
-      }
-
-      values$data <- list(
-          mae = test_data,
-          sce = NULL,
-          dat = coldat,
-          ReadError = "Valid data"
-        )
+      values$data <- read_input("test_data")
 
       output$data_holder <- renderUI({
         shiny::fileInput(
@@ -222,7 +205,7 @@ mod_input_data_server <- function(id){
     })
 
     annotationsListen <- reactive({
-      list(input$left, input$right)
+      list(input$left, input$right, input$data_type)
     })
 
     observeEvent(annotationsListen(),{
