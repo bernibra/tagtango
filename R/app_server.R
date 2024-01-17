@@ -19,34 +19,44 @@ app_server <- function(input, output, session) {
   observeEvent(input$load,{
     dat <- data()
     toomanycolumns <- FALSE
+    otherproblem <- FALSE
 
     if(any(gsub("[[:punct:]]", " ", tolower(dat$data_type)) == c("adt", "antibody capture", "protein data", "antibody derived tags"))){
-      dat$norm <- t(as.matrix(SingleCellExperiment::logcounts(dat$sce)))
-      toomanycolumns <- ifelse(ncol(dat$norm)>2000, TRUE, FALSE)
+
+      dat$norm <- tryCatch({
+        t(as.matrix(SingleCellExperiment::logcounts(dat$sce)))
+        }, error = function(e) {
+        NULL
+      })
+
+      otherproblem <- ifelse(is.null(dat$norm), TRUE, otherproblem)
+      if(!otherproblem){
+        toomanycolumns <- ifelse(ncol(dat$norm)>2000, TRUE, toomanycolumns)
+      }
+
     }else if(dat$data_type == "No expression data"){
+
       dat$norm <- NULL
+
     }else{
-      leftmat <- scran::scoreMarkers(dat$sce, SingleCellExperiment::colData(dat$sce)[,dat$left])
-      leftgenes <- lapply(leftmat, function(x){
-        ordered <- x[order(x$median.logFC.cohen,decreasing=TRUE),]
-        ordered %>% head(5) %>% rownames()
-      }) %>% unlist()
-      names(leftgenes) <- NULL
 
-      rightmat <- scran::scoreMarkers(dat$sce, SingleCellExperiment::colData(dat$sce)[,dat$right])
-      rightgenes <- lapply(rightmat, function(x){
-        ordered <- x[order(x$median.logFC.cohen,decreasing=TRUE),]
-        ordered %>% head(5) %>% rownames()
-      }) %>% unlist()
-      names(rightgenes) <- NULL
+      dat$norm <- tryCatch({
+        dge_rna_data(dat$sce, dat$left, dat$right, numberOFgenes = 5)
+      }, error = function(e) {
+        NULL
+      })
 
-      genes <- unique(c(leftgenes, rightgenes))
-      dat$norm <- t(as.matrix(SingleCellExperiment::logcounts(dat$sce)[rownames(dat$sce) %in% genes,]))
+      otherproblem <- ifelse(is.null(dat$norm), TRUE, otherproblem)
 
     }
 
     if(toomanycolumns){
       shinyalert::shinyalert(title = "Oups!", type = "warning", text = "The expression data is entered as ADT data, but the corresponding matrix, with more than 2000 columns, looks more like RNA data. Please specify the data type correctly.",
+                             closeOnClickOutside = T, closeOnEsc = T,
+                             animation = "pop", confirmButtonText = "Got it",
+                             className = "warning_popup", confirmButtonCol = "#909097")
+    }else if(otherproblem){
+      shinyalert::shinyalert(title = "Oups!", type = "warning", text = "There is something odd regarding the expression data inputed. Please refer to the app's manual and README page for specifications on the input format.",
                              closeOnClickOutside = T, closeOnEsc = T,
                              animation = "pop", confirmButtonText = "Got it",
                              className = "warning_popup", confirmButtonCol = "#909097")
