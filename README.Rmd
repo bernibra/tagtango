@@ -58,7 +58,7 @@ If providing a `MultiAssayExperiment` object, ensure the following criteria are 
 
 As test dataset, a preprocessed and annotated [10x dataset](https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/pbmc_10k_protein_v3) is provided  with the package. This is a `MultiAssayExperiment` with Peripheral Blood Mononuclear Cells (PBMCs) from a healthy donor stained with a few TotalSeq-B antibodies, and is readily accessible via:
 
-```{r 'sce', eval = TRUE, message=FALSE, warning=FALSE}
+```{r 'mae', eval = TRUE, message=FALSE, warning=FALSE}
 library(tagtango)
 data(test_data)
 test_data
@@ -73,13 +73,20 @@ If providing a `SingleCellExperiment` object, ensure the following criteria are 
 * Define row and column names within the `SingleCellExperiment` object.
 * Different annotations should be stored as columns of the `colData` data.frame within the object.
 
+An example of a `SingleCellExperiment` that can be used as input by `tagtango` can be generated as:
+
+```{r 'sce', eval = FALSE}
+test_data[["ADT"]]
+```
+
+
 ### `data.frame` Expectations
 If providing a `data.frame`, the app expects different annotations to be stored as columns.
 
 An example of a `data.frame` that can be used as input by `tagtango` can be generated as:
 
 ```{r 'df', eval = FALSE}
-SingleCellExperiment::colData(test_sce)
+MultiAssayExperiment::colData(test_data)
 ```
 
 ## Code of Conduct

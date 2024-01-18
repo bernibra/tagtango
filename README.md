@@ -116,6 +116,13 @@ criteria are met:
 - Different annotations should be stored as columns of the `colData`
   data.frame within the object.
 
+An example of a `SingleCellExperiment` that can be used as input by
+`tagtango` can be generated as:
+
+``` r
+test_data[["ADT"]]
+```
+
 ### `data.frame` Expectations
 
 If providing a `data.frame`, the app expects different annotations to be
@@ -125,7 +132,7 @@ An example of a `data.frame` that can be used as input by `tagtango` can
 be generated as:
 
 ``` r
-SingleCellExperiment::colData(test_sce)
+MultiAssayExperiment::colData(test_data)
 ```
 
 ## Code of Conduct
