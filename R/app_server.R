@@ -21,7 +21,7 @@ app_server <- function(input, output, session) {
     toomanycolumns <- FALSE
     otherproblem <- FALSE
 
-    if(any(gsub("[[:punct:]]", " ", tolower(dat$data_type)) == c("adt", "antibody capture", "protein data", "antibody derived tags"))){
+    if(any(gsub("[[:punct:]]", " ", tolower(dat$data_type)) == c("adt", "antibody capture", "protein data", "antibody derived tags", "scadt"))){
 
       dat$norm <- tryCatch({
         t(as.matrix(SingleCellExperiment::logcounts(dat$sce)))
