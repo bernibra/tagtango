@@ -12,7 +12,7 @@
 #'
 #' @return The return value, if any, from executing the function.
 #' @export
-load_data <- function(filename, data_type, left, right, pc1_axis1, pc1_axis2, pc2_axis1, pc2_axis2){
+process_data <- function(filename, data_type, left, right, pc1_axis1, pc1_axis2, pc2_axis1, pc2_axis2){
   data <- read_input(filename)
   rna <- data.frame(V1 = data$dat[,pc1_axis1], V2 = data$dat[,pc1_axis2])
   adt <- data.frame(V1 = data$dat[,pc2_axis1], V2 = data$dat[,pc2_axis2])
