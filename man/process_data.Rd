@@ -2,17 +2,17 @@
 % Please edit documentation in R/fct_downloading_load_data.R
 \name{process_data}
 \alias{process_data}
-\title{load_data}
+\title{process_data}
 \usage{
 process_data(
   filename,
   data_type,
   left,
   right,
-  pc1_axis1,
-  pc1_axis2,
-  pc2_axis1,
-  pc2_axis2
+  pc1_axis1 = NULL,
+  pc1_axis2 = NULL,
+  pc2_axis1 = NULL,
+  pc2_axis2 = NULL
 )
 }
 \arguments{
@@ -36,5 +36,5 @@ process_data(
 The return value, if any, from executing the function.
 }
 \description{
-A utility function for reading a processing the data as `tagtango`
+A utility function for reading a processing the data as `tagtango` does.
 }
