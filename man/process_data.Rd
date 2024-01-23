@@ -13,6 +13,8 @@ process_data(
   pc1_axis2 = NULL,
   pc2_axis1 = NULL,
   pc2_axis2 = NULL,
+  filter_variable = NULL,
+  filter_values = NULL,
   grouping_variable = NULL,
   grouping_values = NULL,
   min_counts = NULL
@@ -34,6 +36,10 @@ process_data(
 \item{pc2_axis1}{first axis of second dimension reduction space}
 
 \item{pc2_axis2}{second axis of second dimension reduction space}
+
+\item{filter_variable}{filtering variable found in `dat`}
+
+\item{filter_values}{values in `filter_variable` that need to be excluded}
 
 \item{grouping_variable}{grouping variable found in `dat`}
 

@@ -308,6 +308,22 @@ mod_sankeyNetwork_server <- function(id, data){
       session$reload()
     })
 
+    output$download <- downloadHandler(
+      filename = function() {
+        # Use the selected dataset as the suggested file name
+        paste0("figures", ".R")
+      },
+      content = function(file) {
+        # Write the dataset to the `file` that will be downloaded
+        code <- paste0(data$code,
+                       ", grouping_variable = ", rsym(data$grouping_variable),
+                       ", grouping_values = ", rsym(input$cells),
+                       ", min_counts = ", numVal_d(),
+                       ")")
+        writeLines(code, con = file, sep = "\n")
+      }
+    )
+
 
   })
 }

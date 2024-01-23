@@ -267,9 +267,7 @@ mod_input_data_server <- function(id){
                         ", data_type = ", rsym(input$data_type),
                         ", left = ", rsym(input$left),
                         ", right = ", rsym(input$right),
-                        umap()$codebit, ")
-                        "
-                        ),
+                        umap()$codebit),
           dat = values$data$dat,
           left = input$left,
           right = input$right,

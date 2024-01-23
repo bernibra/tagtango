@@ -9,6 +9,8 @@
 #' @param pc1_axis2 second axis of first dimension reduction space
 #' @param pc2_axis1 first axis of second dimension reduction space
 #' @param pc2_axis2 second axis of second dimension reduction space
+#' @param filter_variable filtering variable found in `dat`
+#' @param filter_values values in `filter_variable` that need to be excluded
 #' @param grouping_variable grouping variable found in `dat`
 #' @param grouping_values values in `grouping_variable` that need to be filtered
 #' @param min_counts minimum number of cells in a link for this to be displayed
@@ -18,6 +20,7 @@
 process_data <- function(filename, data_type, left, right,
                          pc1_axis1 = NULL, pc1_axis2 = NULL,
                          pc2_axis1 = NULL, pc2_axis2 = NULL,
+                         filter_variable = NULL, filter_values = NULL,
                          grouping_variable = NULL, grouping_values = NULL, min_counts = NULL){
 
   if(is.null(filename)){
@@ -105,9 +108,27 @@ process_data <- function(filename, data_type, left, right,
     stop("There is something odd regarding the expression data inputed. Please refer to the app's manual and README page for specifications on the input format.")
   }
 
+  if(!(is.null(filter_variable) || is.null(filter_values))){
+
+    if(!(filter_variable %in% colnames(dat$dat))){
+      stop("The filtering variable does not exist in the input data.frame or colData.")
+    }
+
+    if(!is.null(dat$rna_umap)){
+      dat$rna_umap <- dat$rna_umap[!(dat$dat[,filter_variable] %in% filter_values),]
+    }
+
+    if(!is.null(dat$adt_umap)){
+      dat$adt_umap <- dat$adt_umap[!(dat$dat[,filter_variable] %in% filter_values),]
+    }
+
+    dat$dat <- dat$dat %>% dplyr::filter(!(!!dplyr::sym(filter_variable) %in% !!filter_values))
+
+  }
+
   network <- tryCatch({
                   load_data(dat = dat$dat, left = dat$left, right = dat$right,
-                       rna_umap = dat$rna_umap, dat = values$adt_umap,
+                       rna_umap = dat$rna_umap, adt_umap = dat$adt_umap,
                        grouping_variable = grouping_variable, grouping_values = grouping_values,
                        min_counts = min_counts)
                 }, error = function(e) {
