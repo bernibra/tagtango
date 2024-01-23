@@ -12,7 +12,10 @@ process_data(
   pc1_axis1 = NULL,
   pc1_axis2 = NULL,
   pc2_axis1 = NULL,
-  pc2_axis2 = NULL
+  pc2_axis2 = NULL,
+  grouping_variable = NULL,
+  grouping_values = NULL,
+  min_counts = NULL
 )
 }
 \arguments{
@@ -31,6 +34,12 @@ process_data(
 \item{pc2_axis1}{first axis of second dimension reduction space}
 
 \item{pc2_axis2}{second axis of second dimension reduction space}
+
+\item{grouping_variable}{grouping variable found in `dat`}
+
+\item{grouping_values}{values in `grouping_variable` that need to be filtered}
+
+\item{min_counts}{minimum number of cells in a link for this to be displayed}
 }
 \value{
 The return value, if any, from executing the function.

@@ -9,12 +9,16 @@
 #' @param pc1_axis2 second axis of first dimension reduction space
 #' @param pc2_axis1 first axis of second dimension reduction space
 #' @param pc2_axis2 second axis of second dimension reduction space
+#' @param grouping_variable grouping variable found in `dat`
+#' @param grouping_values values in `grouping_variable` that need to be filtered
+#' @param min_counts minimum number of cells in a link for this to be displayed
 #'
 #' @return The return value, if any, from executing the function.
 #' @export
 process_data <- function(filename, data_type, left, right,
                          pc1_axis1 = NULL, pc1_axis2 = NULL,
-                         pc2_axis1 = NULL, pc2_axis2 = NULL){
+                         pc2_axis1 = NULL, pc2_axis2 = NULL,
+                         grouping_variable = NULL, grouping_values = NULL, min_counts = NULL){
 
   if(is.null(filename)){
     data <- read_input("test_data")
@@ -101,7 +105,21 @@ process_data <- function(filename, data_type, left, right,
     stop("There is something odd regarding the expression data inputed. Please refer to the app's manual and README page for specifications on the input format.")
   }
 
+  network <- tryCatch({
+                  load_data(dat = dat$dat, left = dat$left, right = dat$right,
+                       rna_umap = dat$rna_umap, dat = values$adt_umap,
+                       grouping_variable = grouping_variable, grouping_values = grouping_values,
+                       min_counts = min_counts)
+                }, error = function(e) {
+                  NULL
+                })
+
+  if(is.null(network)){
+    stop("Something is wrong with one of the following variables: `grouping_variable`, `grouping_values`, and `min_counts`")
+  }
+
   return(
-      dat
+      list(data = dat,
+           network = network)
     )
 }
