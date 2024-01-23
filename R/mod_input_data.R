@@ -84,6 +84,7 @@ mod_input_data_server <- function(id){
       output$additional_info <- renderUI({})
 
       values$data <- read_input("test_data")
+      values$filename <- NULL
 
       output$data_holder <- renderUI({
         shiny::fileInput(
@@ -140,6 +141,7 @@ mod_input_data_server <- function(id){
             read_input(NULL)
         })
       values$ReadError <- values$data$ReadError
+      values$filename <- input$data$datapath
 
       if(!is.null(values$data$dat)){
 
@@ -256,6 +258,7 @@ mod_input_data_server <- function(id){
     return(
       reactive(
         c(list(
+          filename = values$filename,
           dat = values$data$dat,
           left = input$left,
           right = input$right,
