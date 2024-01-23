@@ -55,3 +55,19 @@ sentenceUp <- function(x) {
   x
 }
 
+#' rsym
+#'
+#' @description A NULL resistent sym function
+#'
+#' @return Same as sym from rlang, just allowing NULL values and returning strings intead
+#'
+#' @noRd
+#'
+rsym <- function(x) {
+  if(is.null(x)){
+    return("NULL")
+  }else{
+    return(paste0("'", as.character(dplyr::sym(x)), "'"))
+  }
+}
+

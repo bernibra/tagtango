@@ -63,6 +63,11 @@ mod_input_data_server <- function(id){
                         dat = NULL, ReadError = "No data")
     values$umap <- data.frame(rna_first = NULL, rna_second = NULL, adt_first = NULL, adt_second = NULL)
     values$ReadError <- "No data"
+    values$code <- "
+    library(tagtango)
+
+
+    "
 
     shinyjs::disable("load", asis = T)
 
@@ -258,7 +263,13 @@ mod_input_data_server <- function(id){
     return(
       reactive(
         c(list(
-          filename = values$filename,
+          code = paste0(values$code, "dat <- process_data(filename = ", rsym(values$filename),
+                        ", data_type = ", rsym(input$data_type),
+                        ", left = ", rsym(input$left),
+                        ", right = ", rsym(input$right),
+                        umap()$codebit, ")
+                        "
+                        ),
           dat = values$data$dat,
           left = input$left,
           right = input$right,

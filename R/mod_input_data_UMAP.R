@@ -90,7 +90,11 @@ mod_input_data_UMAP_server <- function(id, dat){
       reactive(
         list(
           rna = values$rna,
-          adt = values$adt
+          adt = values$adt,
+          codebit = paste0(", pc1_axis1 = ", rsym(input$RNA_first_axis),
+                           ", pc1_axis2 = ", rsym(input$RNA_second_axis),
+                           ", pc2_axis1 = ", rsym(input$ADT_first_axis),
+                           ", pc2_axis2 = ", rsym(input$ADT_second_axis))
           )
         )
       )
