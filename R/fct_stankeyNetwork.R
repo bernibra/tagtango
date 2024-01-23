@@ -1,11 +1,17 @@
 #' load_data
 #'
 #' @description A fct function to prepare the data for the stankey network
+#' @param dat a data frame with all the relevant columns (the colData object from a SingleCellExperiment or MultiAssayExperiment)
+#' @param left annotation in the left of the diagram
+#' @param right annotation in the right of the diagram
+#' @param rna_umap first dimension reduction data.frame
+#' @param adt_umap second dimension reduction data.frame
+#' @param grouping_variable grouping variable found in `dat`
+#' @param grouping_values values in `grouping_variable` that need to be filtered
+#' @param min_counts minimum number of cells in a link for this to be displayed
 #'
 #' @return Returns a list with the different elements for the stankey network.
-#'
-#' @noRd
-
+#' @export
 load_data <- function(dat, left, right, rna_umap, adt_umap,
                       grouping_variable = NULL, grouping_values = NULL, min_counts = NULL){
 
