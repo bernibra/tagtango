@@ -63,11 +63,7 @@ mod_input_data_server <- function(id){
                         dat = NULL, ReadError = "No data")
     values$umap <- data.frame(rna_first = NULL, rna_second = NULL, adt_first = NULL, adt_second = NULL)
     values$ReadError <- "No data"
-    values$code <- "
-    library(tagtango)
-
-
-    "
+    values$code <- "library(tagtango)\n\n"
 
     shinyjs::disable("load", asis = T)
 

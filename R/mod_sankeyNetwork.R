@@ -191,6 +191,11 @@ mod_sankeyNetwork_server <- function(id, data){
                            Value = "value", NodeID = "name",NodeGroup = "groups",
                            colourScale = paste0('d3.scaleOrdinal() .domain(["source", "target"]) .range(["', left_color,'", "', right_color,'"])'),
                            fontSize= 12, nodeWidth = 30, iterations = iterations)
+      values$code_diagram <- paste0('
+networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
+                           Source = "source", Target = "target",
+                           Value = "value", NodeID = "name",NodeGroup = "groups",
+                           fontSize= 12, nodeWidth = 30, iterations = ', iterations, ')')
 
       htmlwidgets::onRender(san, stankeyNetwork_js(links = TRUE))
     })
@@ -210,15 +215,23 @@ mod_sankeyNetwork_server <- function(id, data){
         width <- (input$width - (8/12) * 0.7 * input$width)/2
         height <- (input$width - (8/12) * 0.7 * input$width)/2
 
+        values$code_fselection <- "\n\n## first selection\n\n"
+
         if(is.null(input$target1)){
           values$fselect <- values$network$dat$i==input$source1
           maintitle <- input$source1
+          values$code_fselection <- paste0(values$code_fselection, "fselect <- dat$network$dat$i==", rsym(input$source1), "\n")
+          values$code_fselection <- paste0(values$code_fselection, "maintitle <- ", rsym(input$source1), "\n")
         }else if(is.null(input$source1)){
           values$fselect <- values$network$dat$j==input$target1
           maintitle <- input$target1
+          values$code_fselection <- paste0(values$code_fselection, "fselect <- dat$network$dat$j==", rsym(input$target1), "\n")
+          values$code_fselection <- paste0(values$code_fselection, "maintitle <- ", rsym(input$target1), "\n")
         }else{
           values$fselect <- (values$network$dat$i==input$source1 & values$network$dat$j==input$target1)
           maintitle <- paste0(input$source1, " \u27A4 ", input$target1)
+          values$code_fselection <- paste0(values$code_fselection, "fselect <- (dat$network$dat$i==", rsym(input$source1), " & values$network$dat$j==", rsym(input$target1), ")\n")
+          values$code_fselection <- paste0(values$code_fselection, "maintitle <- paste0(", rsym(input$source1), ",' \u27A4 ',", rsym(input$target1),  ")\n")
         }
 
         values$ftitle <- maintitle
@@ -238,12 +251,14 @@ mod_sankeyNetwork_server <- function(id, data){
                                          umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
           mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
                                 class = "top white")
+          values$code_fselection <- ""
         }
       }else{
         mod_panel_decomposition_server("panel_decomposition_1",
                                        umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
         mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
                               class = "top white")
+        values$code_fselection <-""
       }
     })
 
@@ -315,11 +330,17 @@ mod_sankeyNetwork_server <- function(id, data){
       },
       content = function(file) {
         # Write the dataset to the `file` that will be downloaded
-        code <- paste0(data$code,
+        code <- c(paste0(data$code,
+                       ", filter_variable = ", rsym(data$filter_variable),
+                       ", filter_values = ", rsym(data$filter_values),
                        ", grouping_variable = ", rsym(data$grouping_variable),
                        ", grouping_values = ", rsym(input$cells),
                        ", min_counts = ", numVal_d(),
-                       ")")
+                       ")\n"),
+                  "## Diagram",
+                  values$code_diagram,
+                  values$code_fselection
+                  )
         writeLines(code, con = file, sep = "\n")
       }
     )
