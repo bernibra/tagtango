@@ -66,7 +66,7 @@ plot_UMAP <- function(data, labels, values = c("a", "b"), title = "UMAP of the R
            ))
 }
 
-#' rose_plot
+#' rose_plot_internal
 #'
 #' @description A fct function to generate a rose plot
 #'
@@ -74,8 +74,7 @@ plot_UMAP <- function(data, labels, values = c("a", "b"), title = "UMAP of the R
 #'
 #' @import ggplot2
 #' @noRd
-
-rose_plot <- function(data, selected, title = " ", maintitle = NULL, palette="RdYlGn", colortitle = F){
+rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, palette="RdYlGn", colortitle = F){
   m = 11
   n = 10
   # browser()
