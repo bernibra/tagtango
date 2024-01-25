@@ -15,7 +15,7 @@
 #' @param grouping_values values in `grouping_variable` that need to be filtered
 #' @param min_counts minimum number of cells in a link for this to be displayed
 #'
-#' @return The return value, if any, from executing the function.
+#' @return Returns a list containing two attributes: data and network. The first contains the data filtered according to the grouping and filtering values. The second, contains the data organized in a manner that is readible for the sankeyNetwork.
 #' @export
 process_data <- function(filename, data_type, left, right,
                          pc1_axis1 = NULL, pc1_axis2 = NULL,
