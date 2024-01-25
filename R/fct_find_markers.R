@@ -1,6 +1,6 @@
 #' colMeans_modified
 #'
-#' @description A fct function to avoid errors when the matrix has one row.
+#' @description A function to avoid errors when the matrix has one row.
 #'
 #' @return Returns a vector.
 #'
@@ -15,11 +15,11 @@ colMeans_b <- function(mat){
   )
 }
 
-#' rose_plot
+#' find_markers
 #'
-#' @description A fct function
+#' @description A function to find the relevant markers
 #'
-#' @return The return value, if any, from executing the function.
+#' @return The list with a data.frame and a list of markers.
 #'
 #' @noRd
 find_markers <- function(extra = 0, n=4, mat, zero = 3){
@@ -42,9 +42,9 @@ find_markers <- function(extra = 0, n=4, mat, zero = 3){
 
 #' define_color
 #'
-#' @description A fct function
+#' @description A function to define the colors of the rose petals
 #'
-#' @return The return value, if any, from executing the function.
+#' @return A list of colors.
 #'
 #' @noRd
 define_color <- function(value, n = 11){
@@ -62,7 +62,7 @@ define_color <- function(value, n = 11){
 
 #' find_markers_diff
 #'
-#' @description A fct function
+#' @description A function to find the markers that are most different between two selections
 #'
 #' @return The return value, if any, from executing the function.
 #'
