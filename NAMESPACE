@@ -2,6 +2,7 @@
 
 export("%>%")
 export(process_data)
+export(rose_plot)
 export(run_app)
 import(ggplot2)
 import(shiny)

@@ -48,7 +48,7 @@ process_data(
 \item{min_counts}{minimum number of cells in a link for this to be displayed}
 }
 \value{
-The return value, if any, from executing the function.
+Returns a list containing two attributes: data and network. The first contains the data filtered according to the grouping and filtering values. The second, contains the data organized in a manner that is readible for the sankeyNetwork.
 }
 \description{
 A utility function for reading a processing the data as `tagtango` does.

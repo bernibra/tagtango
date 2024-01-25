@@ -33,7 +33,6 @@ theme_set(
 #'
 #' @import ggplot2
 #' @noRd
-
 plot_UMAP <- function(data, labels, values = c("a", "b"), title = "UMAP of the RNA data"){
 
   data$labels <- labels
