@@ -88,12 +88,14 @@ mod_sankeyNetwork_server <- function(id, data){
 
     values <- reactiveValues()
     values$dat <- data$dat
-    # values$adt <- data$adt
     values$norm <- data$norm
     values$rna_umap <- data$rna_umap
     values$adt_umap <- data$adt_umap
     values$p <- NULL
     values$max_value <- list(numVal = 1, numMin = 0, numMax = 100)
+    values$code_fselection <- NULL
+    values$code_sselection <- NULL
+
     left_color <- "#fbb4ae"
     right_color <- "#b3cde3"
 
@@ -220,18 +222,18 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         if(is.null(input$target1)){
           values$fselect <- values$network$dat$i==input$source1
           maintitle <- input$source1
-          values$code_fselection <- paste0(values$code_fselection, "fselect <- dat$network$dat$i==", rsym(input$source1), "\n")
-          values$code_fselection <- paste0(values$code_fselection, "maintitle <- ", rsym(input$source1), "\n")
+          values$code_fselection <- paste0(values$code_fselection, "first_selection <- dat$network$dat$i==", rsym(input$source1), "\n")
+          values$code_fselection <- paste0(values$code_fselection, "ftitle <- ", rsym(input$source1), "\n")
         }else if(is.null(input$source1)){
           values$fselect <- values$network$dat$j==input$target1
           maintitle <- input$target1
-          values$code_fselection <- paste0(values$code_fselection, "fselect <- dat$network$dat$j==", rsym(input$target1), "\n")
-          values$code_fselection <- paste0(values$code_fselection, "maintitle <- ", rsym(input$target1), "\n")
+          values$code_fselection <- paste0(values$code_fselection, "first_selection <- dat$network$dat$j==", rsym(input$target1), "\n")
+          values$code_fselection <- paste0(values$code_fselection, "ftitle <- ", rsym(input$target1), "\n")
         }else{
           values$fselect <- (values$network$dat$i==input$source1 & values$network$dat$j==input$target1)
           maintitle <- paste0(input$source1, " \u27A4 ", input$target1)
-          values$code_fselection <- paste0(values$code_fselection, "fselect <- (dat$network$dat$i==", rsym(input$source1), " & values$network$dat$j==", rsym(input$target1), ")\n")
-          values$code_fselection <- paste0(values$code_fselection, "maintitle <- paste0(", rsym(input$source1), ",' \u27A4 ',", rsym(input$target1),  ")\n")
+          values$code_fselection <- paste0(values$code_fselection, "first_selection <- (dat$network$dat$i==", rsym(input$source1), " & values$network$dat$j==", rsym(input$target1), ")\n")
+          values$code_fselection <- paste0(values$code_fselection, "ftitle <- paste0(", rsym(input$source1), ",' \u27A4 ',", rsym(input$target1),  ")\n")
         }
 
         values$ftitle <- maintitle
@@ -251,14 +253,14 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
                                          umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
           mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
                                 class = "top white")
-          values$code_fselection <- ""
+          values$code_fselection <- NULL
         }
       }else{
         mod_panel_decomposition_server("panel_decomposition_1",
                                        umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
         mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
                               class = "top white")
-        values$code_fselection <-""
+        values$code_fselection <- NULL
       }
     })
 
@@ -270,22 +272,26 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
     observeEvent(secondselection(), {
       if(!is.null(input$target2) | !is.null(input$source2)){
 
-        # height <- min(c(input$height*0.45, (input$width - (8/12) * 0.7 * input$width)/2))
-        # width <- min(c(input$height*0.45, (input$width - (8/12) * 0.7 * input$width)/2))
         width <- (input$width - (8/12) * 0.7 * input$width)/2
         height <- (input$width - (8/12) * 0.7 * input$width)/2
 
-        # print(c(width, height))
+        values$code_sselection <- "\n\n## second selection\n\n"
 
         if(is.null(input$target2)){
           values$sselect <- values$network$dat$i==input$source2
           maintitle <- input$source2
+          values$code_sselection <- paste0(values$code_sselection, "second_selection <- dat$network$dat$i==", rsym(input$source2), "\n")
+          values$code_sselection <- paste0(values$code_sselection, "stitle <- ", rsym(input$source2), "\n")
         }else if(is.null(input$source2)){
           values$sselect <- values$network$dat$j==input$target2
           maintitle <- input$target2
+          values$code_sselection <- paste0(values$code_sselection, "second_selection <- dat$network$dat$j==", rsym(input$target2), "\n")
+          values$code_sselection <- paste0(values$code_sselection, "stitle <- ", rsym(input$target2), "\n")
         }else{
           values$sselect <- (values$network$dat$i==input$source2 & values$network$dat$j==input$target2)
           maintitle <- paste0(input$source2, " \u27A4 ", input$target2)
+          values$code_sselection <- paste0(values$code_sselection, "second_selection <- (dat$network$dat$i==", rsym(input$source1), " & values$network$dat$j==", rsym(input$target2), ")\n")
+          values$code_sselection <- paste0(values$code_sselection, "stitle <- paste0(", rsym(input$source2), ",' \u27A4 ',", rsym(input$target2),  ")\n")
         }
 
         values$stitle <- maintitle
@@ -306,6 +312,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
                                          umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
           mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
                                 class = "top white")
+          values$code_sselection <- NULL
 
         }
 
@@ -314,6 +321,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
                                        umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
         mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
                               class = "top white")
+        values$code_sselection <- NULL
       }
     })
 
@@ -329,7 +337,8 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         paste0("figures", ".R")
       },
       content = function(file) {
-        # Write the dataset to the `file` that will be downloaded
+        # Write the R file that will be downloaded
+
         code <- c(paste0(data$code,
                        ", filter_variable = ", rsym(data$filter_variable),
                        ", filter_values = ", rsym(data$filter_values),
@@ -339,7 +348,8 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
                        ")\n"),
                   "## Diagram",
                   values$code_diagram,
-                  values$code_fselection
+                  values$code_fselection,
+                  values$code_sselection
                   )
         writeLines(code, con = file, sep = "\n")
       }
