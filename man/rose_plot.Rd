@@ -2,7 +2,7 @@
 % Please edit documentation in R/fct_rose_plot.R
 \name{rose_plot}
 \alias{rose_plot}
-\title{rose_plot}
+\title{Generate a ggplot rose plot with marker expression}
 \usage{
 rose_plot(
   norm,

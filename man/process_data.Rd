@@ -2,7 +2,7 @@
 % Please edit documentation in R/fct_downloading_load_data.R
 \name{process_data}
 \alias{process_data}
-\title{process_data}
+\title{Process data as the shiny application}
 \usage{
 process_data(
   filename,

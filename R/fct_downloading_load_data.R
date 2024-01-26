@@ -1,4 +1,4 @@
-#' process_data
+#' Process data as the shiny application
 #'
 #' @description A utility function for reading a processing the data as `tagtango` does.
 #' @param filename path to data file

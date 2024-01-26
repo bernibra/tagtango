@@ -1,4 +1,4 @@
-#' rose_plot
+#' Generate a ggplot rose plot with marker expression
 #'
 #' @description A function to generate a rose plot as `tagtango` does.
 #' @param norm normalized expression data with cells as rows and columns as markers/genes (i.e. function `process_data()` should provide this under the attribute `data`)
@@ -13,8 +13,8 @@
 #' @export
 rose_plot <- function(norm, data, selected, title, n_petals = 10, valley = NULL, palette="RdYlGn"){
 
-  if(is.null(valley)){
-    valley <- mean(colMeans(fexp))
+  if(is.null(title)){
+    title <- ""
   }
 
   markers <- NULL
@@ -32,6 +32,11 @@ rose_plot <- function(norm, data, selected, title, n_petals = 10, valley = NULL,
 
   fexp <- norm[(rownames(norm) %in% rownames(data)[selected]), ]
   ncell <- nrow(fexp)
+
+  if(is.null(valley)){
+    valley <- mean(colMeans(fexp))
+  }
+
   newdata <- tryCatch({
     find_markers(extra = 0, n = n, mat = fexp, zero = valley)
       }, error = function(e) {

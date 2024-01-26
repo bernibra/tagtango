@@ -135,7 +135,7 @@ rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, pa
   }
 }
 
-#' box_plot
+#' box_diff_internal
 #'
 #' @description A fct function to generate a box plot
 #'
@@ -144,7 +144,7 @@ rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, pa
 #' @import ggplot2
 #' @noRd
 #'
-box_plot <- function(data, selected, title = " ", values = c("first" = "red", "second"= "blue"), maintitle = NULL, palette="RdYlGn", colortitle = F){
+box_diff_internal <- function(data, selected, title = " ", values = c("first" = "red", "second"= "blue"), maintitle = NULL, palette="RdYlGn", colortitle = F){
   data_ <- data %>% dplyr::filter(variable %in% selected)
 
   data_$id <- 1:nrow(data_)

@@ -140,7 +140,7 @@ mod_panel_rose_server <- function(id, adt, dat, fselection, sselection = NULL, f
                       title = ifelse(is.null(sncell), "1 cell", paste0(sncell, " cells")),
                       maintitle = stitle, palette="RdYlGn")
           }, bg="transparent", height = height, width = width-panel_padding)
-          output$diff <- renderPlot({box_plot(data = data_diff_,
+          output$diff <- renderPlot({box_diff_internal(data = data_diff_,
                      selected = if(is.null(input$nmark)){data_diff$selected}else{input$nmark},
                      values = c("first"="#35978f", "second"="#bf812d"),
                      title = NULL, maintitle = "Differences: <span style = 'color:#35978f;'>**first**</span> vs <span style = 'color:#bf812d;'>**second**</span> selection",
