@@ -11,7 +11,7 @@
 #'
 #' @return returns a ggplot object.
 #' @export
-rose_plot <- function(norm, data, selected, title, n_petals = 10, valley = NULL, palette="RdYlGn"){
+rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley = NULL, palette="RdYlGn"){
 
   if(is.null(title)){
     title <- ""

@@ -34,9 +34,13 @@ app_server <- function(input, output, session) {
         toomanycolumns <- ifelse(ncol(dat$norm)>2000, TRUE, toomanycolumns)
       }
 
+      data_type <- "RNA"
+
     }else if(dat$data_type == "No expression data"){
 
       dat$norm <- NULL
+
+      data_type <- "No expression data"
 
     }else{
 
@@ -48,7 +52,10 @@ app_server <- function(input, output, session) {
 
       otherproblem <- ifelse(is.null(dat$norm), TRUE, otherproblem)
 
+      data_type <- "RNA"
     }
+
+    dat$data_type <- data_type
 
     if(toomanycolumns){
       shinyalert::shinyalert(title = "Oups!", type = "warning", text = "The expression data is entered as ADT data, but the corresponding matrix, with more than 2000 columns, looks more like RNA data. Please specify the data type correctly.",

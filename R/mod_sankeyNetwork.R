@@ -197,7 +197,7 @@ mod_sankeyNetwork_server <- function(id, data){
 networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
                            Source = "source", Target = "target",
                            Value = "value", NodeID = "name",NodeGroup = "groups",
-                           fontSize= 12, nodeWidth = 30, iterations = ', iterations, ')')
+                           fontSize= 12, nodeWidth = 30, iterations = ', iterations, ')\n\n')
 
       htmlwidgets::onRender(san, stankeyNetwork_js(links = TRUE))
     })
@@ -217,7 +217,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         width <- (input$width - (8/12) * 0.7 * input$width)/2
         height <- (input$width - (8/12) * 0.7 * input$width)/2
 
-        values$code_fselection <- "\n\n## first selection\n\n"
+        values$code_fselection <- "## first selection\n\n"
 
         if(is.null(input$target1)){
           values$fselect <- values$network$dat$i==input$source1
@@ -233,7 +233,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
           values$fselect <- (values$network$dat$i==input$source1 & values$network$dat$j==input$target1)
           maintitle <- paste0(input$source1, " \u27A4 ", input$target1)
           values$code_fselection <- paste0(values$code_fselection, "first_selection <- (dat$network$dat$i==", rsym(input$source1), " & dat$network$dat$j==", rsym(input$target1), ")\n")
-          values$code_fselection <- paste0(values$code_fselection, "ftitle <- paste0(", rsym(input$source1), ",' \u27A4 ',", rsym(input$target1),  ")\n")
+          values$code_fselection <- paste0(values$code_fselection, "ftitle <- paste0(", rsym(input$source1), ",' -> ',", rsym(input$target1),  ")\n")
         }
 
         values$ftitle <- maintitle
@@ -275,7 +275,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         width <- (input$width - (8/12) * 0.7 * input$width)/2
         height <- (input$width - (8/12) * 0.7 * input$width)/2
 
-        values$code_sselection <- "\n\n## second selection\n\n"
+        values$code_sselection <- "## second selection\n\n"
 
         if(is.null(input$target2)){
           values$sselect <- values$network$dat$i==input$source2
@@ -290,8 +290,8 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         }else{
           values$sselect <- (values$network$dat$i==input$source2 & values$network$dat$j==input$target2)
           maintitle <- paste0(input$source2, " \u27A4 ", input$target2)
-          values$code_sselection <- paste0(values$code_sselection, "second_selection <- (dat$network$dat$i==", rsym(input$source1), " & dat$network$dat$j==", rsym(input$target2), ")\n")
-          values$code_sselection <- paste0(values$code_sselection, "stitle <- paste0(", rsym(input$source2), ",' \u27A4 ',", rsym(input$target2),  ")\n")
+          values$code_sselection <- paste0(values$code_sselection, "second_selection <- (dat$network$dat$i==", rsym(input$source2), " & dat$network$dat$j==", rsym(input$target2), ")\n")
+          values$code_sselection <- paste0(values$code_sselection, "stitle <- paste0(", rsym(input$source2), ",' -> ',", rsym(input$target2),  ")\n")
         }
 
         values$stitle <- maintitle
@@ -339,6 +339,48 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
       content = function(file) {
         # Write the R file that will be downloaded
 
+        if(!is.null(values$code_sselection) && !is.null(values$norm)){
+          values$code_figures <- c("## Bar plot\n",
+                                   paste0("g <- bar_diff(norm = dat$data$norm",
+                                          ", data = dat$network$dat",
+                                          ", first_selection = first_selection",
+                                          ", second_selection = second_selection",
+                                          ", n_bars = 10",
+                                          ifelse(data$data_type=="RNA", "", ", valley = 3"),
+                                          ")\nprint(g$p)\n"
+                                          ),
+                                   "## First rose plot\n",
+                                   paste0("p1 <- rose_plot(norm = dat$data$norm",
+                                          ", data = dat$network$dat",
+                                          ", selected = first_selection",
+                                          ", n_petals = g$markers",
+                                          ifelse(data$data_type=="RNA", "", ", valley = 3"),
+                                          ", title = ftitle",
+                                          ")\nprint(p1)\n"
+                                   ),
+                                   "## Second rose plot\n",
+                                   paste0("p2 <- rose_plot(norm = dat$data$norm",
+                                          ", data = dat$network$dat",
+                                          ", selected = second_selection",
+                                          ", n_petals = g$markers",
+                                          ifelse(data$data_type=="RNA", "", ", valley = 3"),
+                                          ", title = stitle",
+                                          ")\nprint(p2)")
+          )
+        }else if(!is.null(values$code_fselection) && !is.null(values$norm)){
+          values$code_figures <- c("## First rose plot\n",
+                                   paste0("p1 <- rose_plot(norm = dat$data$norm",
+                                          ", data = dat$network$dat",
+                                          ", selected = first_selection",
+                                          ", n_petals = 10",
+                                          ifelse(data$data_type=="RNA", "", ", valley = 3"),
+                                          ", title = ftitle",
+                                          ")\nprint(p1)"
+                                   ))
+        }else{
+          values$code_figures <- NULL
+        }
+
         code <- c(paste0(data$code,
                        ", filter_variable = ", rsym(data$filter_variable),
                        ", filter_values = ", rsym(data$filter_values),
@@ -349,7 +391,8 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
                   "## Diagram",
                   values$code_diagram,
                   values$code_fselection,
-                  values$code_sselection
+                  values$code_sselection,
+                  values$code_figures
                   )
         writeLines(code, con = file, sep = "\n")
       }
