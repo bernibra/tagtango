@@ -67,7 +67,7 @@ mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selecti
       }else if(is.null(umap_rna)){
         output$options_tab <- renderUI({})
         output$decomposition <- renderPlot({
-          return(plot_UMAP(data = umap_adt,
+          return(scatter_plot(data = umap_adt,
                     labels = labels,
                     values = values,
                     title = "ADT decomposition"
@@ -75,7 +75,7 @@ mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selecti
       }else if(is.null(umap_adt)){
         output$options_tab <- renderUI({})
         output$decomposition <- renderPlot({
-          return(plot_UMAP(data = umap_rna,
+          return(scatter_plot(data = umap_rna,
                            labels = labels,
                            values = values,
                            title = "RNA decomposition"
@@ -100,7 +100,7 @@ mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selecti
             d <- umap_adt
             title <- "ADT decomposition"
           }
-          return(plot_UMAP(data = d,
+          return(scatter_plot(data = d,
                            labels = labels,
                            values = values,
                            title = title

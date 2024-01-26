@@ -5,6 +5,30 @@
 #' @import shiny
 #' @noRd
 app_ui <- function(request) {
+
+  bg = "#3D405B"
+  fontcolor = "#F4F1DE"
+  fontsize = 14
+
+  theme_set(
+    theme_bw() +
+      # dark_theme_bw(base_family = fontype) +
+      theme(text = element_text(size = fontsize, color = fontcolor),
+            axis.text = element_text(size = fontsize, color = fontcolor),
+            panel.grid = element_blank(),
+            #panel.grid = element_line(linewidth = 0.2, colour = "white"),
+            # panel.grid.minor = element_line(linewidth = 0.1), panel.grid.major = element_line(linewidth = 0.1),
+            legend.background = element_rect(fill=bg),
+            panel.background = element_rect(fill=bg),
+            panel.border = element_rect(color = fontcolor, linewidth = 1),
+            # plot.margin = unit(c(1,1,1,1), "cm"),
+            legend.key = element_rect(colour = NA, fill = bg),
+            strip.background.x = element_blank(),
+            strip.text.x = element_text(color = fontcolor, size = fontsize),
+            plot.background = element_rect(fill=bg, color=NA) #,panel.border = element_blank()
+      ))
+
+
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),

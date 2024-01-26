@@ -57,3 +57,74 @@ rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley 
 
   return(p)
 }
+
+#' rose_plot_internal
+#'
+#' @description A fct function to generate a rose plot
+#'
+#' @return The return value, if any, from executing the function.
+#'
+#' @import ggplot2
+#' @noRd
+rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, palette="RdYlGn", colortitle = F){
+
+  m = 11
+  n = 10
+
+  fontcolor = "#3D405B"
+  fontsize = 14
+
+  # browser()
+  data <- data %>% dplyr::filter(variable %in% selected)
+
+  # calculate the ANGLE of the labels
+  extradist <- 0.2
+  number_of_bar <- nrow(data)
+
+  data$id <- seq(1, number_of_bar)
+  angle <-  90 - 360 * (data$id-0.5) /number_of_bar     # I substract 0.5 because the letter must have the angle of the center of the bars. Not extreme right(1) or extreme left (0)
+
+  # calculate the alignment of labels: right or left
+  # If I am on the left part of the plot, my labels have currently an angle < -90
+  data$hjust<-ifelse( angle < -90, 1, 0)
+
+  # flip angle BY to make them readable
+  data$angle<-ifelse(angle < -90, angle+180, angle)
+
+  p <- ggplot(data=data,aes(x=factor(id, levels=id, labels=variable),y=y, fill = factor(color, levels = 1:m)))+
+    geom_bar(stat="identity", alpha = 0.5)+
+    geom_text(aes(label = variable, y=y+extradist, hjust=hjust, angle=angle), size = 4, color = fontcolor) +
+    scale_fill_brewer(type = "div", palette = palette, direction = -1) +
+    coord_polar(start = 0, clip = "off")+
+    xlab("")+ylab("") +
+    theme(
+      panel.grid = element_line(linewidth = 0.3, colour = "gray80"),
+      plot.margin=margin(grid::unit(0, "cm")),
+      panel.spacing = element_blank() ,
+      panel.border = element_blank(),
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.text.y = element_text(size = fontsize-2, colour = fontcolor),
+      panel.background = element_rect(fill=NA),
+      plot.background = element_rect(fill=NA, color=NA), #,panel.border = element_blank()
+      plot.title=element_text(hjust=0, vjust=0.5, size = fontsize-1, colour = fontcolor, face = "italic"),
+      plot.subtitle = element_text(hjust=1, vjust=0.5, size = fontsize-3, colour = fontcolor, face = "italic"),
+      plot.title.position = "plot"
+    )
+
+  if(colortitle){
+    p <- p +
+      ggtitle(label = maintitle) +
+      theme(plot.title = element_markdown(),
+            legend.position = "none")
+    return(p)
+  }else{
+    p <- p + theme(legend.position = "none")
+  }
+
+  if(!is.null(maintitle)){
+    return(p + ggtitle(label = maintitle, subtitle = title))
+  }else{
+    return(p + ggtitle(label = "", subtitle = title))
+  }
+}

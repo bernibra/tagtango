@@ -67,3 +67,53 @@ bar_diff <- function(norm, data, first_selection, second_selection, n_bars = 10,
            palette=palette, colortitle = TRUE)
   return(list(p = p, markers = markers))
 }
+
+#' box_diff_internal
+#'
+#' @description A fct function to generate a box plot
+#'
+#' @return The return value, if any, from executing the function.
+#'
+#' @import ggplot2
+#' @noRd
+#'
+box_diff_internal <- function(data, selected, title = " ", values = c("first" = "red", "second"= "blue"), maintitle = NULL, palette="RdYlGn", colortitle = F){
+
+  fontcolor = "#3D405B"
+  fontsize = 14
+
+  data_ <- data %>% dplyr::filter(variable %in% selected)
+
+  data_$id <- 1:nrow(data_)
+
+  p <- ggplot(data = data_, aes(x= variable, ymin = y0, lower = y25, middle = y50, upper = y75, ymax = y100, g = label, fill = label))+
+    geom_boxplot(stat = "identity", alpha = 0.4, position=position_dodge(0.6), width=0.5) +
+    scale_fill_manual(values = values) +
+    theme_bw() +
+    theme(      panel.grid = element_blank(),
+                axis.text.x = element_text(size = fontsize-2, colour = fontcolor, angle = 45, hjust = 1),
+                axis.text.y = element_text(size = fontsize-2, colour = fontcolor),
+                axis.title.x = element_blank(),
+                panel.background = element_rect(fill=NA),
+                plot.background = element_rect(fill=NA, color=NA), #,panel.border = element_blank()
+                strip.background = element_blank(),
+                strip.text = element_text(size = fontsize-3)
+    )
+
+  if(colortitle){
+    p <- p +
+      ggtitle(label = maintitle) +
+      theme(plot.title = ggtext::element_markdown(),
+            legend.position = "none")
+    return(p)
+  }else{
+    p <- p + theme(legend.position = "none")
+  }
+
+  if(!is.null(maintitle)){
+    return(p + ggtitle(label = maintitle, subtitle = title))
+  }else{
+    return(p + ggtitle(label = "", subtitle = title))
+  }
+
+}

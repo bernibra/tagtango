@@ -339,46 +339,18 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
       content = function(file) {
         # Write the R file that will be downloaded
 
-        if(!is.null(values$code_sselection) && !is.null(values$norm)){
-          values$code_figures <- c("## Bar plot\n",
-                                   paste0("g <- bar_diff(norm = dat$data$norm",
-                                          ", data = dat$network$dat",
-                                          ", first_selection = first_selection",
-                                          ", second_selection = second_selection",
-                                          ", n_bars = 10",
-                                          ifelse(data$data_type=="RNA", "", ", valley = 3"),
-                                          ")\nprint(g$p)\n"
-                                          ),
-                                   "## First rose plot\n",
-                                   paste0("p1 <- rose_plot(norm = dat$data$norm",
-                                          ", data = dat$network$dat",
-                                          ", selected = first_selection",
-                                          ", n_petals = g$markers",
-                                          ifelse(data$data_type=="RNA", "", ", valley = 3"),
-                                          ", title = ftitle",
-                                          ")\nprint(p1)\n"
-                                   ),
-                                   "## Second rose plot\n",
-                                   paste0("p2 <- rose_plot(norm = dat$data$norm",
-                                          ", data = dat$network$dat",
-                                          ", selected = second_selection",
-                                          ", n_petals = g$markers",
-                                          ifelse(data$data_type=="RNA", "", ", valley = 3"),
-                                          ", title = stitle",
-                                          ")\nprint(p2)")
-          )
-        }else if(!is.null(values$code_fselection) && !is.null(values$norm)){
-          values$code_figures <- c("## First rose plot\n",
-                                   paste0("p1 <- rose_plot(norm = dat$data$norm",
-                                          ", data = dat$network$dat",
-                                          ", selected = first_selection",
-                                          ", n_petals = 10",
-                                          ifelse(data$data_type=="RNA", "", ", valley = 3"),
-                                          ", title = ftitle",
-                                          ")\nprint(p1)"
-                                   ))
+        values$code_rose_figures <- generate_code_rose(values$norm, values$code_fselection, values$code_sselection, data$data_type)
+
+        if(!is.null(values$network$rna_umap)){
+          values$code_umap_rna <- generate_code_umap("dat$network$rna_umap", values$code_fselection, values$code_sselection, label = "first dimension")
         }else{
-          values$code_figures <- NULL
+          values$code_umap_rna <- NULL
+        }
+
+        if(!is.null(values$network$adt_umap)){
+          values$code_umap_adt <- generate_code_umap("dat$network$adt_umap", values$code_fselection, values$code_sselection, label = "second dimension")
+        }else{
+          values$code_umap_adt <- NULL
         }
 
         code <- c(paste0(data$code,
@@ -392,7 +364,9 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
                   values$code_diagram,
                   values$code_fselection,
                   values$code_sselection,
-                  values$code_figures
+                  values$code_rose_figures,
+                  values$code_umap_rna,
+                  values$code_umap_adt
                   )
         writeLines(code, con = file, sep = "\n")
       }
