@@ -8,8 +8,8 @@ rose_plot(
   norm,
   data,
   selected,
-  title,
   n_petals = 10,
+  title = NULL,
   valley = NULL,
   palette = "RdYlGn"
 )
@@ -21,9 +21,9 @@ rose_plot(
 
 \item{selected}{boolean array with selected cells as True values, for all cells in `data`.}
 
-\item{title}{main plot title. Default `NULL`.}
-
 \item{n_petals}{if an integer value, it defines the number of petals of the rose plot, selecting those that are most "relevant". If an array with marker names, it uses those.}
+
+\item{title}{main plot title. Default `NULL`.}
 
 \item{valley}{the value in `norm` corresponding to the valley separating positive and negative peak for CITE-seq data.}
 
