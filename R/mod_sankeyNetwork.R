@@ -95,6 +95,8 @@ mod_sankeyNetwork_server <- function(id, data){
     values$max_value <- list(numVal = 1, numMin = 0, numMax = 100)
     values$code_fselection <- NULL
     values$code_sselection <- NULL
+    values$quantiles <- quantile(data$norm, probs = c(0.05, 0.95))
+
 
     left_color <- "#fbb4ae"
     right_color <- "#b3cde3"
@@ -212,7 +214,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         width <- (input$width - (8/12) * 0.7 * input$width)/2
         height <- (input$width - (8/12) * 0.7 * input$width)/2
 
-        values$code_fselection <- "## first selection\n\n"
+        values$code_fselection <- "quant <- quantile(dat$data$norm, probs = c(0.05, 0.95))\n\n## first selection\n\n"
 
         if(is.null(input$target1)){
           values$fselect <- values$network$dat$i==input$source1
@@ -241,7 +243,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
 
           mod_panel_rose_server("panel_rose_1", adt = values$norm, dat = values$network$dat,
                                 ftitle = values$ftitle, fselection = values$fselect,
-                                class = "top white", height = height, width = width, isRNA = data$data_type=="RNA")
+                                class = "top white", height = height, width = width, isRNA = data$data_type=="RNA", quant = values$quantiles)
 
         }else{
           mod_panel_decomposition_server("panel_decomposition_1",
@@ -301,7 +303,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
           mod_panel_rose_server("panel_rose_1", adt = values$norm, dat = values$network$dat,
                                 stitle = values$stitle, ftitle = values$ftitle,
                                 fselection = values$fselect, sselection = values$sselect,
-                                class = "top white", height = height, width = width, isRNA = data$data_type=="RNA")
+                                class = "top white", height = height, width = width, isRNA = data$data_type=="RNA", quant = values$quantiles)
 
         }else{
           mod_panel_decomposition_server("panel_decomposition_1",

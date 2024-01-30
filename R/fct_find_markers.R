@@ -22,7 +22,7 @@ colMeans_b <- function(mat){
 #' @return The list with a data.frame and a list of markers.
 #'
 #' @noRd
-find_markers <- function(extra = 0, n=4, mat, zero = 3){
+find_markers <- function(extra = 0, n=4, mat, quant = c(1,6), zero = 3){
   m = 11
 
   variable <- colnames(mat)
@@ -32,7 +32,7 @@ find_markers <- function(extra = 0, n=4, mat, zero = 3){
 
   data <- data.frame(variable = variable, value = colMeans_b(mat)) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(color = define_color(value, n=m)) %>%
+    dplyr::mutate(color = define_color(value, n=m, quant = quant)) %>%
     dplyr::mutate(importance = abs(value-zero)) %>%
     dplyr::mutate(y = extra + value)
   return(list(data = data,
@@ -47,14 +47,14 @@ find_markers <- function(extra = 0, n=4, mat, zero = 3){
 #' @return A list of colors.
 #'
 #' @noRd
-define_color <- function(value, n = 11){
+define_color <- function(value, n = 11, quant = c(1,6)){
   spectral <- seq(1,n)
-  idx <- seq(from = 1, to=6, length.out=n)[2:(n-1)]
+  idx <- seq(from = quant[1], to=quant[2], length.out=n)[2:(n-1)]
   spectral_ <- seq(1,n)[2:(n-1)]
-  if (value>=6){
-    return(spectral[1])
-  }else if(value<=1){
+  if (value>=quant[2]){
     return(spectral[n])
+  }else if(value<=quant[1]){
+    return(spectral[1])
   }else{
     return(spectral_[which.min(abs(idx-value))])
   }

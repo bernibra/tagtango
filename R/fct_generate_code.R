@@ -23,6 +23,7 @@ generate_code_rose <- function(norm, fselection, sselection, data_type){
                                     ", n_petals = g$markers",
                                     ifelse(data_type=="RNA", "", ", valley = 3"),
                                     ", title = ftitle",
+                                    ", quant = quant",
                                     ")\nprint(p1)\n"
                              ),
                              "## Second rose plot\n",
@@ -32,6 +33,7 @@ generate_code_rose <- function(norm, fselection, sselection, data_type){
                                     ", n_petals = g$markers",
                                     ifelse(data_type=="RNA", "", ", valley = 3"),
                                     ", title = stitle",
+                                    ", quant = quant",
                                     ")\nprint(p2)\n")
     )
   }else if(!is.null(fselection) && !is.null(norm)){
@@ -42,6 +44,7 @@ generate_code_rose <- function(norm, fselection, sselection, data_type){
                                     ", n_petals = 10",
                                     ifelse(data_type=="RNA", "", ", valley = 3"),
                                     ", title = ftitle",
+                                    ", quant = quant",
                                     ")\nprint(p1)\n"
                              ))
   }else{

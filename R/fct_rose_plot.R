@@ -11,7 +11,7 @@
 #'
 #' @return returns a ggplot object.
 #' @export
-rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley = NULL, palette="RdYlGn"){
+rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley = NULL, palette="RdYlGn", quant = c(1,6)){
 
   if(is.null(title)){
     title <- ""
@@ -38,7 +38,7 @@ rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley 
   }
 
   newdata <- tryCatch({
-    find_markers(extra = 0, n = n, mat = fexp, zero = valley)
+    find_markers(extra = 0, n = n, mat = fexp, quant = quant, zero = valley)
       }, error = function(e) {
     NULL
     })

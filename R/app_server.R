@@ -45,7 +45,7 @@ app_server <- function(input, output, session) {
     }else{
 
       dat$norm <- tryCatch({
-        dge_rna_data(dat$sce, dat$left, dat$right, numberOFgenes = 5)
+        dge_rna_data(dat$sce, dat$dat, dat$left, dat$right, numberOFgenes = 5)
       }, error = function(e) {
         NULL
       })
