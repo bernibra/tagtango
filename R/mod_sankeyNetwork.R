@@ -170,11 +170,6 @@ mod_sankeyNetwork_server <- function(id, data){
     observeEvent(dataListen(), {
       shinyjs::disable(id = "num")
 
-      shinyjs::runjs('Shiny.onInputChange("sankeyNetwork_1-target1", null);')
-      shinyjs::runjs('Shiny.onInputChange("sankeyNetwork_1-target2", null);')
-      shinyjs::runjs('Shiny.onInputChange("sankeyNetwork_1-source1", null);')
-      shinyjs::runjs('Shiny.onInputChange("sankeyNetwork_1-source2", null);')
-
       values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                             rna_umap = values$rna_umap, adt_umap = values$adt_umap,
                             grouping_variable = data$grouping_variable, grouping_values = input$cells,
@@ -270,6 +265,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
     })
 
     observeEvent(secondselection(), {
+
       if(!is.null(input$target2) | !is.null(input$source2)){
 
         width <- (input$width - (8/12) * 0.7 * input$width)/2
