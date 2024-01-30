@@ -34,7 +34,7 @@ app_server <- function(input, output, session) {
         toomanycolumns <- ifelse(ncol(dat$norm)>2000, TRUE, toomanycolumns)
       }
 
-      data_type <- "RNA"
+      data_type <- "ADT"
 
     }else if(dat$data_type == "No expression data"){
 
