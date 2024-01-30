@@ -35,6 +35,15 @@ load_data <- function(dat, left, right, rna_umap, adt_umap,
   rownames(dat) <- cells_tagtango
 
   if(!is.null(min_counts)){
+
+    if(!is.null(rna_umap)){
+      rna_umap <- rna_umap[dat$n_min_counts>=min_counts,]
+    }
+
+    if(!is.null(adt_umap)){
+      adt_umap <- adt_umap[dat$n_min_counts>=min_counts,]
+    }
+
     dat <- dat %>% dplyr::filter(n_min_counts>=min_counts)
   }
 

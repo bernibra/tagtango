@@ -13,7 +13,6 @@ scatter_plot <- function(data, labels, values = c("a", "b"), title = "UMAP of th
   fontcolor = "#3D405B"
   fontsize = 14
 
-
   data$labels <- labels
   sampling <- 40000
 
