@@ -54,7 +54,7 @@ rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley 
 
   p <- rose_plot_internal(data = newdata$data, selected = markers,
                           title = ifelse(is.null(ncell), "1 cell", paste0(ncell, " cells")),
-                          maintitle = title, palette=palette)
+                          maintitle = title, palette=palette, ...)
 
   return(p)
 }
