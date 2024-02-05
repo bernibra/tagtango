@@ -11,7 +11,9 @@ rose_plot(
   n_petals = 10,
   title = NULL,
   valley = NULL,
-  palette = "RdYlGn"
+  palette = "RdYlGn",
+  quant = c(1, 6),
+  ...
 )
 }
 \arguments{
@@ -28,6 +30,8 @@ rose_plot(
 \item{valley}{the value in `norm` corresponding to the valley separating positive and negative peak for CITE-seq data.}
 
 \item{palette}{color palette, default "RdYlGn"}
+
+\item{...}{parameters passed to the underlying function.}
 }
 \value{
 returns a ggplot object.

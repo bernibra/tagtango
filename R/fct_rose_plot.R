@@ -8,10 +8,11 @@
 #' @param title main plot title. Default `NULL`.
 #' @param valley the value in `norm` corresponding to the valley separating positive and negative peak for CITE-seq data.
 #' @param palette color palette, default "RdYlGn"
+#' @param ... parameters passed to the underlying function.
 #'
 #' @return returns a ggplot object.
 #' @export
-rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley = NULL, palette="RdYlGn", quant = c(1,6)){
+rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley = NULL, palette="RdYlGn", quant = c(1,6), ...){
 
   if(is.null(title)){
     title <- ""
@@ -66,12 +67,25 @@ rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley 
 #'
 #' @import ggplot2
 #' @noRd
-rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, palette="RdYlGn", colortitle = F){
+rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, palette="RdYlGn", colortitle = F, ...){
 
   m = 11
   n = 10
 
-  fontcolor = "#3D405B"
+  arguments <- list(...)
+
+  if(is.null(arguments$color)){
+    fontcolor = "#3D405B"
+  }else{
+    fontcolor = arguments$color
+  }
+
+  if(is.null(arguments$size)){
+    size <- 4
+  }else{
+    size <- arguments$size
+  }
+
   fontsize = 14
 
   # browser()
@@ -93,7 +107,7 @@ rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, pa
 
   p <- ggplot(data=data,aes(x=factor(id, levels=id, labels=variable),y=y, fill = factor(color, levels = 1:m)))+
     geom_bar(stat="identity", alpha = 0.5)+
-    geom_text(aes(label = variable, y=y+extradist, hjust=hjust, angle=angle), size = 4, color = fontcolor) +
+    geom_text(aes(label = variable, y=y+extradist, hjust=hjust, angle=angle), size = size, color = fontcolor) +
     scale_fill_brewer(type = "div", palette = palette, direction = -1) +
     coord_polar(start = 0, clip = "off")+
     xlab("")+ylab("") +
