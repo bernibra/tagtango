@@ -5,7 +5,7 @@
 #' @return A list with the different components.
 #'
 #' @noRd
-read_input <- function(filename) UseMethod("read_input", filename)
+read_input <- function(filename, run_test_data = FALSE, ...) UseMethod("read_input")
 
 # Default read raw, guessing file type and loading data
 #'

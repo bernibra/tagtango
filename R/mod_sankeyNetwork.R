@@ -95,6 +95,7 @@ mod_sankeyNetwork_server <- function(id, data){
     values$max_value <- list(numVal = 1, numMin = 0, numMax = 100)
     values$code_fselection <- NULL
     values$code_sselection <- NULL
+
     values$quantiles <- quantile(data$norm, probs = c(0.05, 0.95))
 
 

@@ -68,9 +68,6 @@ process_data <- function(filename, data_type, left, right,
     stop("There is something odd regarding the data inputed. Please refer to the app's manual and README page for specifications on the input format.")
   }
 
-  toomanycolumns <- FALSE
-  otherproblem <- FALSE
-
   if(any(gsub("[[:punct:]]", " ", tolower(dat$data_type)) == c("adt", "antibody capture", "protein data", "antibody derived tags", "scadt"))){
 
     dat$norm <- tryCatch({
@@ -79,14 +76,12 @@ process_data <- function(filename, data_type, left, right,
       NULL
     })
 
-    otherproblem <- ifelse(is.null(dat$norm), TRUE, otherproblem)
-    if(!otherproblem){
-      toomanycolumns <- ifelse(ncol(dat$norm)>2000, TRUE, toomanycolumns)
-    }
+    dataproblem <- run_basic_checks(norm = dat$norm, dat = dat$dat, maxcol = 2000)
 
   }else if(dat$data_type == "No expression data"){
 
     dat$norm <- NULL
+    dataproblem <- NULL
 
   }else{
 
@@ -96,16 +91,12 @@ process_data <- function(filename, data_type, left, right,
       NULL
     })
 
-    otherproblem <- ifelse(is.null(dat$norm), TRUE, otherproblem)
+    dataproblem <- run_basic_checks(norm = dat$norm, dat = dat$dat)
 
   }
 
-  if(toomanycolumns){
-    stop("The expression data is entered as ADT data, but the corresponding matrix, with more than 2000 columns, looks more like RNA data. Please specify the data type correctly.")
-  }
-
-  if(otherproblem){
-    stop("There is something odd regarding the expression data inputed. Please refer to the app's manual and README page for specifications on the input format.")
+  if(!is.null(dataproblem)){
+    stop(dataproblem)
   }
 
   if(!(is.null(filter_variable) || is.null(filter_values))){

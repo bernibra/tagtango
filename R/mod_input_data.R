@@ -143,11 +143,16 @@ mod_input_data_server <- function(id, data){
     })
 
     observeEvent(input$data,{
+      values$inputfile <- input$data
+    })
+
+    observeEvent(values$inputfile,{
+      print("run once!")
       output$annotations <- renderUI({})
       output$additional_info <- renderUI({})
 
       values$data <- tryCatch({
-            read_input(input$data$datapath)
+            read_input(filename = input$data$datapath)
           }, error = function(e) {
             read_input(NULL)
         })

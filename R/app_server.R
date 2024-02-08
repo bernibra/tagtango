@@ -21,8 +21,6 @@ app_server <- function(input, output, session) {
 
   observeEvent(input$load,{
     dat <- data()
-    toomanycolumns <- FALSE
-    otherproblem <- FALSE
 
     if(any(gsub("[[:punct:]]", " ", tolower(dat$data_type)) == c("adt", "antibody capture", "protein data", "antibody derived tags", "scadt"))){
 
@@ -32,41 +30,33 @@ app_server <- function(input, output, session) {
         NULL
       })
 
-      otherproblem <- ifelse(is.null(dat$norm), TRUE, otherproblem)
-      if(!otherproblem){
-        toomanycolumns <- ifelse(ncol(dat$norm)>2000, TRUE, toomanycolumns)
-      }
+      dataproblem <- run_basic_checks(norm = dat$norm, dat = dat$dat, maxcol = 2000)
 
       data_type <- "ADT"
 
     }else if(dat$data_type == "No expression data"){
 
       dat$norm <- NULL
-
       data_type <- "No expression data"
+      dataproblem <- NULL
 
     }else{
 
       dat$norm <- tryCatch({
-        dge_rna_data(dat$sce, dat$dat, dat$left, dat$right, numberOFgenes = 10)
+        dge_rna_data(dat$sce, dat$dat, dat$left, dat$right, numberOFgenes = ifelse(nrow(dat$sce)>=10, 10, nrow(dat$sce)))
       }, error = function(e) {
         NULL
       })
 
-      otherproblem <- ifelse(is.null(dat$norm), TRUE, otherproblem)
+      dataproblem <- run_basic_checks(norm = dat$norm, dat = dat$dat)
 
       data_type <- "RNA"
     }
 
     dat$data_type <- data_type
 
-    if(toomanycolumns){
-      shinyalert::shinyalert(title = "Oups!", type = "warning", text = "The expression data is entered as ADT data, but the corresponding matrix, with more than 2000 columns, looks more like RNA data. Please specify the data type correctly.",
-                             closeOnClickOutside = T, closeOnEsc = T,
-                             animation = "pop", confirmButtonText = "Got it",
-                             className = "warning_popup", confirmButtonCol = "#909097")
-    }else if(otherproblem){
-      shinyalert::shinyalert(title = "Oups!", type = "warning", text = "There is something odd regarding the expression data inputed. Please refer to the app's manual and README page for specifications on the input format.",
+    if(!is.null(dataproblem)){
+      shinyalert::shinyalert(title = "Oups!", type = "warning", text = dataproblem,
                              closeOnClickOutside = T, closeOnEsc = T,
                              animation = "pop", confirmButtonText = "Got it",
                              className = "warning_popup", confirmButtonCol = "#909097")

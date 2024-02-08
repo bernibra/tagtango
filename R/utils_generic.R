@@ -70,3 +70,40 @@ rsym <- function(x) {
     return(paste0("'", as.character(dplyr::sym(x)), "'"))
   }
 }
+
+#' run_basic_checks
+#'
+#' @description A function to run a few checks on the shape of the data
+#'
+#' @return a NULL value if there are no problems and an error message otherwise.
+#'
+#' @noRd
+#'
+run_basic_checks <- function(norm, dat, maxcol = NULL) {
+
+  if(is.null(norm)){
+    return("There is something odd regarding the expression data inputed. Please refer to the app's manual and README page for specifications on the input format.")
+  }
+
+  if(is.null(rownames(norm))){
+    return("There is something odd regarding the expression data inputed. Please refer to the app's manual and README page for specifications on the input format.")
+  }
+
+  if(is.null(rownames(dat))){
+    return("There is something odd regarding the expression data inputed. Please refer to the app's manual and README page for specifications on the input format.")
+  }
+
+  if(!all(rownames(dat) == rownames(norm))){
+    return("There is something odd regarding the expression data inputed. Please refer to the app's manual and README page for specifications on the input format.")
+  }
+
+  if(is.null(maxcol)){
+    return(NULL)
+  }
+
+  if(ncol(norm)>maxcol){
+    return(paste0("The expression data is entered as ADT data, but the corresponding matrix, with more than ", as.character(maxcol)," columns, looks more like RNA data. Please specify the data type correctly."))
+  }
+
+  return(NULL)
+}

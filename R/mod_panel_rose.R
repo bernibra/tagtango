@@ -51,6 +51,7 @@ mod_panel_rose_server <- function(id, adt, dat, fselection, sselection = NULL, f
                           uiOutput(ns("options_tab"))
             )
           })
+
           fexp <- adt[(rownames(adt) %in% rownames(dat)[fselection]), ]
           ncell <- nrow(fexp)
           data <- find_markers(extra = 0, n = 15, mat = fexp, quant = quant, zero = ifelse(isRNA, mean(colMeans(fexp)), 3))
