@@ -100,6 +100,16 @@ mod_input_data_server <- function(id){
         )
       })
 
+      if(is.null(values$data$mae)){
+        choices <- c("ADT")
+        selected <- "ADT"
+        multiple <- F
+      }else{
+        choices <- names(MultiAssayExperiment::experiments(values$data$mae))
+        selected <- NULL
+        multiple <- T
+      }
+
       output$annotations <- renderUI({
         tagList(
             column(12, p("The data has been loaded! Now, you need to define the basic aspects of the comparision between annotations.")),
@@ -107,9 +117,9 @@ mod_input_data_server <- function(id){
                    column(12, class = "inner_box",
                             shinyWidgets::pickerInput(
                               ns("data_type"),labelMandatory("Data type"),
-                              choices = names(MultiAssayExperiment::experiments(values$data$mae)),
-                              multiple = T,
-                              selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "e.g. ADT")
+                              choices = choices,
+                              multiple = multiple,
+                              selected = selected, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "e.g. ADT")
                             )
                           )
                    ),
