@@ -10,7 +10,7 @@ read_input <- function(filename) UseMethod("read_input", filename)
 # Default read raw, guessing file type and loading data
 #'
 #' @noRd
-read_input.default <- function(filename, ...){
+read_input.default <- function(filename, run_test_data = FALSE, ...){
 
   collimit <- 3000
 
@@ -26,7 +26,7 @@ read_input.default <- function(filename, ...){
                 dat = NULL, ReadError = "No data"))
   }
 
-  if(filename=="test_data"){
+  if(run_test_data){
     return(read_input.test())
   }
 

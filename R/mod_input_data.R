@@ -53,7 +53,7 @@ mod_input_data_ui <- function(id){
 #' input_data Server Functions
 #'
 #' @noRd
-mod_input_data_server <- function(id){
+mod_input_data_server <- function(id, data){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -84,7 +84,7 @@ mod_input_data_server <- function(id){
       output$annotations <- renderUI({})
       output$additional_info <- renderUI({})
 
-      values$data <- read_input("test_data")
+      values$data <- read_input(filename = "test_data", run_test_data = TRUE)
       values$filename <- NULL
 
       output$data_holder <- renderUI({

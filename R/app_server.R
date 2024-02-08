@@ -9,11 +9,14 @@ app_server <- function(input, output, session) {
   # defining reactive values
   values <- reactiveValues()
 
+  # Check if there is any data
+  values$data <- golem::get_golem_options(which = "input_data")
+
   # Landing page
   output$content <- renderUI(mod_input_data_ui("input_data_1"))
 
   # Landing page logic
-  data <- mod_input_data_server("input_data_1")
+  data <- mod_input_data_server("input_data_1", data = values$data)
   shinyjs::disable("load")
 
   observeEvent(input$load,{
@@ -45,7 +48,7 @@ app_server <- function(input, output, session) {
     }else{
 
       dat$norm <- tryCatch({
-        dge_rna_data(dat$sce, dat$dat, dat$left, dat$right, numberOFgenes = 5)
+        dge_rna_data(dat$sce, dat$dat, dat$left, dat$right, numberOFgenes = 10)
       }, error = function(e) {
         NULL
       })
