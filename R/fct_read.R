@@ -51,24 +51,42 @@ read_input.default <- function(filename, run_test_data = FALSE, ...){
 #' @noRd
 read_input.test <- function(){
   data(test_data)
-  coldat <- as.data.frame(MultiAssayExperiment::colData(test_data))
-  for (j in names(MultiAssayExperiment::experiments(test_data))){
-    sce <- MultiAssayExperiment::experiments(test_data)[[j]]
-    if(length(SingleCellExperiment::reducedDimNames(sce))!=0){
-      for(i in SingleCellExperiment::reducedDimNames(sce)){
-        d <- as.data.frame(SingleCellExperiment::reducedDim(sce, type = i)[,1:2])
-        colnames(d) <- paste0(j, "_", i, c("_first_axis", "_second_axis"))
-        coldat <- cbind(coldat, d)
+
+  if(class(test_data)[1]=="SingleCellExperiment"){
+
+    dat <- as.data.frame(SingleCellExperiment::colData(test_data))
+    if(length(SingleCellExperiment::reducedDimNames(test_data))!=0){
+      for(i in SingleCellExperiment::reducedDimNames(test_data)){
+        d <- as.data.frame(SingleCellExperiment::reducedDim(test_data, type = i)[,1:2])
+        colnames(d) <- paste0(i, c("_first_axis", "_second_axis"))
+        dat <- cbind(dat, d)
       }
     }
+
+    dat <- list(
+      sce = test_data, mae = NULL,
+      dat = dat, ReadError = "Valid data")
+
+  }else{
+    coldat <- as.data.frame(MultiAssayExperiment::colData(test_data))
+    for (j in names(MultiAssayExperiment::experiments(test_data))){
+      sce <- MultiAssayExperiment::experiments(test_data)[[j]]
+      if(length(SingleCellExperiment::reducedDimNames(sce))!=0){
+        for(i in SingleCellExperiment::reducedDimNames(sce)){
+          d <- as.data.frame(SingleCellExperiment::reducedDim(sce, type = i)[,1:2])
+          colnames(d) <- paste0(j, "_", i, c("_first_axis", "_second_axis"))
+          coldat <- cbind(coldat, d)
+        }
+      }
+    }
+    dat <- list(
+      mae = test_data,
+      sce = NULL,
+      dat = coldat,
+      ReadError = "Valid data"
+    )
   }
 
-  dat <- list(
-    mae = test_data,
-    sce = NULL,
-    dat = coldat,
-    ReadError = "Valid data"
-  )
   return(dat)
 }
 
