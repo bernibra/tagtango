@@ -261,6 +261,9 @@ mod_input_data_server <- function(id, data){
             })
           }
         }
+      }else{
+        output$additional_info <- renderUI({})
+        shinyjs::disable("load", asis = T)
       }
     })
 
