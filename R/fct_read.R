@@ -5,12 +5,12 @@
 #' @return A list with the different components.
 #'
 #' @noRd
-read_input <- function(filename, run_test_data = FALSE, ...) UseMethod("read_input")
+read_input <- function(filename, run_test_data = FALSE, data = NULL, ...) UseMethod("read_input")
 
 # Default read raw, guessing file type and loading data
 #'
 #' @noRd
-read_input.default <- function(filename, run_test_data = FALSE, ...){
+read_input.default <- function(filename, run_test_data = FALSE, data = NULL, ...){
 
   collimit <- 3000
 
@@ -28,6 +28,10 @@ read_input.default <- function(filename, run_test_data = FALSE, ...){
 
   if(run_test_data){
     return(read_input.test())
+  }
+
+  if(!is.null(data)){
+    return(check_dim(read_input.object(data), collimit = collimit))
   }
 
   # File formatted as rds
@@ -90,16 +94,10 @@ read_input.test <- function(){
   return(dat)
 }
 
-# Read rds and consider it a csv
+# Read object and check if it is possible to be processed
 #'
 #' @noRd
-read_input.rds <- function(filename, ...){
-
-  mat <- tryCatch({
-    readRDS(filename)
-  }, error = function(e) {
-    NULL
-  })
+read_input.object <- function(mat, ...){
 
   if(is.null(mat)){
     return(list(
@@ -160,6 +158,20 @@ read_input.rds <- function(filename, ...){
 
   return(dat)
 
+}
+
+# Read rds and consider it a csv
+#'
+#' @noRd
+read_input.rds <- function(filename, ...){
+
+  mat <- tryCatch({
+    readRDS(filename)
+  }, error = function(e) {
+    NULL
+  })
+
+  return(read_input.object(mat))
 }
 
 # Function turning a matrix type object to SingleCellExperiment class

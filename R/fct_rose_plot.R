@@ -108,7 +108,7 @@ rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, pa
   p <- ggplot(data=data,aes(x=factor(id, levels=id, labels=variable),y=y, fill = factor(color, levels = 1:m)))+
     geom_bar(stat="identity", alpha = 0.5)+
     geom_text(aes(label = variable, y=y+extradist, hjust=hjust, angle=angle), size = size, color = fontcolor) +
-    scale_fill_brewer(type = "div", palette = palette, direction = -1) +
+    scale_fill_brewer(type = "div", palette = palette, direction = ifelse(palette == "RdYlGn", -1, 1)) +
     coord_polar(start = 0, clip = "off")+
     xlab("")+ylab("") +
     theme(

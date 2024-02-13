@@ -17,71 +17,74 @@ mod_panel_decomposition_ui <- function(id){
 #' panel_decomposition Server Functions
 #'
 #' @noRd
-mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selection, second_selection = NULL,
-                                           height = 350, width = 350, panel_padding = 20){
+mod_panel_decomposition_server <- function(id, values, panel_padding = 20){
   moduleServer( id, function(input, output, session){
 
     ns <- session$ns
 
-    if(is.null(second_selection)){
-      labels = ifelse(first_selection, "selected", "other")
-      values = c("other"="#D3D1C6", "selected"="#35978f")
-    }else{
-      labels = c("all other", "first", "second", "both")[1*first_selection + second_selection*2 +1]
-      values = c("all other"="#D3D1C6", "first"="#35978f", "second"="#bf812d", "both" = "#808B5A")
-    }
-
     dataListen <- reactive({
-      list(umap_rna, umap_adt)
+      list(values$first_selection, values$second_selection)
     })
 
     observeEvent(dataListen(),{
-      # browser()
-      if(!is.null(umap_rna) || !is.null(umap_adt)){
+      # print("umap")
+      if(is.null(values$first_selection)){
+        glabels = NULL
+        gvalues = NULL
+      }else if(is.null(values$second_selection)){
+        glabels = ifelse(values$first_selection, "selected", "other")
+        gvalues = c("other"="#D3D1C6", "selected"="#35978f")
+      }else{
+        glabels = c("all other", "first", "second", "both")[1*values$first_selection + values$second_selection*2 +1]
+        gvalues = c("all other"="#D3D1C6", "first"="#35978f", "second"="#bf812d", "both" = "#808B5A")
+      }
+
+
+      if((!is.null(values$network$rna_umap) || !is.null(values$network$adt_umap)) && !is.null(glabels)){
         output$panel <- renderUI({
           absolutePanel(id = "controls", class = "panel panel-default topleft white",
-                        top = "98%", left = "99%", width = width, fixed=TRUE,
+                        top = "98%", left = "99%", width = values$width, fixed=TRUE,
                         draggable = TRUE, height = "auto",
                         fluidRow(
                           uiOutput(ns("options_tab")),
                           column(12,
                                  plotOutput(ns("decomposition"),
-                                            height = height-panel_padding,
-                                            width = width-panel_padding)
+                                            height = values$height-panel_padding,
+                                            width = values$width-panel_padding)
                           )
                         )
           )
         })
         output$decomposition <- renderPlot({}, bg="transparent",
-                                           height = height-panel_padding,
-                                           width = width-panel_padding)
+                                           height = values$height-panel_padding,
+                                           width = values$width-panel_padding)
       }else{
         output$panel <- renderUI({})
       }
 
-      if(is.null(umap_rna) && is.null(umap_adt)){
+      if((is.null(values$network$rna_umap) && is.null(values$network$adt_umap)) || is.null(glabels)){
         output$decomposition <- renderPlot({}, bg="transparent",
-                                           height = height-panel_padding,
-                                           width = width-panel_padding)
+                                           height = values$height-panel_padding,
+                                           width = values$width-panel_padding)
         output$options_tab <- renderUI({})
-      }else if(is.null(umap_rna)){
+      }else if(is.null(values$network$rna_umap)){
         output$options_tab <- renderUI({})
         output$decomposition <- renderPlot({
-          return(scatter_plot(data = umap_adt,
-                    labels = labels,
-                    values = values,
+          return(scatter_plot(data = values$network$adt_umap,
+                    labels = glabels,
+                    values = gvalues,
                     title = "ADT decomposition"
-          ))}, bg="transparent", height = height-panel_padding, width = width-panel_padding)
-      }else if(is.null(umap_adt)){
+          ))}, bg="transparent", height = values$height-panel_padding, width = values$width-panel_padding)
+      }else if(is.null(values$network$adt_umap)){
         output$options_tab <- renderUI({})
         output$decomposition <- renderPlot({
-          return(scatter_plot(data = umap_rna,
-                           labels = labels,
-                           values = values,
+          return(scatter_plot(data = values$network$rna_umap,
+                           labels = glabels,
+                           values = gvalues,
                            title = "RNA decomposition"
           ))}, bg="transparent",
-          height = height-panel_padding,
-          width = width-panel_padding)
+          height = values$height-panel_padding,
+          width = values$width-panel_padding)
         shinyjs::show("panel")
       }else{
         output$options_tab <- renderUI({tagList(
@@ -94,19 +97,19 @@ mod_panel_decomposition_server <- function(id, umap_rna, umap_adt, first_selecti
           )
         )})
         output$decomposition <- renderPlot({
-          d <- umap_rna
+          d <- values$network$rna_umap
           title <- "RNA decomposition"
           if(ifelse(is.null(input$adtvsrna), FALSE, input$adtvsrna == "adt")){
-            d <- umap_adt
+            d <- values$network$adt_umap
             title <- "ADT decomposition"
           }
           return(scatter_plot(data = d,
-                           labels = labels,
-                           values = values,
+                           labels = glabels,
+                           values = gvalues,
                            title = title
           ))}, bg="transparent",
-          height = height-panel_padding,
-          width = width-panel_padding)
+          height = values$height-panel_padding,
+          width = values$width-panel_padding)
       }
     })
 

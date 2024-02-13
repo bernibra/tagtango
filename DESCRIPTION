@@ -28,6 +28,7 @@ Imports:
     shinyWidgets,
     SingleCellExperiment,
     spelling,
+    stats,
     SummarizedExperiment
 Encoding: UTF-8
 LazyData: false

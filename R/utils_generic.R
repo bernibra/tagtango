@@ -86,11 +86,11 @@ run_basic_checks <- function(norm, dat, maxcol = NULL) {
   }
 
   if(is.null(rownames(norm))){
-    return("There is something odd regarding the expression data inputed. Please refer to the app's manual and README page for specifications on the input format.")
+    return("Column names are missing in the expression data matrix. Please refer to the app's manual and README page for specifications on the input format.")
   }
 
   if(is.null(rownames(dat))){
-    return("There is something odd regarding the expression data inputed. Please refer to the app's manual and README page for specifications on the input format.")
+    return("Row names are missing in the data object. Please refer to the app's manual and README page for specifications on the input format.")
   }
 
   if(!all(rownames(dat) == rownames(norm))){

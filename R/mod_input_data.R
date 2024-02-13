@@ -24,18 +24,12 @@ mod_input_data_ui <- function(id){
       h4("Main data entry"),
       br(),
       column(12, align = "left",
-        p("The app expects a `MultiAssayExperiment` object, a `SingleCellExperiment` or `data.frame` with annotations as colData or columns, respectively."),
+        uiOutput(ns("data_message")),
         div(class ="outerDiv_container",
             div(class = "outerDiv", style = "align-items: flex-start; justify-content: flex-start;",
                 uiOutput(ns("data_holder")),
                 div(style = "margin: 0px; padding: 0px; padding-left: 2pt;",
-                 shinyWidgets::radioGroupButtons(
-                   inputId = ns("test_data"),
-                   label = "",
-                   selected = character(0),
-                   choices = c("Test data"),
-                   status = "custom"
-                 )
+                 uiOutput(ns("test_data_holder")),
                )
           )
         ),
@@ -53,7 +47,7 @@ mod_input_data_ui <- function(id){
 #' input_data Server Functions
 #'
 #' @noRd
-mod_input_data_server <- function(id, data){
+mod_input_data_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -67,18 +61,36 @@ mod_input_data_server <- function(id, data){
 
     shinyjs::disable("load", asis = T)
 
-    output$data_holder <- renderUI({
-      shiny::fileInput(
-        ns("data"),
-        label = "",
-        multiple = FALSE,
-        accept = c(".csv", ".tsv", ".txt", ".rds", ".Rds"),
-        width = NULL,
-        buttonLabel = "Browse...",
-        placeholder = "No file selected",
-        capture = NULL
-      )
-    })
+    if(!is.null(golem::get_golem_options(which = "input_data"))){
+      values$inputfile <- list(datapath="argument")
+    }else{
+      output$data_message <- renderUI({
+        p("The app expects a `MultiAssayExperiment` object, a `SingleCellExperiment` or `data.frame` with annotations as colData or columns, respectively.")
+        })
+
+      output$data_holder <- renderUI({
+        shiny::fileInput(
+          ns("data"),
+          label = "",
+          multiple = FALSE,
+          accept = c(".csv", ".tsv", ".txt", ".rds", ".Rds"),
+          width = NULL,
+          buttonLabel = "Browse...",
+          placeholder = "No file selected",
+          capture = NULL
+        )
+      })
+
+      output$test_data_holder <- renderUI({
+        shinyWidgets::radioGroupButtons(
+          inputId = ns("test_data"),
+          label = "",
+          selected = character(0),
+          choices = c("Test data"),
+          status = "custom"
+        )
+      })
+    }
 
     observeEvent(input$test_data,{
       output$annotations <- renderUI({})
@@ -112,7 +124,7 @@ mod_input_data_server <- function(id, data){
 
       output$annotations <- renderUI({
         tagList(
-            column(12, p("The data has been loaded! Now, you need to define the basic aspects of the comparision between annotations.")),
+            column(12, p("A dataset was loaded! Now, you need to define the basic aspects of the comparision between annotations.")),
             column(4, align = "left", style = "padding: 1em; vertical-align: middle;",
                    column(12, class = "inner_box",
                             shinyWidgets::pickerInput(
@@ -147,15 +159,15 @@ mod_input_data_server <- function(id, data){
     })
 
     observeEvent(values$inputfile,{
-      print("run once!")
       output$annotations <- renderUI({})
       output$additional_info <- renderUI({})
 
       values$data <- tryCatch({
-            read_input(filename = input$data$datapath)
+            read_input(filename = values$inputfile$datapath, data = golem::get_golem_options(which = "input_data"))
           }, error = function(e) {
             read_input(NULL)
         })
+
       values$ReadError <- values$data$ReadError
       values$filename <- input$data$datapath
 
@@ -182,7 +194,7 @@ mod_input_data_server <- function(id, data){
 
         output$annotations <- renderUI({
           tagList(
-            column(12, p("The data has been loaded! Now, you need to define the basic aspects of the comparision between annotations.")),
+            column(12, p("A dataset was loaded! Now, you need to define the basic aspects of the comparision between annotations.")),
             column(4, align = "left", style = "padding: 1em; vertical-align: middle;",
                    column(12, class = "inner_box",
                           shinyWidgets::pickerInput(

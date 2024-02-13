@@ -16,13 +16,26 @@ mod_sankeyNetwork_ui <- function(id){
                  div(style="text-align: justify;",
                     span(
                       shinyWidgets::dropdownButton(
-                        h5("Filter data:"),
-                        uiOutput(ns("num_holder")),
-                        shinyWidgets::materialSwitch(
-                          inputId = ns("sort"),
-                          label = "sort nodes by abundance",
-                          value = FALSE,
-                          status = "danger"
+                        tagList(
+                          h5("Filter data:"),
+                          p("Set the minimum number of cells per link:"),
+                          column(12, align = "right", uiOutput(ns("num_holder"))),
+                          p("Sort nodes by abundance: "),
+                          column(12, align = "right",
+                                    htmltools::tagAppendAttributes(
+                                        shinyWidgets::materialSwitch(
+                                          inputId = ns("sort"),
+                                          label = NULL,
+                                          value = FALSE,
+                                          inline = TRUE,
+                                          status = "danger"
+                                        ),
+                                        style = "text-align: initial;"
+                                    )
+                          ),
+                          p("Set the valley position for color style:"),
+                          column(12, align = "right", plotOutput(ns("density_holder"), width = "95%", height = "200px", click = ns("valley_position"))),
+                          # column(12, align="right", textOutput(ns("valley_position_text")))
                         ),
                         circle = FALSE,
                         label = "Filter and sort",
@@ -96,9 +109,6 @@ mod_sankeyNetwork_server <- function(id, data){
     values$code_fselection <- NULL
     values$code_sselection <- NULL
 
-    values$quantiles <- quantile(data$norm, probs = c(0.05, 0.95))
-
-
     left_color <- "#fbb4ae"
     right_color <- "#b3cde3"
 
@@ -130,11 +140,11 @@ mod_sankeyNetwork_server <- function(id, data){
       values$dat <- values$dat %>% dplyr::filter(!(!!dplyr::sym(data$filter_variable) %in% !!data$filter_values))
 
     }
-
     values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                                 rna_umap = values$rna_umap, adt_umap = values$adt_umap)
-
     values$max_value$numMax <- max(values$network$links$value)
+    values$quantiles <- quantile(data$norm, probs = c(0.05, 0.95))
+    values$density <- stats::density(data$norm)
 
     numVal_d <- reactive({
       if(!is.null(input$num) && !is.na(input$num)){
@@ -163,8 +173,9 @@ mod_sankeyNetwork_server <- function(id, data){
     }
 
     output$num_holder <- renderUI({
-      numericInput(ns("num"), label = "Minimum number of cells per link:", value = numVal_d(), min = values$max_value$numMin, max = values$max_value$numMax-1) %>% smallInput(class = "form_filtering")
+      numericInput(ns("num"), label = NULL, value = numVal_d(), min = values$max_value$numMin, max = values$max_value$numMax-1) %>% smallInput(class = "form_filtering")
       })
+    outputOptions(output, "num_holder", suspendWhenHidden=FALSE)
 
     dataListen <- reactive({
       list(input$cells, input$num)
@@ -172,16 +183,44 @@ mod_sankeyNetwork_server <- function(id, data){
 
     observeEvent(dataListen(), {
       shinyjs::disable(id = "num")
-
+      values$first_selection <- NULL
+      values$second_selection <- NULL
       values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                             rna_umap = values$rna_umap, adt_umap = values$adt_umap,
                             grouping_variable = data$grouping_variable, grouping_values = input$cells,
                             min_counts = numVal_d())
+
+      values$quantiles <- quantile(values$norm, probs = c(0.05, 0.95))
+      values$density <- stats::density(values$norm)
+
     })
+
 
     observeEvent(input$cells, {
       values$max_value$numMax <- max(values$network$links$value)
       shinyjs::enable(id = "num")
+    })
+
+    output$density_holder <- renderPlot(expr =
+                                              ggplot(data=data.frame(x = values$density$x, y = values$density$y), aes(x = x, y=y)) +
+                                              geom_line() +
+                                              geom_vline(xintercept = values$valley_position, color = "#F4BA02") +
+                                              xlab("Expression") +
+                                              ggtitle(label = "", subtitle = paste0("Valley position: ", as.character(ifelse(is.null(values$valley_position), "none", round(values$valley_position, digits = 3))))) +
+                                              theme_bw() +
+                                              theme(text = element_text(colour = "#3D405B", size = 14),
+                                                    axis.title.y = element_blank(),
+                                                    axis.text.y = element_blank(),
+                                                    axis.ticks.y = element_blank(),
+                                                    panel.grid = element_blank(),
+                                                    panel.border = element_rect(color = "#3D405B", linewidth = 1),
+                                                    plot.title = element_blank(),
+                                                    plot.subtitle = element_text(hjust=1, vjust=0.5, size = 11)
+                                                    )
+    )
+
+    observeEvent(input$valley_position$x, {
+      values$valley_position <- input$valley_position$x
     })
 
     output$plot <- networkD3::renderSankeyNetwork({
@@ -205,30 +244,30 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
     })
 
     firstselection <- reactive({
-      list(input$target1,input$source1, input$cells)
+      list(input$target1, input$source1, input$cells)
     })
 
 
     observeEvent(firstselection(), {
       if(!is.null(input$target1) | !is.null(input$source1)){
 
-        width <- (input$width - (8/12) * 0.7 * input$width)/2
-        height <- (input$width - (8/12) * 0.7 * input$width)/2
+        values$width <- (input$width - (8/12) * 0.7 * input$width)/2
+        values$height <- (input$width - (8/12) * 0.7 * input$width)/2
 
         values$code_fselection <- "quant <- quantile(dat$data$norm, probs = c(0.05, 0.95))\n\n## first selection\n\n"
 
         if(is.null(input$target1)){
-          values$fselect <- values$network$dat$i==input$source1
+          values$first_selection <- values$network$dat$i==input$source1
           maintitle <- input$source1
           values$code_fselection <- paste0(values$code_fselection, "first_selection <- dat$network$dat$i==", rsym(input$source1), "\n")
           values$code_fselection <- paste0(values$code_fselection, "ftitle <- ", rsym(input$source1), "\n")
         }else if(is.null(input$source1)){
-          values$fselect <- values$network$dat$j==input$target1
+          values$first_selection <- values$network$dat$j==input$target1
           maintitle <- input$target1
           values$code_fselection <- paste0(values$code_fselection, "first_selection <- dat$network$dat$j==", rsym(input$target1), "\n")
           values$code_fselection <- paste0(values$code_fselection, "ftitle <- ", rsym(input$target1), "\n")
         }else{
-          values$fselect <- (values$network$dat$i==input$source1 & values$network$dat$j==input$target1)
+          values$first_selection <- (values$network$dat$i==input$source1 & values$network$dat$j==input$target1)
           maintitle <- paste0(input$source1, " \u27A4 ", input$target1)
           values$code_fselection <- paste0(values$code_fselection, "first_selection <- (dat$network$dat$i==", rsym(input$source1), " & dat$network$dat$j==", rsym(input$target1), ")\n")
           values$code_fselection <- paste0(values$code_fselection, "ftitle <- paste0(", rsym(input$source1), ",' -> ',", rsym(input$target1),  ")\n")
@@ -236,58 +275,40 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
 
         values$ftitle <- maintitle
 
-        if(any(values$fselect)){
-
-          mod_panel_decomposition_server("panel_decomposition_1",
-                                         umap_rna = values$network$rna_umap, umap_adt = values$network$adt_umap,
-                                         first_selection = values$fselect, height = height, width = width)
-
-          mod_panel_rose_server("panel_rose_1", adt = values$norm, dat = values$network$dat,
-                                ftitle = values$ftitle, fselection = values$fselect,
-                                class = "top white", height = height, width = width, isRNA = data$data_type=="RNA", quant = values$quantiles)
-
-        }else{
-          mod_panel_decomposition_server("panel_decomposition_1",
-                                         umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
-          mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
-                                class = "top white")
-          values$code_fselection <- NULL
+        if(!any(values$first_selection)){
+          values$first_selection <- NULL
         }
       }else{
-        mod_panel_decomposition_server("panel_decomposition_1",
-                                       umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
-        mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
-                              class = "top white")
+        values$first_selection <- NULL
+        values$second_selection <- NULL
         values$code_fselection <- NULL
       }
     })
-
 
     secondselection <- reactive({
       list(input$target2,input$source2, input$cells)
     })
 
     observeEvent(secondselection(), {
-
       if(!is.null(input$target2) | !is.null(input$source2)){
 
-        width <- (input$width - (8/12) * 0.7 * input$width)/2
-        height <- (input$width - (8/12) * 0.7 * input$width)/2
+        values$width <- (input$width - (8/12) * 0.7 * input$width)/2
+        values$height <- (input$width - (8/12) * 0.7 * input$width)/2
 
         values$code_sselection <- "## second selection\n\n"
 
         if(is.null(input$target2)){
-          values$sselect <- values$network$dat$i==input$source2
+          values$second_selection <- values$network$dat$i==input$source2
           maintitle <- input$source2
           values$code_sselection <- paste0(values$code_sselection, "second_selection <- dat$network$dat$i==", rsym(input$source2), "\n")
           values$code_sselection <- paste0(values$code_sselection, "stitle <- ", rsym(input$source2), "\n")
         }else if(is.null(input$source2)){
-          values$sselect <- values$network$dat$j==input$target2
+          values$second_selection <- values$network$dat$j==input$target2
           maintitle <- input$target2
           values$code_sselection <- paste0(values$code_sselection, "second_selection <- dat$network$dat$j==", rsym(input$target2), "\n")
           values$code_sselection <- paste0(values$code_sselection, "stitle <- ", rsym(input$target2), "\n")
         }else{
-          values$sselect <- (values$network$dat$i==input$source2 & values$network$dat$j==input$target2)
+          values$second_selection <- (values$network$dat$i==input$source2 & values$network$dat$j==input$target2)
           maintitle <- paste0(input$source2, " \u27A4 ", input$target2)
           values$code_sselection <- paste0(values$code_sselection, "second_selection <- (dat$network$dat$i==", rsym(input$source2), " & dat$network$dat$j==", rsym(input$target2), ")\n")
           values$code_sselection <- paste0(values$code_sselection, "stitle <- paste0(", rsym(input$source2), ",' -> ',", rsym(input$target2),  ")\n")
@@ -295,35 +316,22 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
 
         values$stitle <- maintitle
 
-        if(any(values$sselect)){
-
-          mod_panel_decomposition_server("panel_decomposition_1",
-                                         umap_rna = values$network$rna_umap, umap_adt = values$network$adt_umap,
-                                         first_selection = values$fselect, second_selection = values$sselect, height = height, width = width)
-
-          mod_panel_rose_server("panel_rose_1", adt = values$norm, dat = values$network$dat,
-                                stitle = values$stitle, ftitle = values$ftitle,
-                                fselection = values$fselect, sselection = values$sselect,
-                                class = "top white", height = height, width = width, isRNA = data$data_type=="RNA", quant = values$quantiles)
-
-        }else{
-          mod_panel_decomposition_server("panel_decomposition_1",
-                                         umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
-          mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
-                                class = "top white")
+        if(!any(values$second_selection)){
+          values$first_selection <- NULL
+          values$second_selection <- NULL
           values$code_sselection <- NULL
-
         }
-
       }else{
-        mod_panel_decomposition_server("panel_decomposition_1",
-                                       umap_rna = NULL, umap_adt = NULL, first_selection = NULL)
-        mod_panel_rose_server("panel_rose_1", adt = NULL, dat = NULL, ftitle = NULL, stitle = NULL, fselection = NULL,
-                              class = "top white")
+        values$first_selection <- NULL
+        values$second_selection <- NULL
         values$code_sselection <- NULL
       }
     })
 
+    mod_panel_decomposition_server("panel_decomposition_1", values = values)
+
+    mod_panel_rose_server("panel_rose_1", values = values,
+                          class = "top white")
 
 
     observeEvent(input$restart,{
@@ -337,7 +345,6 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
       },
       content = function(file) {
         # Write the R file that will be downloaded
-
         values$code_rose_figures <- generate_code_rose(values$norm, values$code_fselection, values$code_sselection, data$data_type)
 
         if(!is.null(values$network$rna_umap)){

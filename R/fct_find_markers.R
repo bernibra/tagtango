@@ -22,8 +22,10 @@ colMeans_b <- function(mat){
 #' @return The list with a data.frame and a list of markers.
 #'
 #' @noRd
-find_markers <- function(extra = 0, n=4, mat, quant = c(1,6), zero = 3){
+find_markers <- function(extra = 0, n=4, mat, quant = c(1,6), zero = NULL){
   m = 11
+
+  zero <- ifelse(is.null(zero), mean(quant), zero)
 
   variable <- colnames(mat)
   if(is.null(variable)){
@@ -67,8 +69,9 @@ define_color <- function(value, n = 11, quant = c(1,6)){
 #' @return The return value, if any, from executing the function.
 #'
 #' @noRd
-find_markers_diff <- function(extra = 0, n=4, mat_left, mat_right, zero = 3){
+find_markers_diff <- function(extra = 0, n=4, mat_left, mat_right, quant = c(1,6), zero = NULL){
   m = 11
+  zero <- ifelse(is.null(zero), mean(quant), zero)
 
   variable <- colnames(mat_left)
   if(is.null(variable)){
