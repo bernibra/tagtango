@@ -292,18 +292,16 @@ mod_input_data_server <- function(id){
           code = paste0(values$code, "dat <- process_data(filename = ", rsym(values$filename),
                         ", data_type = ", rsym(input$data_type),
                         ", left = ", rsym(input$left),
-                        ", right = ", rsym(input$right),
-                        umap()$codebit),
+                        ", right = ", rsym(input$right)),
           dat = values$data$dat,
           left = input$left,
           right = input$right,
           sce = if(!is.null(values$data$mae)){values$data$mae[[input$data_type]]}else if(!is.null(values$data$sce)){values$data$sce}else{NULL},
           norm = NULL,
-          rna_umap = umap()$rna,
-          adt_umap = umap()$adt,
           data_type = input$data_type,
           ErrorMessage = values$ReadError
         ),
+        umap(),
         grouping(),
         filtering()
         )

@@ -78,7 +78,7 @@ read_input.test <- function(){
       if(length(SingleCellExperiment::reducedDimNames(sce))!=0){
         for(i in SingleCellExperiment::reducedDimNames(sce)){
           d <- as.data.frame(SingleCellExperiment::reducedDim(sce, type = i)[,1:2])
-          colnames(d) <- paste0(j, "_", i, c("_first_axis", "_second_axis"))
+          colnames(d) <- paste0(j, "_", i, c("_first", "_second"))
           coldat <- cbind(coldat, d)
         }
       }
@@ -118,7 +118,7 @@ read_input.object <- function(mat, ...){
     if(length(SingleCellExperiment::reducedDimNames(mat))!=0){
       for(i in SingleCellExperiment::reducedDimNames(mat)){
         d <- as.data.frame(SingleCellExperiment::reducedDim(mat, type = i)[,1:2])
-        colnames(d) <- paste0(i, c("_first_axis", "_second_axis"))
+        colnames(d) <- paste0(i, c("_first", "_second"))
         dat <- cbind(dat, d)
       }
     }
@@ -137,7 +137,7 @@ read_input.object <- function(mat, ...){
       if(length(SingleCellExperiment::reducedDimNames(sce))!=0){
         for(i in SingleCellExperiment::reducedDimNames(sce)){
           d <- as.data.frame(SingleCellExperiment::reducedDim(sce, type = i)[,1:2])
-          colnames(d) <- paste0(j, "_", i, c("_first_axis", "_second_axis"))
+          colnames(d) <- paste0(j, "_", i, c("_first", "_second"))
           dat <- cbind(dat, d)
         }
       }

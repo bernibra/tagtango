@@ -15,7 +15,7 @@ mod_input_data_UMAP_ui <- function(id, choices){
         tags$summary("Dimension reduction"),
           column(6, align = "left", style = "padding: 1em; vertical-align: middle;",
            column(12, class = "inner_box",
-                  p("RNA data projection"),
+                  p("First data projection (e.g. RNA projection)"),
                   column(6,
                          shinyWidgets::pickerInput(ns("RNA_first_axis"),"First axis:",
                                                    choices = choices, multiple = T,
@@ -30,7 +30,7 @@ mod_input_data_UMAP_ui <- function(id, choices){
         ),
         column(6, align = "left", style = "padding: 1em;",
           column(12, class = "inner_box",
-                 p("ADT data projection"),
+                 p("Second data projection (e.g. ADT projection)"),
                  column(6,
                         shinyWidgets::pickerInput(ns("ADT_first_axis"),"First axis:",
                                                   choices = choices, multiple = T,
@@ -74,6 +74,7 @@ mod_input_data_UMAP_server <- function(id, dat){
         values$rna <- data.frame(V1 = dat[,input$RNA_first_axis], V2 = dat[,input$RNA_second_axis])
       }else{
         values$rna <- NULL
+        values$RNAtitle <- NULL
       }
     })
 
@@ -83,14 +84,24 @@ mod_input_data_UMAP_server <- function(id, dat){
         values$adt <- data.frame(V1 = dat[,input$ADT_first_axis], V2 = dat[,input$ADT_second_axis])
       }else{
         values$adt <- NULL
+        values$ADTtitle <- NULL
       }
     })
 
     return(
       reactive(
         list(
-          rna = values$rna,
-          adt = values$adt,
+          rna_umap = values$rna,
+          adt_umap = values$adt,
+          ADTtitle = find_name_projection(n=2,
+                                          P1a1 = input$ADT_first_axis,
+                                          P1a2 = input$ADT_second_axis,
+                                          P2a1 = input$RNA_first_axis,
+                                          P2a2 = input$RNA_second_axis),
+          RNAtitle = find_name_projection(n=1, P1a1 = input$RNA_first_axis,
+                                          P1a2 = input$RNA_second_axis,
+                                          P2a1 = input$ADT_first_axis,
+                                          P2a2 = input$ADT_second_axis),
           codebit = paste0(", pc1_axis1 = ", rsym(input$RNA_first_axis),
                            ", pc1_axis2 = ", rsym(input$RNA_second_axis),
                            ", pc2_axis1 = ", rsym(input$ADT_first_axis),

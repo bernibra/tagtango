@@ -17,7 +17,7 @@ mod_panel_decomposition_ui <- function(id){
 #' panel_decomposition Server Functions
 #'
 #' @noRd
-mod_panel_decomposition_server <- function(id, values, panel_padding = 20){
+mod_panel_decomposition_server <- function(id, values, panel_padding = 20, rnatitle = NULL, adttitle = NULL){
   moduleServer( id, function(input, output, session){
 
     ns <- session$ns
@@ -73,7 +73,7 @@ mod_panel_decomposition_server <- function(id, values, panel_padding = 20){
           return(scatter_plot(data = values$network$adt_umap,
                     labels = glabels,
                     values = gvalues,
-                    title = "ADT decomposition"
+                    title = adttitle$title
           ))}, bg="transparent", height = values$height-panel_padding, width = values$width-panel_padding)
       }else if(is.null(values$network$adt_umap)){
         output$options_tab <- renderUI({})
@@ -81,7 +81,7 @@ mod_panel_decomposition_server <- function(id, values, panel_padding = 20){
           return(scatter_plot(data = values$network$rna_umap,
                            labels = glabels,
                            values = gvalues,
-                           title = "RNA decomposition"
+                           title = rnatitle$title
           ))}, bg="transparent",
           height = values$height-panel_padding,
           width = values$width-panel_padding)
@@ -91,17 +91,17 @@ mod_panel_decomposition_server <- function(id, values, panel_padding = 20){
           column(12, align = "right",
                  shinyWidgets::radioGroupButtons(
                    inputId = ns("adtvsrna"),
-                   choices = c("rna", "adt"),
-                   status = "inwhite", selected = "rna"
+                   choices = c(rnatitle$tab, adttitle$tab),
+                   status = "inwhite", selected = rnatitle$tab
                  )
           )
         )})
         output$decomposition <- renderPlot({
           d <- values$network$rna_umap
-          title <- "RNA decomposition"
-          if(ifelse(is.null(input$adtvsrna), FALSE, input$adtvsrna == "adt")){
+          title <- rnatitle$title
+          if(ifelse(is.null(input$adtvsrna), FALSE, input$adtvsrna == adttitle$tab)){
             d <- values$network$adt_umap
-            title <- "ADT decomposition"
+            title <- adttitle$title
           }
           return(scatter_plot(data = d,
                            labels = glabels,

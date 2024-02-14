@@ -29,6 +29,7 @@ Imports:
     SingleCellExperiment,
     spelling,
     stats,
+    stringr,
     SummarizedExperiment
 Encoding: UTF-8
 LazyData: false

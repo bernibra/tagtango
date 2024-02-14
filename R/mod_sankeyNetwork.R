@@ -97,7 +97,6 @@ mod_sankeyNetwork_server <- function(id, data){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-
     # Main data definition ----------------------------------------------------
     values <- reactiveValues()
     values$dat <- data$dat
@@ -332,7 +331,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
     # Absolute panel on the right ---------------------------------------------
     # This is the UMAP plots
     if(!is.null(values$network$rna_umap) || !is.null(values$network$adt_umap)){
-      mod_panel_decomposition_server("panel_decomposition_1", values = values)
+      mod_panel_decomposition_server("panel_decomposition_1", values = values, rnatitle = data$RNAtitle, adttitle = data$ADTtitle)
     }
 
     # Absolute panel on the left ----------------------------------------------
@@ -382,7 +381,6 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
       session$reload()
     })
 
-
     # Download button ---------------------------------------------------------
     output$download <- downloadHandler(
       filename = function() {
@@ -406,6 +404,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         }
 
         code <- c(paste0(data$code,
+                         data$codebit,
                        ", filter_variable = ", rsym(data$filter_variable),
                        ", filter_values = ", rsym(data$filter_values),
                        ", grouping_variable = ", rsym(data$grouping_variable),
