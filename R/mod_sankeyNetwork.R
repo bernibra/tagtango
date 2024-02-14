@@ -33,9 +33,7 @@ mod_sankeyNetwork_ui <- function(id){
                                         style = "text-align: initial;"
                                     )
                           ),
-                          p("Set the valley position for color style:"),
-                          column(12, align = "right", plotOutput(ns("density_holder"), width = "95%", height = "200px", click = ns("valley_position"))),
-                          # column(12, align="right", textOutput(ns("valley_position_text")))
+                          uiOutput(ns("density_section_holder"))
                         ),
                         circle = FALSE,
                         label = "Filter and sort",
@@ -99,6 +97,8 @@ mod_sankeyNetwork_server <- function(id, data){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+
+    # Main data definition ----------------------------------------------------
     values <- reactiveValues()
     values$dat <- data$dat
     values$norm <- data$norm
@@ -112,6 +112,8 @@ mod_sankeyNetwork_server <- function(id, data){
     left_color <- "#fbb4ae"
     right_color <- "#b3cde3"
 
+
+    # Title found over the dendogram ------------------------------------------
     output$subtitle <- renderUI({tagList(
       div(class ="outerDiv_container", div(class = "outerDiv",
           column(4, align = "right",
@@ -126,7 +128,8 @@ mod_sankeyNetwork_server <- function(id, data){
       ))
     )})
 
-    # filter dat
+
+    # Filter data if there are filtering parameters defined -------------------
     if(!is.null(data$filter_variable)){
 
       if(!is.null(values$rna_umap)){
@@ -140,13 +143,15 @@ mod_sankeyNetwork_server <- function(id, data){
       values$dat <- values$dat %>% dplyr::filter(!(!!dplyr::sym(data$filter_variable) %in% !!data$filter_values))
 
     }
-
     values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                                 rna_umap = values$rna_umap, adt_umap = values$adt_umap)
     values$max_value$numMax <- max(values$network$links$value)
     values$quantiles <- quantile(data$norm, probs = c(0.05, 0.95))
-    values$density <- stats::density(data$norm)
+    values$density <- tryCatch({stats::density(data$norm)}, error = function(e) {NULL})
 
+    # Dropdown menu with filtering parameters ---------------------------------
+    # Defining the values for the cells per link parameter dynamically is actually a pain in the butt
+    # This is the best possible solution I found
     numVal_d <- reactive({
       if(!is.null(input$num) && !is.na(input$num)){
         if(input$num < values$max_value$numMin) return(values$max_value$numMin)
@@ -157,6 +162,14 @@ mod_sankeyNetwork_server <- function(id, data){
       }
     })
 
+    output$num_holder <- renderUI({
+      numericInput(ns("num"), label = NULL, value = numVal_d(), min = values$max_value$numMin, max = values$max_value$numMax-1) %>% smallInput(class = "form_filtering")
+    })
+    outputOptions(output, "num_holder", suspendWhenHidden=FALSE)
+
+
+    # Add grouping values -----------------------------------------------------
+    # When imputing the data if you enter a grouping variable like Main cell type, its values will be displayed on the top of the app
     if(!is.null(data$grouping_variable)){
       output$grouping <- renderUI({
         tagList(
@@ -173,20 +186,20 @@ mod_sankeyNetwork_server <- function(id, data){
       })
     }
 
+    # We also need to define a holder reactive value to avoid the app trying to process the data multiple times
     values$cell_group <- "All"
     observeEvent(input$cells, {
       values$cell_group <- input$cells
     }, ignoreInit = TRUE, priority = 100, ignoreNULL = TRUE)
 
-    output$num_holder <- renderUI({
-      numericInput(ns("num"), label = NULL, value = numVal_d(), min = values$max_value$numMin, max = values$max_value$numMax-1) %>% smallInput(class = "form_filtering")
-      })
-    outputOptions(output, "num_holder", suspendWhenHidden=FALSE)
 
+    # Reactive value to figure out when to update the dendogram ---------------
     dataListen <- reactive({
       list(values$cell_group, input$num)
     })
 
+
+    # Update data on call -----------------------------------------------------
     observeEvent(dataListen(), {
       shinyjs::disable(id = "num")
       values$first_selection <- NULL
@@ -197,41 +210,22 @@ mod_sankeyNetwork_server <- function(id, data){
                             min_counts = numVal_d())
 
       values$quantiles <- quantile(values$norm, probs = c(0.05, 0.95))
-      values$density <- stats::density(values$norm)
+      values$density <- tryCatch({stats::density(values$norm)}, error = function(e) {NULL})
     }, ignoreInit = TRUE, priority = 99, ignoreNULL = TRUE)
-
 
     observeEvent(dataListen(), {
       values$max_value$numMax <- max(values$network$links$value)
       shinyjs::enable(id = "num")
     }, ignoreInit = TRUE, priority = 98, ignoreNULL = TRUE)
 
-    output$density_holder <- renderPlot(expr =
-                                              ggplot(data=data.frame(x = values$density$x, y = values$density$y), aes(x = x, y=y)) +
-                                              geom_line() +
-                                              geom_vline(xintercept = values$valley_position, color = "#F4BA02") +
-                                              xlab("Expression") +
-                                              ggtitle(label = "", subtitle = paste0("Valley position: ", as.character(ifelse(is.null(values$valley_position), "none", round(values$valley_position, digits = 3))))) +
-                                              theme_bw() +
-                                              theme(text = element_text(colour = "#3D405B", size = 14),
-                                                    axis.title.y = element_blank(),
-                                                    axis.text.y = element_blank(),
-                                                    axis.ticks.y = element_blank(),
-                                                    panel.grid = element_blank(),
-                                                    panel.border = element_rect(color = "#3D405B", linewidth = 1),
-                                                    plot.title = element_blank(),
-                                                    plot.subtitle = element_text(hjust=1, vjust=0.5, size = 11)
-                                                    )
-    )
 
-    observeEvent(input$valley_position$x, {
-      values$valley_position <- input$valley_position$x
-    }, ignoreInit = TRUE, ignoreNULL = TRUE, priority = 97)
-
+    # Add dendogram holder-----------------------------------------------------------
     output$diagram <- renderUI({
       networkD3::sankeyNetworkOutput(ns("plot"), height = plotsize(max(c(length(unique(values$network$links[,1])), length(unique(values$network$links[,2]))))))
     })
 
+
+    # Create dendogram with networkD3 -----------------------------------------
     output$plot <- networkD3::renderSankeyNetwork({
       iterations <- ifelse(input$sort==F, 32, 0)
       san <- networkD3::sankeyNetwork(Links = values$network$links, Nodes = values$network$nodes,
@@ -248,6 +242,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
     })
 
 
+    # Reaction to selecting a link --------------------------------------------
     firstselection <- reactive({
       list(input$target1, input$source1, input$cells)
     })
@@ -293,6 +288,8 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
       list(input$target2,input$source2, input$cells)
     })
 
+
+    # Reaction to selecting a second link -------------------------------------
     observeEvent(secondselection(), {
       if(!is.null(input$target2) | !is.null(input$source2)){
 
@@ -332,18 +329,61 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
       }
     }, ignoreInit = TRUE, ignoreNULL = TRUE, priority = -1)
 
+    # Absolute panel on the right ---------------------------------------------
+    # This is the UMAP plots
     if(!is.null(values$network$rna_umap) || !is.null(values$network$adt_umap)){
       mod_panel_decomposition_server("panel_decomposition_1", values = values)
     }
 
-    mod_panel_rose_server("panel_rose_1", values = values,
-                          class = "top white")
+    # Absolute panel on the left ----------------------------------------------
+    # These are the rose plots
+    if(is.null(values$norm)){
+      output$density_holder <- renderPlot({})
+      values$valley_position <- NULL
+    }else{
+      # Define UI for the additional filtering based on density
+      output$density_section_holder <- renderUI({tagList(
+        p("Set the valley position for color style:"),
+        column(12, align = "right", plotOutput(ns("density_holder"), width = "95%", height = "200px", click = ns("valley_position")))
+      )})
+
+      # Density plot in the filtering drowpdown menu
+      output$density_holder <- renderPlot(expr =
+                                            ggplot(data=data.frame(x = values$density$x, y = values$density$y), aes(x = x, y=y)) +
+                                            geom_line() +
+                                            geom_vline(xintercept = values$valley_position, color = "#F4BA02") +
+                                            xlab("Expression") +
+                                            ggtitle(label = "", subtitle = paste0("Valley position: ", as.character(ifelse(is.null(values$valley_position), "none", round(values$valley_position, digits = 3))))) +
+                                            theme_bw() +
+                                            theme(text = element_text(colour = "#3D405B", size = 14),
+                                                  axis.title.y = element_blank(),
+                                                  axis.text.y = element_blank(),
+                                                  axis.ticks.y = element_blank(),
+                                                  panel.grid = element_blank(),
+                                                  panel.border = element_rect(color = "#3D405B", linewidth = 1),
+                                                  plot.title = element_blank(),
+                                                  plot.subtitle = element_text(hjust=1, vjust=0.5, size = 11)
+                                            )
+      )
+
+      # Valley position in the density plot above
+      observeEvent(input$valley_position$x, {
+        values$valley_position <- input$valley_position$x
+      }, ignoreInit = TRUE, ignoreNULL = TRUE, priority = 97)
+
+      # Actual absolute panel on the left with the rose plot
+      mod_panel_rose_server("panel_rose_1", values = values,
+                            class = "top white")
+    }
 
 
+    # Restart app on click ----------------------------------------------------
     observeEvent(input$restart,{
       session$reload()
     })
 
+
+    # Download button ---------------------------------------------------------
     output$download <- downloadHandler(
       filename = function() {
         # Use the selected dataset as the suggested file name
@@ -383,7 +423,6 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         writeLines(code, con = file, sep = "\n")
       }
     )
-
 
   })
 }
