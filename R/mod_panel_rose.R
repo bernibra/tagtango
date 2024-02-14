@@ -28,7 +28,6 @@ mod_panel_rose_server <- function(id, values,
     })
 
     observeEvent(dataListen(),{
-      # print("rose")
 
       if(is.null(values$first_selection)){
         output$rose <- renderUI({})
@@ -170,7 +169,7 @@ mod_panel_rose_server <- function(id, values,
           }, bg="transparent", height = values$height, width = values$width-panel_padding)
         }
       }
-    })
+    }, ignoreInit = TRUE, priority = 9, ignoreNULL = TRUE)
 
 
   })

@@ -40,7 +40,7 @@ mod_panel_decomposition_server <- function(id, values, panel_padding = 20){
       }
 
 
-      if((!is.null(values$network$rna_umap) || !is.null(values$network$adt_umap)) && !is.null(glabels)){
+      if(!is.null(glabels)){
         output$panel <- renderUI({
           absolutePanel(id = "controls", class = "panel panel-default topleft white",
                         top = "98%", left = "99%", width = values$width, fixed=TRUE,
@@ -62,7 +62,7 @@ mod_panel_decomposition_server <- function(id, values, panel_padding = 20){
         output$panel <- renderUI({})
       }
 
-      if((is.null(values$network$rna_umap) && is.null(values$network$adt_umap)) || is.null(glabels)){
+      if(is.null(glabels)){
         output$decomposition <- renderPlot({}, bg="transparent",
                                            height = values$height-panel_padding,
                                            width = values$width-panel_padding)
@@ -111,7 +111,7 @@ mod_panel_decomposition_server <- function(id, values, panel_padding = 20){
           height = values$height-panel_padding,
           width = values$width-panel_padding)
       }
-    })
+    }, ignoreInit = TRUE, priority = 10, ignoreNULL = TRUE)
 
 
   })

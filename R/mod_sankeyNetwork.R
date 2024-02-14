@@ -140,6 +140,7 @@ mod_sankeyNetwork_server <- function(id, data){
       values$dat <- values$dat %>% dplyr::filter(!(!!dplyr::sym(data$filter_variable) %in% !!data$filter_values))
 
     }
+
     values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                                 rna_umap = values$rna_umap, adt_umap = values$adt_umap)
     values$max_value$numMax <- max(values$network$links$value)
@@ -172,13 +173,18 @@ mod_sankeyNetwork_server <- function(id, data){
       })
     }
 
+    values$cell_group <- "All"
+    observeEvent(input$cells, {
+      values$cell_group <- input$cells
+    }, ignoreInit = TRUE, priority = 100, ignoreNULL = TRUE)
+
     output$num_holder <- renderUI({
       numericInput(ns("num"), label = NULL, value = numVal_d(), min = values$max_value$numMin, max = values$max_value$numMax-1) %>% smallInput(class = "form_filtering")
       })
     outputOptions(output, "num_holder", suspendWhenHidden=FALSE)
 
     dataListen <- reactive({
-      list(input$cells, input$num)
+      list(values$cell_group, input$num)
     })
 
     observeEvent(dataListen(), {
@@ -192,14 +198,13 @@ mod_sankeyNetwork_server <- function(id, data){
 
       values$quantiles <- quantile(values$norm, probs = c(0.05, 0.95))
       values$density <- stats::density(values$norm)
+    }, ignoreInit = TRUE, priority = 99, ignoreNULL = TRUE)
 
-    })
 
-
-    observeEvent(input$cells, {
+    observeEvent(dataListen(), {
       values$max_value$numMax <- max(values$network$links$value)
       shinyjs::enable(id = "num")
-    })
+    }, ignoreInit = TRUE, priority = 98, ignoreNULL = TRUE)
 
     output$density_holder <- renderPlot(expr =
                                               ggplot(data=data.frame(x = values$density$x, y = values$density$y), aes(x = x, y=y)) +
@@ -221,6 +226,10 @@ mod_sankeyNetwork_server <- function(id, data){
 
     observeEvent(input$valley_position$x, {
       values$valley_position <- input$valley_position$x
+    }, ignoreInit = TRUE, ignoreNULL = TRUE, priority = 97)
+
+    output$diagram <- renderUI({
+      networkD3::sankeyNetworkOutput(ns("plot"), height = plotsize(max(c(length(unique(values$network$links[,1])), length(unique(values$network$links[,2]))))))
     })
 
     output$plot <- networkD3::renderSankeyNetwork({
@@ -235,18 +244,13 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
                            Source = "source", Target = "target",
                            Value = "value", NodeID = "name",NodeGroup = "groups",
                            fontSize= 12, nodeWidth = 30, iterations = ', iterations, ')\n\n')
-
       htmlwidgets::onRender(san, stankeyNetwork_js(links = TRUE))
     })
 
-    output$diagram <- renderUI({
-      networkD3::sankeyNetworkOutput(ns("plot"), height = plotsize(max(c(length(unique(values$network$links[,1])), length(unique(values$network$links[,2]))))))
-    })
 
     firstselection <- reactive({
       list(input$target1, input$source1, input$cells)
     })
-
 
     observeEvent(firstselection(), {
       if(!is.null(input$target1) | !is.null(input$source1)){
@@ -283,7 +287,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         values$second_selection <- NULL
         values$code_fselection <- NULL
       }
-    })
+    }, ignoreInit = TRUE, ignoreNULL = TRUE, priority = 0)
 
     secondselection <- reactive({
       list(input$target2,input$source2, input$cells)
@@ -326,9 +330,11 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         values$second_selection <- NULL
         values$code_sselection <- NULL
       }
-    })
+    }, ignoreInit = TRUE, ignoreNULL = TRUE, priority = -1)
 
-    mod_panel_decomposition_server("panel_decomposition_1", values = values)
+    if(!is.null(values$network$rna_umap) || !is.null(values$network$adt_umap)){
+      mod_panel_decomposition_server("panel_decomposition_1", values = values)
+    }
 
     mod_panel_rose_server("panel_rose_1", values = values,
                           class = "top white")
