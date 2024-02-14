@@ -416,7 +416,7 @@ a {
   border-color:  #3D405B;
   font-size: 14px;
   opacity: 0.9;
-  z-index: 10000;
+  z-index: 20000;
 }
 
 .dropdown-menu:hover {
