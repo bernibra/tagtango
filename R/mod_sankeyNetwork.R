@@ -339,6 +339,9 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
     if(is.null(values$norm)){
       output$density_holder <- renderPlot({})
       values$valley_position <- NULL
+      # if(data$slow){
+      #
+      # }
     }else{
       # Define UI for the additional filtering based on density
       output$density_section_holder <- renderUI({tagList(
@@ -392,13 +395,13 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         values$code_rose_figures <- generate_code_rose(values$norm, values$code_fselection, values$code_sselection, data$data_type)
 
         if(!is.null(values$network$rna_umap)){
-          values$code_umap_rna <- generate_code_umap("dat$network$rna_umap", values$code_fselection, values$code_sselection, label = "first dimension")
+          values$code_umap_rna <- generate_code_umap("dat$network$rna_umap", values$code_fselection, values$code_sselection, xlabel = data$RNAtitle$x, ylabel = data$RNAtitle$y, label = "first projection")
         }else{
           values$code_umap_rna <- NULL
         }
 
         if(!is.null(values$network$adt_umap)){
-          values$code_umap_adt <- generate_code_umap("dat$network$adt_umap", values$code_fselection, values$code_sselection, label = "second dimension")
+          values$code_umap_adt <- generate_code_umap("dat$network$adt_umap", values$code_fselection, values$code_sselection, xlabel = data$ADTtitle$x, ylabel = data$ADTtitle$y, label = "second projection")
         }else{
           values$code_umap_adt <- NULL
         }

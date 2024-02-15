@@ -60,18 +60,24 @@ generate_code_rose <- function(norm, fselection, sselection, data_type){
 #' @return Returns a string
 #'
 #' @noRd
-generate_code_umap <- function(df, fselection, sselection, label = "first dimension"){
+generate_code_umap <- function(df, fselection, sselection, xlabel, ylabel, label = "first dimension"){
 
 if(!is.null(sselection)){
     code_figures <- c(paste0("## Scatter plot ", label, "\n"),
                       'labels = c("all other", "first", "second", "both")[1*first_selection + second_selection*2 +1]',
                       'values = c("all other"="#D3D1C6", "first"="#35978f", "second"="#bf812d", "both" = "#808B5A")\n',
-                      paste0(substring(label, 1, 1) ,' <- scatter_plot(data = ', df , ', labels = labels, values = values, title = ', rsym(label) , ")\nprint(", substring(label, 1, 1),")\n"))
+                      paste0(substring(label, 1, 1) ,' <- scatter_plot(data = ', df , ', labels = labels, values = values, title = ', rsym(label) ,
+                             ", xlabel = ", rsym(xlabel) ,
+                             ", ylabel = ", rsym(ylabel) ,
+                             ")\nprint(", substring(label, 1, 1),")\n"))
   }else if(!is.null(fselection)){
     code_figures <- c(paste0("## Scatter plot ", label, "\n"),
                       'labels = ifelse(first_selection, "selected", "other")',
                       'values = c("other"="#D3D1C6", "selected"="#35978f")\n',
-                      paste0(substring(label, 1, 1) ,' <- scatter_plot(data = ', df , ', labels = labels, values = values, title = ', rsym(label) , ")\nprint(", substring(label, 1, 1),")\n"))
+                      paste0(substring(label, 1, 1) ,' <- scatter_plot(data = ', df , ', labels = labels, values = values, title = ', rsym(label) ,
+                             ", xlabel = ", rsym(xlabel) ,
+                             ", ylabel = ", rsym(ylabel) ,
+                             ")\nprint(", substring(label, 1, 1),")\n"))
 
   }else{
     code_figures <- NULL
