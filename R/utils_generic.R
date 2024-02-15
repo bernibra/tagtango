@@ -115,13 +115,17 @@ run_basic_checks <- function(norm, dat, maxcol = NULL) {
 #' @return A good pair of names.
 #'
 #' @noRd
-find_name_projection <- function(n=1, P1a1 = NULL, P1a2 = NULL, P2a1=NULL, P2a2 = NULL){
+find_name_projection <- function(n=1, maxlength=80, maxtab=30, P1a1 = NULL, P1a2 = NULL, P2a1=NULL, P2a2 = NULL){
 
   projection_number <- paste0("#", as.character(n))
-  if(!is.null(P1a1)){P1a1 <- tolower(unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P1a1)), " ")))}
-  if(!is.null(P1a2)){P1a2 <- tolower(unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P1a2)), " ")))}
-  if(!is.null(P2a1)){P2a1 <- tolower(unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P2a1)), " ")))}
-  if(!is.null(P2a2)){P2a2 <- tolower(unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P2a2)), " ")))}
+  if(!is.null(P1a1)){P1a1_ <- unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P1a1)), " "))}
+  P1a1 <- tolower(P1a1_)
+  if(!is.null(P1a2)){P1a2_ <- unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P1a2)), " "))}
+  P1a2 <- tolower(P1a2_)
+  if(!is.null(P2a1)){P2a1_ <- unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P2a1)), " "))}
+  P2a1 <- tolower(P2a1_)
+  if(!is.null(P2a2)){P2a2_ <- unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P2a2)), " "))}
+  P2a2 <- tolower(P2a2_)
 
   P1common <- intersect(P1a1, P1a2)
   proj <- paste("Projection", projection_number, sep = " ")
@@ -129,15 +133,15 @@ find_name_projection <- function(n=1, P1a1 = NULL, P1a2 = NULL, P2a1=NULL, P2a2 
   if(is.null(P2a1) || is.null(P2a2)){
     if(length(P1common)==0){
       tab <- proj
-      title <- paste("Projection: ", paste(P1a1, collapse = " "), " VS ", paste(P1a2, collapse = " "), collapse = "")
-      title <- ifelse(nchar(title)>=100, proj, title)
-      return(list(tab = tab, title = title))
+      title <- paste("Projection: ", paste(P1a1, collapse = " "), " VS ", paste(P1a2, collapse = " "), sep = "")
+      title <- ifelse(nchar(title)>=maxlength, proj, title)
+      return(list(tab = tab, title = title, x=paste(P1a1_, collapse = " "), y = paste(P1a2_, collapse = " ")))
     }else{
       tab <- paste(P1common,collapse = " ")
-      tab <- ifelse(nchar(tab)>=20, proj, tab)
+      tab <- ifelse(nchar(tab)>=maxtab, proj, tab)
       title <- paste("Projection:", paste(P1common,  collapse = " "))
-      title <- ifelse(nchar(title)>=100, proj, title)
-      return(list(tab = tab, title = title))
+      title <- ifelse(nchar(title)>=maxlength, proj, title)
+      return(list(tab = tab, title = title, x=paste(P1a1_, collapse = " "), y = paste(P1a2_, collapse = " ")))
     }
   }
 
@@ -146,15 +150,15 @@ find_name_projection <- function(n=1, P1a1 = NULL, P1a2 = NULL, P2a1=NULL, P2a2 
 
   if(length(diff1)==0){
     tab <- proj
-    title <- paste("Projection: ", paste(P1a1, collapse = " "), " VS ", paste(P1a2, collapse = " "), collapse = "")
-    title <- ifelse(nchar(title)>=100, proj, title)
-    return(list(tab = tab, title = title))
+    title <- paste("Projection: ", paste(P1a1, collapse = " "), " VS ", paste(P1a2, collapse = " "), sep = "")
+    title <- ifelse(nchar(title)>=maxlength, proj, title)
+    return(list(tab = tab, title = title, x=paste(P1a1_, collapse = " "), y = paste(P1a2_, collapse = " ")))
   }else{
     tab <- paste(diff1,collapse = " ")
-    tab <- ifelse(nchar(tab)>=20, proj, tab)
+    tab <- ifelse(nchar(tab)>=maxtab, proj, tab)
     title <- paste("Projection:", paste(diff1,  collapse = " "))
-    title <- ifelse(nchar(title)>=100, proj, title)
-    return(list(tab = tab, title = title))
+    title <- ifelse(nchar(title)>=maxlength, proj, title)
+    return(list(tab = tab, title = title, x=paste(P1a1_, collapse = " "), y = paste(P1a2_, collapse = " ")))
   }
 
 }

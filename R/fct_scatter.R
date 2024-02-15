@@ -8,7 +8,7 @@
 #'
 #' @return returns a ggplot object.
 #' @export
-scatter_plot <- function(data, labels, values = c("a", "b"), title = "UMAP of the RNA data"){
+scatter_plot <- function(data, labels, values = c("a", "b"), title = "UMAP of the RNA data", xlabel = "first axis", ylabel = "second axis"){
 
   fontcolor = "#3D405B"
   fontsize = 14
@@ -23,8 +23,8 @@ scatter_plot <- function(data, labels, values = c("a", "b"), title = "UMAP of th
   return(data %>% dplyr::arrange(labels) %>% ggplot(aes(x=V1, y=V2, color = labels)) +
            geom_point(size = 0.5, alpha = 0.2) +
            scale_colour_manual(values = values) +
-           xlab("first axis") +
-           ylab("second axis") +
+           xlab(xlabel) +
+           ylab(ylabel) +
            ggtitle(label = "", subtitle = title) +
            guides(colour = guide_legend(override.aes = list(size=2, alpha = 0.7))) +
            theme_bw() +

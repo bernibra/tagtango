@@ -73,7 +73,9 @@ mod_panel_decomposition_server <- function(id, values, panel_padding = 20, rnati
           return(scatter_plot(data = values$network$adt_umap,
                     labels = glabels,
                     values = gvalues,
-                    title = adttitle$title
+                    title = adttitle$title,
+                    xlabel = adttitle$x,
+                    ylabel = adttitle$y
           ))}, bg="transparent", height = values$height-panel_padding, width = values$width-panel_padding)
       }else if(is.null(values$network$adt_umap)){
         output$options_tab <- renderUI({})
@@ -81,7 +83,9 @@ mod_panel_decomposition_server <- function(id, values, panel_padding = 20, rnati
           return(scatter_plot(data = values$network$rna_umap,
                            labels = glabels,
                            values = gvalues,
-                           title = rnatitle$title
+                           title = rnatitle$title,
+                           xlabel = rnatitle$x,
+                           ylabel = rnatitle$y
           ))}, bg="transparent",
           height = values$height-panel_padding,
           width = values$width-panel_padding)
@@ -99,20 +103,25 @@ mod_panel_decomposition_server <- function(id, values, panel_padding = 20, rnati
         output$decomposition <- renderPlot({
           d <- values$network$rna_umap
           title <- rnatitle$title
+          xlabel <- rnatitle$x
+          ylabel <- rnatitle$y
           if(ifelse(is.null(input$adtvsrna), FALSE, input$adtvsrna == adttitle$tab)){
             d <- values$network$adt_umap
             title <- adttitle$title
+            xlabel <- adttitle$x
+            ylabel <- adttitle$y
           }
           return(scatter_plot(data = d,
                            labels = glabels,
                            values = gvalues,
-                           title = title
+                           title = title,
+                           xlabel = xlabel,
+                           ylabel = ylabel
           ))}, bg="transparent",
           height = values$height-panel_padding,
           width = values$width-panel_padding)
       }
     }, ignoreInit = TRUE, priority = 10, ignoreNULL = TRUE)
-
 
   })
 }
