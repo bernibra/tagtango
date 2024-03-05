@@ -118,14 +118,26 @@ run_basic_checks <- function(norm, dat, maxcol = NULL) {
 find_name_projection <- function(n=1, maxlength=80, maxtab=30, P1a1 = NULL, P1a2 = NULL, P2a1=NULL, P2a2 = NULL){
 
   projection_number <- paste0("#", as.character(n))
-  if(!is.null(P1a1)){P1a1_ <- unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P1a1)), " "))}
-  P1a1 <- tolower(P1a1_)
-  if(!is.null(P1a2)){P1a2_ <- unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P1a2)), " "))}
-  P1a2 <- tolower(P1a2_)
-  if(!is.null(P2a1)){P2a1_ <- unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P2a1)), " "))}
-  P2a1 <- tolower(P2a1_)
-  if(!is.null(P2a2)){P2a2_ <- unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P2a2)), " "))}
-  P2a2 <- tolower(P2a2_)
+  if(!is.null(P1a1)){
+    P1a1_ <- unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P1a1)), " "))
+    P1a1 <- tolower(P1a1_)
+  }
+  if(!is.null(P1a2)){
+    P1a2_ <- unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P1a2)), " "))
+    P1a2 <- tolower(P1a2_)
+  }
+  if(!is.null(P2a1)){
+    P2a1_ <- unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P2a1)), " "))
+    P2a1 <- tolower(P2a1_)
+  }
+  if(!is.null(P2a2)){
+    P2a2_ <- unlist(strsplit(stringr::str_trim(gsub(pattern = "[^[:alnum:]]", " ", P2a2)), " "))
+    P2a2 <- tolower(P2a2_)
+  }
+
+  if(is.null(P1a1) || is.null(P1a2)){
+    return(NULL)
+  }
 
   P1common <- intersect(P1a1, P1a2)
   proj <- paste("Projection", projection_number, sep = " ")

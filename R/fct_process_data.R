@@ -24,7 +24,7 @@ process_data <- function(filename, data_type, left, right,
                          grouping_variable = NULL, grouping_values = NULL, min_counts = NULL){
 
   if(is.null(filename)){
-    data <- read_input("test_data")
+    data <- read_input("test_data", run_test_data = TRUE)
   }else{
     data <- read_input(filename)
     if(data$ReadError != "Valid data"){
