@@ -38,7 +38,7 @@ find_markers <- function(extra = 0, n=4, mat, quant = c(1,6), zero = NULL){
     dplyr::mutate(importance = abs(value-zero)) %>%
     dplyr::mutate(y = extra + value)
   return(list(data = data,
-              selected = data %>% dplyr::arrange(value) %>% tail(n) %>% dplyr::pull(variable),
+              selected = data %>% dplyr::arrange(importance) %>% tail(n) %>% dplyr::pull(variable),
               all = data %>% dplyr::pull(variable)))
 }
 

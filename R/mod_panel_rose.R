@@ -24,7 +24,7 @@ mod_panel_rose_server <- function(id, values,
     ns <- session$ns
 
     dataListen <- reactive({
-      list(values$norm, values$first_selection, values$second_selection)
+      list(values$norm, values$first_selection, values$second_selection, values$valley_position)
     })
 
     observeEvent(dataListen(),{
@@ -97,7 +97,8 @@ mod_panel_rose_server <- function(id, values,
           output$rose <- renderPlot({
             rose_plot_internal(data = data$data, selected = if(is.null(input$nmark)){data$selected}else{input$nmark},
                       title = ifelse(is.null(ncell), "1 cell", paste0(ncell, " cells")),
-                      maintitle = values$ftitle, palette=ifelse(is.null(values$valley_position), "BuGn", "RdYlGn"))
+                      maintitle = values$ftitle, palette=ifelse(is.null(values$valley_position), "BuGn", "RdYlGn"),
+                      valley = values$valley_position)
           }, bg="transparent", height = values$height, width = values$width-panel_padding)
         }else{
           output$panel <- renderUI({
@@ -154,12 +155,14 @@ mod_panel_rose_server <- function(id, values,
           output$rose <- renderPlot({
             rose_plot_internal(data = fdata$data, selected = if(is.null(input$nmark)){data_diff$selected}else{input$nmark},
                       title = ifelse(is.null(fncell), "1 cell", paste0(fncell, " cells")),
-                      maintitle = values$ftitle, palette=ifelse(is.null(values$valley_position), "BuGn", "RdYlGn"))
+                      maintitle = values$ftitle, palette=ifelse(is.null(values$valley_position), "BuGn", "RdYlGn"),
+                      valley = values$valley_position)
           }, bg="transparent", height = values$height, width = values$width-panel_padding)
           output$rose2 <- renderPlot({
             rose_plot_internal(data = sdata$data, selected = if(is.null(input$nmark)){data_diff$selected}else{input$nmark},
                       title = ifelse(is.null(sncell), "1 cell", paste0(sncell, " cells")),
-                      maintitle = values$stitle, palette=ifelse(is.null(values$valley_position), "YlOrBr", "RdYlGn"))
+                      maintitle = values$stitle, palette=ifelse(is.null(values$valley_position), "YlOrBr", "RdYlGn"),
+                      valley = values$valley_position)
           }, bg="transparent", height = values$height, width = values$width-panel_padding)
           output$diff <- renderPlot({box_diff_internal(data = data_diff_,
                      selected = if(is.null(input$nmark)){data_diff$selected}else{input$nmark},

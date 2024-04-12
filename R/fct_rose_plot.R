@@ -35,11 +35,11 @@ rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley 
   ncell <- nrow(fexp)
 
   if(is.null(valley)){
-    valley <- mean(colMeans(fexp))
+    valley_ <- mean(colMeans(fexp))
   }
 
   newdata <- tryCatch({
-    find_markers(extra = 0, n = n, mat = fexp, quant = quant, zero = valley)
+    find_markers(extra = 0, n = n, mat = fexp, quant = quant, zero = valley_)
       }, error = function(e) {
     NULL
     })
@@ -54,7 +54,7 @@ rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley 
 
   p <- rose_plot_internal(data = newdata$data, selected = markers,
                           title = ifelse(is.null(ncell), "1 cell", paste0(ncell, " cells")),
-                          maintitle = title, palette=palette, ...)
+                          maintitle = title, palette=palette, valley=valley, ...)
 
   return(p)
 }
@@ -67,7 +67,7 @@ rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley 
 #'
 #' @import ggplot2
 #' @noRd
-rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, palette="RdYlGn", colortitle = F, ...){
+rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, palette="RdYlGn", colortitle = F, valley = NULL, ...){
 
   m = 11
   n = 10
@@ -105,26 +105,51 @@ rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, pa
   # flip angle BY to make them readable
   data$angle<-ifelse(angle < -90, angle+180, angle)
 
-  p <- ggplot(data=data,aes(x=factor(id, levels=id, labels=variable),y=y, fill = factor(color, levels = 1:m)))+
-    geom_bar(stat="identity", alpha = 0.5)+
-    geom_text(aes(label = variable, y=y+extradist, hjust=hjust, angle=angle), size = size, color = fontcolor) +
-    scale_fill_brewer(type = "div", palette = palette, direction = ifelse(palette == "RdYlGn", -1, 1)) +
-    coord_polar(start = 0, clip = "off")+
-    xlab("")+ylab("") +
-    theme(
-      panel.grid = element_line(linewidth = 0.3, colour = "gray80"),
-      plot.margin=margin(grid::unit(0, "cm")),
-      panel.spacing = element_blank() ,
-      panel.border = element_blank(),
-      axis.text.x = element_blank(),
-      axis.ticks.x = element_blank(),
-      axis.text.y = element_text(size = fontsize-2, colour = fontcolor),
-      panel.background = element_rect(fill=NA),
-      plot.background = element_rect(fill=NA, color=NA), #,panel.border = element_blank()
-      plot.title=element_text(hjust=0, vjust=0.5, size = fontsize-1, colour = fontcolor, face = "italic"),
-      plot.subtitle = element_text(hjust=1, vjust=0.5, size = fontsize-3, colour = fontcolor, face = "italic"),
-      plot.title.position = "plot"
-    )
+  # print(valley)
+  if(is.null(valley)){
+    p <- ggplot(data=data,aes(x=factor(id, levels=id, labels=variable),y=y, fill = factor(color, levels = 1:m)))+
+      geom_bar(stat="identity", alpha = 0.5)+
+      geom_text(aes(label = variable, y=y+extradist, hjust=hjust, angle=angle), size = size, color = fontcolor) +
+      scale_fill_brewer(type = "div", palette = palette, direction = ifelse(palette == "RdYlGn", -1, 1)) +
+      coord_polar(start = 0, clip = "off")+
+      xlab("")+ylab("") +
+      theme(
+        panel.grid = element_line(linewidth = 0.3, colour = "gray80"),
+        plot.margin=margin(grid::unit(0, "cm")),
+        panel.spacing = element_blank() ,
+        panel.border = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_text(size = fontsize-2, colour = fontcolor),
+        panel.background = element_rect(fill=NA),
+        plot.background = element_rect(fill=NA, color=NA), #,panel.border = element_blank()
+        plot.title=element_text(hjust=0, vjust=0.5, size = fontsize-1, colour = fontcolor, face = "italic"),
+        plot.subtitle = element_text(hjust=1, vjust=0.5, size = fontsize-3, colour = fontcolor, face = "italic"),
+        plot.title.position = "plot"
+      )
+  }else{
+  # browser()
+    p <- ggplot(data=data,aes(x=factor(id, levels=id, labels=variable),y=y, fill = y))+
+      geom_bar(stat="identity", alpha = 0.5)+
+      geom_text(aes(label = variable, y=y+extradist, hjust=hjust, angle=angle), size = size, color = fontcolor) +
+      scale_fill_continuous_divergingx(palette = palette, mid = valley) +
+      coord_polar(start = 0, clip = "off")+
+      xlab("")+ylab("") +
+      theme(
+        panel.grid = element_line(linewidth = 0.3, colour = "gray80"),
+        plot.margin=margin(grid::unit(0, "cm")),
+        panel.spacing = element_blank() ,
+        panel.border = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_text(size = fontsize-2, colour = fontcolor),
+        panel.background = element_rect(fill=NA),
+        plot.background = element_rect(fill=NA, color=NA), #,panel.border = element_blank()
+        plot.title=element_text(hjust=0, vjust=0.5, size = fontsize-1, colour = fontcolor, face = "italic"),
+        plot.subtitle = element_text(hjust=1, vjust=0.5, size = fontsize-3, colour = fontcolor, face = "italic"),
+        plot.title.position = "plot"
+      )
+  }
 
   if(colortitle){
     p <- p +
