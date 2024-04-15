@@ -31,7 +31,7 @@ read_input.default <- function(filename, run_test_data = FALSE, data = NULL, ...
   }
 
   if(!is.null(data)){
-    return(check_dim(read_input.object(data), collimit = collimit))
+    return(check_dim(read_input.object(data, typ = "object"), collimit = collimit))
   }
 
   # File formatted as rds
@@ -97,13 +97,13 @@ read_input.test <- function(){
 # Read object and check if it is possible to be processed
 #'
 #' @noRd
-read_input.object <- function(mat, ...){
+read_input.object <- function(mat, typ, ...){
 
   if(is.null(mat)){
     return(list(
       sce = NULL,
       mae = NULL,
-      dat = NULL, ReadError = "Wrong object type"))
+      dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " ")))
   }
 
   if(class(mat)[1]=="SingleCellExperiment"){
@@ -150,9 +150,14 @@ read_input.object <- function(mat, ...){
       ReadError = "Valid data")
   }else{
     dat <- tryCatch({
-      list(sce = NULL, mae = NULL, dat = as.data.frame(mat), ReadError = "Valid data")
+      dat_ <- as.data.frame(mat)
+      if(all(dim(dat_)>c(1,1))){
+        list(sce = NULL, mae = NULL, dat = as.data.frame(mat), ReadError = "Valid data")
+      }else{
+        list(sce = NULL, mae = NULL, dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " "))
+      }
     }, error = function(e) {
-      list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Wrong file type")
+      list(sce = NULL, mae = NULL, dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " "))
     })
   }
 
@@ -171,7 +176,7 @@ read_input.rds <- function(filename, ...){
     NULL
   })
 
-  return(read_input.object(mat))
+  return(read_input.object(mat, typ = "file"))
 }
 
 # Function turning a matrix type object to SingleCellExperiment class

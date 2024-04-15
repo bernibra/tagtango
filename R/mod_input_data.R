@@ -53,20 +53,21 @@ mod_input_data_server <- function(id){
 
     values <- reactiveValues()
     values$data <- list(sce = NULL,
-                        # adt = NULL, norm = NULL,
                         dat = NULL, ReadError = "No data")
+
     values$umap <- data.frame(rna_first = NULL, rna_second = NULL, adt_first = NULL, adt_second = NULL)
     values$ReadError <- "No data"
     values$code <- "library(tagtango)\n\n"
 
+    values$loading_ui <- if(is.null(golem::get_golem_options(which = "input_data"))){TRUE}else{NULL}
+    values$inputfile <- if(is.null(golem::get_golem_options(which = "input_data"))){NULL}else{list(datapath="argument")}
+
     shinyjs::disable("load", asis = T)
 
-    if(!is.null(golem::get_golem_options(which = "input_data"))){
-      values$inputfile <- list(datapath="argument")
-    }else{
+    observeEvent(values$loading_ui, {
       output$data_message <- renderUI({
         p("The app expects a `MultiAssayExperiment` object, a `SingleCellExperiment` or `data.frame` with annotations as colData or columns, respectively.")
-        })
+      })
 
       output$data_holder <- renderUI({
         shiny::fileInput(
@@ -90,7 +91,7 @@ mod_input_data_server <- function(id){
           status = "custom"
         )
       })
-    }
+    })
 
     observeEvent(input$test_data,{
       output$annotations <- renderUI({})
@@ -228,7 +229,14 @@ mod_input_data_server <- function(id){
 
       if(!(values$data$ReadError %in% c("Valid data", "No data"))){
         shinyalert::shinyalert(title = "Oups!", type = "warning", text = values$data$ReadError,
-                               closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
+                               closeOnClickOutside = T, closeOnEsc = T, animation = "pop",
+                               confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
+
+        # if(values$data$ReadError == "Wrong object type"){
+          values$loading_ui <- TRUE
+          values$inputfile <- NULL
+        # }
+
       }
 
       if(values$data$ReadError != "Valid data"){
