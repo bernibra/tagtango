@@ -174,3 +174,17 @@ find_name_projection <- function(n=1, maxlength=80, maxtab=30, P1a1 = NULL, P1a2
   }
 
 }
+
+
+#' coherence
+#'
+#' @description A metric to understand how coherent two mappings are. For something to be coherent, we want to allow one mapping to have finner resolution than another, but we don't want labels crossing.
+#' @param df a two column data frame with each column representing a set of annotations
+#'
+#' @return A value between 0 and 1.
+#'
+#' @noRd
+coherence <- function(df){
+  mat <- as.matrix(table(df))
+  return(sum(apply(mat, which.max(dim(mat)), max))/sum(mat))
+}
