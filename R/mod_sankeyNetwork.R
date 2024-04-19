@@ -85,7 +85,8 @@ mod_sankeyNetwork_ui <- function(id){
     ),
     fluidRow(
       mod_panel_decomposition_ui(ns("panel_decomposition_1")),
-      mod_panel_rose_ui(ns("panel_rose_1"))
+      mod_panel_rose_ui(ns("panel_rose_1")),
+      mod_panel_df_ui(ns("panel_df_1"))
     )
   )
 }
@@ -339,9 +340,10 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
     if(is.null(values$norm)){
       output$density_holder <- renderPlot({})
       values$valley_position <- NULL
-      # if(data$slow){
-      #
-      # }
+
+      # Actual absolute panel on the left with the confusion matrix plot and metrics
+      mod_panel_df_server("panel_df_1", values = values,
+                            class = "top white")
     }else{
       # Define UI for the additional filtering based on density
       output$density_section_holder <- renderUI({tagList(

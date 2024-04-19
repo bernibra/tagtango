@@ -132,7 +132,7 @@ rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, pa
     p <- ggplot(data=data,aes(x=factor(id, levels=id, labels=variable),y=y, fill = y))+
       geom_bar(stat="identity", alpha = 0.5)+
       geom_text(aes(label = variable, y=y+extradist, hjust=hjust, angle=angle), size = size, color = fontcolor) +
-      scale_fill_continuous_divergingx(palette = palette, mid = valley) +
+      colorspace::scale_fill_continuous_divergingx(palette = palette, mid = valley) +
       coord_polar(start = 0, clip = "off")+
       xlab("")+ylab("") +
       theme(
