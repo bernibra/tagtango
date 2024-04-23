@@ -79,7 +79,8 @@ mod_sankeyNetwork_ui <- function(id){
       fluidRow(
         column(8, offset = 2, align="right",
                shiny::downloadButton(outputId = ns("download"), label = "Download", class = "custom"),
-               shiny::actionButton(inputId = ns("restart"), label = "Restart", class = "custom")
+               shiny::actionButton(inputId = ns("restart"), label = "Restart", class = "custom"),
+               shiny::actionButton(inputId = ns("stopapp"), label = "Stop", class = "custom")
         ),
       )
     ),
@@ -384,6 +385,11 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
     # Restart app on click ----------------------------------------------------
     observeEvent(input$restart,{
       session$reload()
+    })
+
+    # Stop app on click ----------------------------------------------------
+    observeEvent(input$stopapp,{
+      shiny::stopApp()
     })
 
     # Download button ---------------------------------------------------------
