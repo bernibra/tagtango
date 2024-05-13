@@ -39,11 +39,14 @@ app_server <- function(input, output, session) {
 
     }else{
 
-      dat$norm <- tryCatch({
+      genes <- tryCatch({
         dge_rna_data(dat$sce, dat$dat, dat$left, dat$right, numberOFgenes = ifelse(nrow(dat$sce)>=10, 10, nrow(dat$sce)))
       }, error = function(e) {
         NULL
       })
+
+      dat$sce <- dat$sce[rownames(dat$sce) %in% genes,]
+      dat$norm <- tryCatch({Matrix::t(dat$sce)}, error = function(e) {NULL})
 
       dataproblem <- run_basic_checks(norm = dat$norm, dat = dat$dat)
 
