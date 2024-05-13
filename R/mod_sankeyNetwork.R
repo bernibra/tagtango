@@ -148,7 +148,7 @@ mod_sankeyNetwork_server <- function(id, data){
                                 rna_umap = values$rna_umap, adt_umap = values$adt_umap)
     values$max_value$numMax <- max(values$network$links$value)
     values$quantiles <- quantile(data$norm, probs = c(0.05, 0.95))
-    values$density <- tryCatch({stats::density(data$norm)}, error = function(e) {NULL})
+    values$density <- tryCatch({stats::density(as.numeric(data$norm))}, error = function(e) {NULL})
 
     # Dropdown menu with filtering parameters ---------------------------------
     # Defining the values for the cells per link parameter dynamically is actually a pain in the butt
@@ -339,12 +339,18 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
     # Absolute panel on the left ----------------------------------------------
     # These are the rose plots
     if(is.null(values$norm)){
-      output$density_holder <- renderPlot({})
-      values$valley_position <- NULL
-
       # Actual absolute panel on the left with the confusion matrix plot and metrics
       mod_panel_df_server("panel_df_1", values = values,
                             class = "top white")
+    }else{
+      # Actual absolute panel on the left with the rose plot
+      mod_panel_rose_server("panel_rose_1", values = values,
+                            class = "top white")
+    }
+
+    if(is.null(values$density)){
+      output$density_holder <- renderPlot({})
+      values$valley_position <- NULL
     }else{
       # Define UI for the additional filtering based on density
       output$density_section_holder <- renderUI({tagList(
@@ -376,9 +382,6 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         values$valley_position <- input$valley_position$x
       }, ignoreInit = TRUE, ignoreNULL = TRUE, priority = 97)
 
-      # Actual absolute panel on the left with the rose plot
-      mod_panel_rose_server("panel_rose_1", values = values,
-                            class = "top white")
     }
 
 

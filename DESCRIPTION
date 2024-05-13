@@ -19,6 +19,7 @@ Imports:
     htmltools,
     htmlwidgets,
     magrittr,
+    Matrix,
     MultiAssayExperiment,
     networkD3,
     pkgload,

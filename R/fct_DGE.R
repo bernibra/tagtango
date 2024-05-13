@@ -21,5 +21,5 @@ dge_rna_data <- function(sce, dat, left, right, numberOFgenes = 10){
   names(rightgenes) <- NULL
 
   genes <- unique(c(leftgenes, rightgenes))
-  return(t(as.matrix(SingleCellExperiment::logcounts(sce)[rownames(sce) %in% genes,])))
+  return(Matrix::t(SingleCellExperiment::logcounts(sce)[rownames(sce) %in% genes,]))
 }

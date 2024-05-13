@@ -18,8 +18,8 @@ run_app <- function(
   input_data = NULL,
   ...
 ) {
-  options(shiny.maxRequestSize = maxRequestSize, shiny.launch.browser = .rs.invokeShinyWindowExternal)
-  # options(shiny.maxRequestSize = maxRequestSize)
+  # options(shiny.maxRequestSize = maxRequestSize, shiny.launch.browser = .rs.invokeShinyWindowExternal)
+  options(shiny.maxRequestSize = maxRequestSize)
   with_golem_options(
     app = shinyApp(
       ui = app_ui,

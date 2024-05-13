@@ -8,7 +8,7 @@
 colMeans_b <- function(mat){
   return(
           tryCatch({
-            colMeans(mat)
+            Matrix::colMeans(mat)
           }, error = function(e) {
             as.vector(mat)
           })
