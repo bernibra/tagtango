@@ -14,17 +14,14 @@ Above is an example of two classifications that are incoherent for certain class
 
 How can we define a measure that assesses the extent that a particular link or node is part of coherent or incoherent set of annotations/classifications? One way to do this is by considering the nodes part of the local network. Say that we select the link 'B-a', we consider the nodes on the right side of the network that interact with 'B', and those on the left side that interact with 'a'. This sub-network $X_{n \times m}$ formed by the $n$ classes interacting with 'B' and the $m$ classes interacting with 'a'&mdash;where $x_{Ba}$ represent cells annotated as 'B' and 'a'&mdash;allows us to assess the extent to which the link shows coherence or incoherence across annotations. To do so, we define a very simple measure of coherence: 
 
-$$
-\text{coherence}=
-\begin{cases}
-\frac{\sum^{n}_{i}\max_{j}\left(x_{ij}\right)}{\sum_{ij} x_{ij}} & \quad \text{when $n>m$}\\ 
-\frac{\sum^{m}_{j}\max_{i}\left(x_{ij}\right)}{\sum_{ij} x_{ij}} & \quad \text{otherwise}
-\end{cases}
-$$
+![](./formula.png)
 
 For reference, let's calculate the coherence of four links in the four networks below.
 
-![Figure 3](./examples.png)
+<figure>
+  <img src="./examples.png" alt="">
+  <figcaption>Figure 3</figcaption>
+</figure>
 
 For each case, imagine that we are comparing two annotations in a set of 100 cells. In each panel, the measure of coherence of the highlighted links is as follows: (a) $1$, (b) $1$, (c) $0.75$, and (d) $0.7$. Notice how the measure considers the annotations in first two cases as fully coherent with each other while somewhat incoherent the other two cases.
 
