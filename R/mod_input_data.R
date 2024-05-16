@@ -304,8 +304,7 @@ mod_input_data_server <- function(id){
           dat = values$data$dat,
           left = input$left,
           right = input$right,
-          sce = if(!is.null(values$data$mae)){values$data$mae[[input$data_type]]}else if(!is.null(values$data$sce)){values$data$sce}else{NULL},
-          norm = NULL,
+          norm = if(!is.null(values$data$mae)){values$data$mae[[input$data_type]]}else if(!is.null(values$data$sce)){values$data$sce}else{NULL},
           slow = FALSE,
           data_type = input$data_type,
           ErrorMessage = values$ReadError

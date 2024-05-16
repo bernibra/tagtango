@@ -22,7 +22,7 @@ app_server <- function(input, output, session) {
     if(any(gsub("[[:punct:]]", " ", tolower(dat$data_type)) == c("adt", "antibody capture", "protein data", "antibody derived tags", "scadt"))){
 
       dat$norm <- tryCatch({
-        Matrix::t(SingleCellExperiment::logcounts(dat$sce))
+        Matrix::t(SingleCellExperiment::logcounts(dat$norm))
         }, error = function(e) {
         NULL
       })
@@ -40,13 +40,13 @@ app_server <- function(input, output, session) {
     }else{
 
       genes <- tryCatch({
-        dge_rna_data(dat$sce, dat$dat, dat$left, dat$right, numberOFgenes = ifelse(nrow(dat$sce)>=10, 10, nrow(dat$sce)))
+        dge_rna_data(dat$norm, dat$dat, dat$left, dat$right, numberOFgenes = ifelse(nrow(dat$norm)>=10, 10, nrow(dat$norm)))
       }, error = function(e) {
         NULL
       })
 
-      dat$sce <- dat$sce[rownames(dat$sce) %in% genes,]
-      dat$norm <- tryCatch({Matrix::t(dat$sce)}, error = function(e) {NULL})
+      dat$norm <- dat$norm[rownames(dat$norm) %in% genes,]
+      dat$norm <- tryCatch({Matrix::t(dat$norm)}, error = function(e) {NULL})
 
       dataproblem <- run_basic_checks(norm = dat$norm, dat = dat$dat)
 
