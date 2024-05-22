@@ -16,9 +16,33 @@ app_server <- function(input, output, session) {
   data <- mod_input_data_server("input_data_1")
   shinyjs::disable("load")
 
+
   observeEvent(input$load,{
     dat <- data()
 
+    # Filter data if there are filtering parameters defined -------------------
+    if(!is.null(dat$filter_variable)){
+
+      if(!is.null(dat$rna_umap)){
+        dat$rna_umap <- dat$rna_umap[!(dat$dat[,dat$filter_variable] %in% dat$filter_values),]
+      }
+
+      if(!is.null(dat$adt_umap)){
+        dat$adt_umap <- dat$adt_umap[!(dat$dat[,dat$filter_variable] %in% dat$filter_values),]
+      }
+
+      dat$norm <- dat$norm[, !(dat$dat[,dat$filter_variable] %in% dat$filter_values)]
+      dat$dat <- dat$dat %>% dplyr::filter(!(!!dplyr::sym(dat$filter_variable) %in% !!dat$filter_values))
+    }
+
+    # Remove unnecessary information
+    if (is.null(dat$grouping_variable)){
+      dat$dat <- dat$dat %>% dplyr::select(!!dplyr::sym(dat$left), !!dplyr::sym(dat$right))
+    }else{
+      dat$dat <- dat$dat %>% dplyr::select(!!dplyr::sym(dat$grouping_variable), !!dplyr::sym(dat$left), !!dplyr::sym(dat$right))
+    }
+
+    # Work on the expression data to transform accordingly
     if(any(gsub("[[:punct:]]", " ", tolower(dat$data_type)) == c("adt", "antibody capture", "protein data", "antibody derived tags", "scadt"))){
 
       dat$norm <- tryCatch({
@@ -63,6 +87,7 @@ app_server <- function(input, output, session) {
     }else{
       shinyjs::disable("load")
       shinyjs::hide("load")
+
       output$content <- renderUI(mod_sankeyNetwork_ui("sankeyNetwork_1"))
       mod_sankeyNetwork_server("sankeyNetwork_1", dat)
     }

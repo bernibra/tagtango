@@ -97,7 +97,7 @@ mod_input_data_server <- function(id){
       output$annotations <- renderUI({})
       output$additional_info <- renderUI({})
 
-      values$data <- read_input(filename = "test_data", run_test_data = TRUE)
+      values$data <- isolate(read_input(filename = "test_data", run_test_data = TRUE))
       values$filename <- NULL
 
       output$data_holder <- renderUI({
@@ -118,7 +118,7 @@ mod_input_data_server <- function(id){
         selected <- "ADT"
         multiple <- F
       }else{
-        choices <- names(MultiAssayExperiment::experiments(values$data$mae))
+        choices <- names(values$data$mae)
         selected <- NULL
         multiple <- T
       }
@@ -175,7 +175,7 @@ mod_input_data_server <- function(id){
       if(!is.null(values$data$dat)){
 
         if(!is.null(values$data$mae)){
-          choices <- names(MultiAssayExperiment::experiments(values$data$mae))
+          choices <- names(values$data$mae)
           selected <- NULL
           multiple <- T
         }else if(!is.null(values$data$sce)){

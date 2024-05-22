@@ -129,21 +129,6 @@ mod_sankeyNetwork_server <- function(id, data){
       ))
     )})
 
-
-    # Filter data if there are filtering parameters defined -------------------
-    if(!is.null(data$filter_variable)){
-
-      if(!is.null(values$rna_umap)){
-        values$rna_umap <- values$rna_umap[!(values$dat[,data$filter_variable] %in% data$filter_values),]
-      }
-
-      if(!is.null(values$adt_umap)){
-        values$adt_umap <- values$adt_umap[!(values$dat[,data$filter_variable] %in% data$filter_values),]
-      }
-
-      values$dat <- values$dat %>% dplyr::filter(!(!!dplyr::sym(data$filter_variable) %in% !!data$filter_values))
-
-    }
     values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                                 rna_umap = values$rna_umap, adt_umap = values$adt_umap)
     values$max_value$numMax <- max(values$network$links$value)

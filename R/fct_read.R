@@ -73,7 +73,7 @@ read_input.test <- function(){
 
   }else{
     coldat <- as.data.frame(MultiAssayExperiment::colData(test_data))
-    for (j in names(MultiAssayExperiment::experiments(test_data))){
+    for (j in names(test_data)){
       sce <- MultiAssayExperiment::experiments(test_data)[[j]]
       if(length(SingleCellExperiment::reducedDimNames(sce))!=0){
         for(i in SingleCellExperiment::reducedDimNames(sce)){
@@ -83,6 +83,7 @@ read_input.test <- function(){
         }
       }
     }
+
     dat <- list(
       mae = test_data,
       sce = NULL,
@@ -108,7 +109,7 @@ read_input.object <- function(mat, typ, ...){
 
   if(class(mat)[1]=="SingleCellExperiment"){
 
-    if("logcounts" %in% names(SummarizedExperiment::assays(mat))){
+    if("logcounts" %in% SummarizedExperiment::assayNames(mat)){
       sce <- mat
     }else{
       sce <- NULL
@@ -132,7 +133,7 @@ read_input.object <- function(mat, typ, ...){
     mae <- mat
 
     dat <- as.data.frame(MultiAssayExperiment::colData(mae))
-    for (j in names(MultiAssayExperiment::experiments(mae))){
+    for (j in names(mae)){
       sce <- MultiAssayExperiment::experiments(mae)[[j]]
       if(length(SingleCellExperiment::reducedDimNames(sce))!=0){
         for(i in SingleCellExperiment::reducedDimNames(sce)){
