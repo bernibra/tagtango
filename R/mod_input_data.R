@@ -252,6 +252,17 @@ mod_input_data_server <- function(id){
 
     observeEvent(annotationsListen(),{
       if(!(is.null(input$left) || is.null(input$right) || is.null(input$data_type))){
+
+        values$data_type <- input$data_type
+
+        if(!is.null(values$data$mae)){
+          values$default_configuration <- ifelse(nrow(values$data$mae[[values$data_type]])<=500, TRUE, FALSE)
+        }else if(!is.null(values$data$sce)){
+          values$default_configuration <- ifelse(nrow(values$data$sce)<=500, TRUE, FALSE)
+        }else{
+          values$default_configuration <- NULL
+        }
+
         maxlabels <- max(c(length(unique(values$data$dat[,input$left])),length(unique(values$data$dat[,input$right]))))
 
         if(maxlabels>1000){
@@ -270,26 +281,40 @@ mod_input_data_server <- function(id){
           }else{
             values$ReadError <- "Valid data"
             shinyjs::enable("load", asis = T)
-            output$additional_info <- renderUI({
-              tagList(
-                br(),
-                h4("Additional Information"),
-                mod_cell_grouping_ui(ns("cell_grouping_1"), choices = colnames(values$data$dat)),
-                mod_cell_filtering_ui(ns("cell_filtering_1"), choices = colnames(values$data$dat)),
-                mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)),
-              )
-            })
+            if(is.null(values$default_configuration)){
+              output$additional_info <- renderUI({
+                tagList(
+                  br(),
+                  h4("Additional Information"),
+                  mod_cell_grouping_ui(ns("cell_grouping_1"), choices = colnames(values$data$dat)),
+                  mod_cell_filtering_ui(ns("cell_filtering_1"), choices = colnames(values$data$dat)),
+                  mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat))
+                )
+              })
+            }else{
+              output$additional_info <- renderUI({
+                tagList(
+                  br(),
+                  h4("Additional Information"),
+                  mod_cell_grouping_ui(ns("cell_grouping_1"), choices = colnames(values$data$dat)),
+                  mod_cell_filtering_ui(ns("cell_filtering_1"), choices = colnames(values$data$dat)),
+                  mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)),
+                  mod_configuration_ui(ns("configuration_1"), default_value = values$default_configuration)
+                )
+              })
+            }
           }
         }
       }else{
         output$additional_info <- renderUI({})
         shinyjs::disable("load", asis = T)
       }
-    })
+    }, priority = 100)
 
-    grouping <- mod_cell_grouping_server("cell_grouping_1", dat = values$data$dat)
-    filtering <- mod_cell_filtering_server("cell_filtering_1", dat = values$data$dat)
-    umap <- mod_input_data_UMAP_server("input_data_UMAP_1", dat = values$data$dat)
+    configuration <- mod_configuration_server("configuration_1", data = values)
+    grouping <- mod_cell_grouping_server("cell_grouping_1", dat = values)
+    filtering <- mod_cell_filtering_server("cell_filtering_1", dat = values)
+    umap <- mod_input_data_UMAP_server("input_data_UMAP_1", dat = values)
 
     output$spinner <- renderUI(shiny::absolutePanel(top = "3%", right =  "3%", width = "auto", height = "auto", draggable = F, fixed = T,
                                            shiny::HTML("<span class='loader'></span>")))
@@ -298,17 +323,18 @@ mod_input_data_server <- function(id){
       reactive(
         c(list(
           code = paste0(values$code, "dat <- process_data(filename = ", rsym(values$filename),
-                        ", data_type = ", rsym(input$data_type),
+                        ", data_type = ", rsym(values$data_type),
                         ", left = ", rsym(input$left),
                         ", right = ", rsym(input$right)),
           dat = values$data$dat,
           left = input$left,
           right = input$right,
-          norm = if(!is.null(values$data$mae)){values$data$mae[[input$data_type]]}else if(!is.null(values$data$sce)){values$data$sce}else{NULL},
+          norm = if(!is.null(values$data$mae)){values$data$mae[[values$data_type]]}else if(!is.null(values$data$sce)){values$data$sce}else{NULL},
           slow = FALSE,
-          data_type = input$data_type,
+          data_type = values$data_type,
           ErrorMessage = values$ReadError
         ),
+        configuration(),
         umap(),
         grouping(),
         filtering()

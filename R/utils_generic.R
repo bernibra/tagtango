@@ -94,7 +94,7 @@ run_basic_checks <- function(norm, dat, maxcol = NULL) {
   }
 
   if(!all(rownames(dat) == rownames(norm))){
-    return("There is something odd regarding the expression data inputed. Please refer to the app's manual and README page for specifications on the input format.")
+    return("There is something odd regarding the expression data inputed, as the rownames of the colData and the expression matrix differ. Please refer to the app's manual and README page for specifications on the input format.")
   }
 
   if(is.null(maxcol)){
@@ -102,7 +102,7 @@ run_basic_checks <- function(norm, dat, maxcol = NULL) {
   }
 
   if(ncol(norm)>maxcol){
-    return(paste0("The expression data is entered as ADT data, but the corresponding matrix, with more than ", as.character(maxcol)," columns, looks more like RNA data. Please specify the data type correctly."))
+    return(paste0("The expression data is entered as low-dimensional data, but the corresponding matrix, with more than ", as.character(maxcol)," features, looks more like high-dimensional data. Please specify the data type correctly."))
   }
 
   return(NULL)

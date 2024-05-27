@@ -61,17 +61,17 @@ mod_input_data_UMAP_server <- function(id, dat){
     values$adt <- NULL
 
     rnaListen <- reactive({
-      list(input$RNA_first_axis, input$RNA_second_axis)
+      list(input$RNA_first_axis, input$RNA_second_axis, dat)
     })
 
     adtListen <- reactive({
-      list(input$ADT_first_axis, input$ADT_second_axis)
+      list(input$ADT_first_axis, input$ADT_second_axis, dat)
     })
 
     observeEvent(rnaListen(),{
       if(!(is.null(input$RNA_first_axis) || is.null(input$RNA_second_axis))){
         # Run checks for data
-        values$rna <- data.frame(V1 = dat[,input$RNA_first_axis], V2 = dat[,input$RNA_second_axis])
+        values$rna <- data.frame(V1 = dat$data$dat[,input$RNA_first_axis], V2 = dat$data$dat[,input$RNA_second_axis])
       }else{
         values$rna <- NULL
         values$RNAtitle <- NULL
@@ -81,7 +81,7 @@ mod_input_data_UMAP_server <- function(id, dat){
     observeEvent(adtListen(),{
       if(!(is.null(input$ADT_first_axis) || is.null(input$ADT_second_axis))){
         # Run checks for data
-        values$adt <- data.frame(V1 = dat[,input$ADT_first_axis], V2 = dat[,input$ADT_second_axis])
+        values$adt <- data.frame(V1 = dat$data$dat[,input$ADT_first_axis], V2 = dat$data$dat[,input$ADT_second_axis])
       }else{
         values$adt <- NULL
         values$ADTtitle <- NULL

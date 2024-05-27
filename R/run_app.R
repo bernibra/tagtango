@@ -18,13 +18,13 @@ run_app <- function(
   input_data = NULL,
   ...
 ) {
-  options(shiny.maxRequestSize = maxRequestSize, launch.browser = TRUE)
+  options(shiny.maxRequestSize = maxRequestSize)
   with_golem_options(
     app = shinyApp(
       ui = app_ui,
       server = app_server,
       onStart = onStart,
-      options = options,
+      options = c(options, list(launch.browser = TRUE)),
       enableBookmarking = enableBookmarking,
       uiPattern = uiPattern
     ),

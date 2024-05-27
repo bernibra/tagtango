@@ -43,7 +43,13 @@ app_server <- function(input, output, session) {
     }
 
     # Work on the expression data to transform accordingly
-    if(any(gsub("[[:punct:]]", " ", tolower(dat$data_type)) == c("adt", "antibody capture", "protein data", "antibody derived tags", "scadt"))){
+    if(dat$dimension == 0){
+
+      dat$norm <- NULL
+      data_type <- "No expression data"
+      dataproblem <- NULL
+
+    }else if(dat$dimension == 1){
 
       dat$norm <- tryCatch({
         Matrix::t(SingleCellExperiment::logcounts(dat$norm))
@@ -55,12 +61,6 @@ app_server <- function(input, output, session) {
 
       data_type <- "ADT"
 
-    }else if(dat$data_type == "No expression data"){
-
-      dat$norm <- NULL
-      data_type <- "No expression data"
-      dataproblem <- NULL
-
     }else{
 
       genes <- tryCatch({
@@ -70,7 +70,7 @@ app_server <- function(input, output, session) {
       })
 
       dat$norm <- dat$norm[rownames(dat$norm) %in% genes,]
-      dat$norm <- tryCatch({Matrix::t(dat$norm)}, error = function(e) {NULL})
+      dat$norm <- tryCatch({Matrix::t(SingleCellExperiment::logcounts(dat$norm))}, error = function(e) {NULL})
 
       dataproblem <- run_basic_checks(norm = dat$norm, dat = dat$dat)
 

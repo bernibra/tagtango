@@ -38,13 +38,13 @@ mod_cell_grouping_server <- function(id, dat){
     values$values <- NULL
 
     dataListen <- reactive({
-      list(input$grouping)
+      list(input$grouping, dat)
     })
 
     observeEvent(dataListen(), {
       if(!is.null(input$grouping)){
-        choices <- unique(dat[,input$grouping])
-        # print(choices)
+        choices <- unique(dat$data$dat[,input$grouping])
+
         if(length(choices)>100){
           values$variable <- NULL
           shinyalert::shinyalert(title = "Oups!", type = "warning", text = "There are too many unique values to group cells by this variable.",
@@ -56,8 +56,11 @@ mod_cell_grouping_server <- function(id, dat){
         }else{
           values$variable <- input$grouping
         }
+
+      }else{
+        values$variable <- NULL
       }
-    })
+    }, ignoreNULL = TRUE)
 
     return(
       reactive(

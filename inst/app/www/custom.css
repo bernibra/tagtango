@@ -481,3 +481,45 @@ h5 {
   color: #3D405B;
 }
 
+/*--------------------------------*/
+/*Switch button  */
+/*-----------------------------*/
+
+.bootstrap-switch-label{
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: #3D405B;
+  background-color: #F4F1DE;
+}
+
+.bootstrap-switch-low{
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: #F4F1DE;
+}
+
+.bootstrap-switch-high{
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: #F4F1DE;
+}
+
+.bootstrap-switch{
+  border-color: #F4F1DE !important;
+  border: 1px solid #F4F1DE !important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0,0,0,.075) !important;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px  rgba(0,0,0,.075) !important;
+}
+
+.bootstrap-switch:hover,
+.bootstrap-switch:active,
+.bootstrap-switch:focus,
+.bootstrap-switch.active
+.bootstrap-switch.focused{
+  border-color: #F4F1DE !important;
+  border: 1px solid #F4F1DE !important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0,0,0,.075) !important;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px  rgba(0,0,0,.075) !important;
+}
+
+

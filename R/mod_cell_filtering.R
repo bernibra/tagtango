@@ -41,12 +41,12 @@ mod_cell_filtering_server <- function(id, dat){
     values$values <- NULL
 
     dataListen <- reactive({
-      list(input$filter_variable)
+      list(input$filter_variable, dat)
     })
 
     observeEvent(dataListen(), {
       if(!is.null(input$filter_variable)){
-        choices <- unique(dat[,input$filter_variable])
+        choices <- unique(dat$data$dat[,input$filter_variable])
         if(length(choices)>1000){
           values$variable <- NULL
           output$filter_variable_holder <- renderUI({})
@@ -65,6 +65,8 @@ mod_cell_filtering_server <- function(id, dat){
                                       selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = length(choices)-1, style = "custom", title = "None"))
           })
         }
+      }else{
+        values$variable <- NULL
       }
     })
 
