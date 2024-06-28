@@ -24,8 +24,9 @@ RUN Rscript -e 'remotes::install_version("golem",upgrade="never", version = "0.4
 RUN Rscript -e 'remotes::install_version("ggtext",upgrade="never", version = "0.1.2")'
 RUN Rscript -e 'remotes::install_version("dplyr",upgrade="never", version = "1.1.4")'
 RUN Rscript -e 'remotes::install_version("aricode",upgrade="never", version = "1.0.3")'
-RUN Rscript -e 'remotes::install_version("BiocManager",upgrade="never", version = "3.18")'
+RUN Rscript -e 'remotes::install_version("BiocManager",upgrade="never", version = "1.30.23")'
 
+RUN Rscript -e 'BiocManager::install(version = "3.18")'
 RUN Rscript -e 'BiocManager::install("SummarizedExperiment", version = BiocManager::version())'
 RUN Rscript -e 'BiocManager::install("SingleCellExperiment", version = BiocManager::version())'
 RUN Rscript -e 'BiocManager::install("scran",upgrade="never", version = BiocManager::version())'
