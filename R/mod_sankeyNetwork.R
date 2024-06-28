@@ -97,6 +97,7 @@ mod_sankeyNetwork_ui <- function(id){
 #' @noRd
 mod_sankeyNetwork_server <- function(id, data){
   moduleServer( id, function(input, output, session){
+    x <- y <- NULL
     ns <- session$ns
 
     # Main data definition ----------------------------------------------------
@@ -132,7 +133,7 @@ mod_sankeyNetwork_server <- function(id, data){
     values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                                 rna_umap = values$rna_umap, adt_umap = values$adt_umap)
     values$max_value$numMax <- max(values$network$links$value)
-    values$quantiles <- quantile(data$norm, probs = c(0.05, 0.95))
+    values$quantiles <- stats::quantile(data$norm, probs = c(0.05, 0.95))
     values$density <- tryCatch({stats::density(as.numeric(data$norm))}, error = function(e) {NULL})
 
     # Dropdown menu with filtering parameters ---------------------------------
@@ -195,7 +196,7 @@ mod_sankeyNetwork_server <- function(id, data){
                             grouping_variable = data$grouping_variable, grouping_values = input$cells,
                             min_counts = numVal_d())
 
-      values$quantiles <- quantile(values$norm, probs = c(0.05, 0.95))
+      values$quantiles <- stats::quantile(values$norm, probs = c(0.05, 0.95))
       values$density <- tryCatch({stats::density(values$norm)}, error = function(e) {NULL})
     }, ignoreInit = TRUE, priority = 99, ignoreNULL = TRUE)
 
@@ -239,7 +240,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         values$width <- (input$width - (8/12) * 0.7 * input$width)/2
         values$height <- (input$width - (8/12) * 0.7 * input$width)/2
 
-        values$code_fselection <- "quant <- quantile(dat$data$norm, probs = c(0.05, 0.95))\n\n## first selection\n\n"
+        values$code_fselection <- "quant <- stats::quantile(dat$data$norm, probs = c(0.05, 0.95))\n\n## first selection\n\n"
 
         if(is.null(input$target1)){
           values$first_selection <- values$network$dat$i==input$source1

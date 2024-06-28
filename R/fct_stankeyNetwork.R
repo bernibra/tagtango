@@ -8,6 +8,8 @@
 load_data <- function(dat, left, right, rna_umap, adt_umap,
                       grouping_variable = NULL, grouping_values = NULL, min_counts = NULL){
 
+  n_min_counts <- x <- n <- idx <- jdx <- i <- j <- value <- NULL
+
   if(!is.null(grouping_values)){
     grouping_values <- if(grouping_values=="All") NULL else {grouping_values}
   }

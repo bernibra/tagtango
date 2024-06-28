@@ -21,6 +21,8 @@ mod_panel_df_server <- function(id, values,
                                 class = "topleft white", panel_padding = 20,
                                 top = "98%", left = "1%"){
   moduleServer( id, function(input, output, session){
+    i <- j <- NULL
+
     ns <- session$ns
 
     dataListen <- reactive({

@@ -10,7 +10,6 @@ RUN Rscript -e 'remotes::install_version("rmarkdown",upgrade="never", version = 
 RUN Rscript -e 'remotes::install_version("knitr",upgrade="never", version = "1.45")'
 RUN Rscript -e 'remotes::install_version("colorspace",upgrade="never", version = "2.1-0")'
 RUN Rscript -e 'remotes::install_version("stringr",upgrade="never", version = "1.5.1")'
-RUN Rscript -e 'remotes::install_version("pkgload",upgrade="never", version = "1.3.4")'
 RUN Rscript -e 'remotes::install_version("shiny",upgrade="never", version = "1.8.0")'
 RUN Rscript -e 'remotes::install_version("htmlwidgets",upgrade="never", version = "1.6.4")'
 RUN Rscript -e 'remotes::install_version("config",upgrade="never", version = "0.3.2")'

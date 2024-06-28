@@ -29,7 +29,9 @@ rose_plot(
 
 \item{valley}{the value in `norm` corresponding to the valley separating positive and negative peak for CITE-seq data.}
 
-\item{palette}{color palette, default "RdYlGn"}
+\item{palette}{color palette, default "RdYlGn".}
+
+\item{quant}{position of positive and negative peak for normalized data.}
 
 \item{...}{parameters passed to the underlying function.}
 }

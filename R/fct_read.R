@@ -54,7 +54,8 @@ read_input.default <- function(filename, run_test_data = FALSE, data = NULL, ...
 #'
 #' @noRd
 read_input.test <- function(){
-  data(test_data)
+  test_data <- NULL
+  utils::data("test_data")
 
   if(class(test_data)[1]=="SingleCellExperiment"){
 

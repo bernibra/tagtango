@@ -11,3 +11,4 @@
 ^rsconnect$
 ^Dockerfile$
 ^\.dockerignore$
+^dev$

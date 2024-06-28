@@ -65,7 +65,7 @@ mod_configuration_server <- function(id, data){
           values$text <- "A low-dimensional approach will use all features in the expression data for comparing annotations/clusters. This is designed for low-dimensional data types, such as surface protein expression data (ADT), and it does not involve any pre-processing of the data."
           values$dimension <- 1
         }else{
-          values$text <- "The application will first use the function `scoreMarkers' from the R package `scran' to quantify the expression differences across every possible annotation/cluster, computing summary scores for each marker in each group of cells. Then, it will select the 10 most upregulated markers for every group using the median Cohen’s d."
+          values$text <- "The application will first use the function 'scoreMarkers' from the R package 'scran' to quantify the expression differences across every possible annotation/cluster, computing summary scores for each marker in each group of cells. Then, it will select the 10 most upregulated markers for every group using the median Cohen's d."
           values$dimension <- 2
         }
       }

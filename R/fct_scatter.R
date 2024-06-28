@@ -5,10 +5,14 @@
 #' @param labels array with labels for first (and potentially second selections), for all cells in `data`.
 #' @param values boolean array with second selection cells as True values, for all cells in `data`.
 #' @param title boolean array with second selection cells as True values, for all cells in `data`.
+#' @param xlabel the text for the x axis.
+#' @param ylabel the text for the y axis.
 #'
 #' @return returns a ggplot object.
 #' @export
 scatter_plot <- function(data, labels, values = c("a", "b"), title = "UMAP of the RNA data", xlabel = "first axis", ylabel = "second axis"){
+
+  V1 <- V2 <- NULL
 
   fontcolor = "#3D405B"
   fontsize = 14

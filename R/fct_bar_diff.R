@@ -18,9 +18,9 @@ bar_diff <- function(norm, data, first_selection, second_selection, n_bars = 10,
   }
 
   markers <- NULL
-  if(class(n_bars) == "numeric"){
+  if(methods::is(n_bars, "numeric")){
     n <- n_bars
-  }else if(class(n_bars) == "character"){
+  }else if(methods::is(n_bars, "character")){
     if(!all(n_bars %in% colnames(norm))){
       stop("Some markers in `n_bars` are not present in `norm`")
     }
@@ -78,6 +78,8 @@ bar_diff <- function(norm, data, first_selection, second_selection, n_bars = 10,
 #' @noRd
 #'
 box_diff_internal <- function(data, selected, title = " ", values = c("first" = "red", "second"= "blue"), maintitle = NULL, palette="RdYlGn", colortitle = F){
+
+  variable <- y0 <- y25 <- y50 <- y75 <- y100 <- label <- NULL
 
   fontcolor = "#3D405B"
   fontsize = 14

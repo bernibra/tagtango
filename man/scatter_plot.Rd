@@ -8,7 +8,9 @@ scatter_plot(
   data,
   labels,
   values = c("a", "b"),
-  title = "UMAP of the RNA data"
+  title = "UMAP of the RNA data",
+  xlabel = "first axis",
+  ylabel = "second axis"
 )
 }
 \arguments{
@@ -19,6 +21,10 @@ scatter_plot(
 \item{values}{boolean array with second selection cells as True values, for all cells in `data`.}
 
 \item{title}{boolean array with second selection cells as True values, for all cells in `data`.}
+
+\item{xlabel}{the text for the x axis.}
+
+\item{ylabel}{the text for the y axis.}
 }
 \value{
 returns a ggplot object.

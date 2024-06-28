@@ -7,7 +7,8 @@
 #' @param n_petals if an integer value, it defines the number of petals of the rose plot, selecting those that are most "relevant". If an array with marker names, it uses those.
 #' @param title main plot title. Default `NULL`.
 #' @param valley the value in `norm` corresponding to the valley separating positive and negative peak for CITE-seq data.
-#' @param palette color palette, default "RdYlGn"
+#' @param palette color palette, default "RdYlGn".
+#' @param quant position of positive and negative peak for normalized data.
 #' @param ... parameters passed to the underlying function.
 #'
 #' @return returns a ggplot object.
@@ -19,9 +20,9 @@ rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley 
   }
 
   markers <- NULL
-  if(class(n_petals) == "numeric"){
+  if(methods::is(n_petals, "numeric")){
     n <- n_petals
-  }else if(class(n_petals) == "character"){
+  }else if(methods::is(n_petals, "character")){
     if(!all(n_petals %in% colnames(norm))){
       stop("Some markers in `n_petals` are not present in `norm`")
     }
@@ -68,6 +69,8 @@ rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley 
 #' @import ggplot2
 #' @noRd
 rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, palette="RdYlGn", colortitle = F, valley = NULL, ...){
+
+  variable <- id <- y <- color <- hjust <- NULL
 
   m = 11
   n = 10
@@ -154,7 +157,7 @@ rose_plot_internal <- function(data, selected, title = " ", maintitle = NULL, pa
   if(colortitle){
     p <- p +
       ggtitle(label = maintitle) +
-      theme(plot.title = element_markdown(),
+      theme(plot.title = ggtext::element_markdown(),
             legend.position = "none")
     return(p)
   }else{

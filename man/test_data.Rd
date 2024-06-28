@@ -15,7 +15,7 @@ A SingleCellExperment with 7472 cells, 17 protein markers, and 33538 gene IDs:
 <https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/pbmc_10k_protein_v3>
 }
 \usage{
-data(test_data)
+data("test_data")
 }
 \description{
 A subset of the 10x dataset: 10k PBMCs from a healthy donor - gene expression and cell surface protein, single cell gene expression (Single Cell Gene Expression Dataset by Cell Ranger 3.0.0)
