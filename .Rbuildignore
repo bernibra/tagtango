@@ -9,3 +9,5 @@
 ^Meta$
 ^app\.R$
 ^rsconnect$
+^Dockerfile$
+^\.dockerignore$
