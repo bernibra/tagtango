@@ -15,19 +15,22 @@ RUN Rscript -e 'remotes::install_version("htmlwidgets",upgrade="never", version 
 RUN Rscript -e 'remotes::install_version("config",upgrade="never", version = "0.3.2")'
 RUN Rscript -e 'remotes::install_version("ggplot2",upgrade="never", version = "3.5.1")'
 RUN Rscript -e 'remotes::install_version("testthat",upgrade="never", version = "3.2.1.1")'
-RUN Rscript -e 'remotes::install_version("SummarizedExperiment",upgrade="never", version = "1.32.0")'
 RUN Rscript -e 'remotes::install_version("spelling",upgrade="never", version = "2.3.0")'
-RUN Rscript -e 'remotes::install_version("SingleCellExperiment",upgrade="never", version = "1.24.0")'
 RUN Rscript -e 'remotes::install_version("shinyWidgets",upgrade="never", version = "0.8.2")'
 RUN Rscript -e 'remotes::install_version("shinyjs",upgrade="never", version = "2.1.0")'
 RUN Rscript -e 'remotes::install_version("shinyalert",upgrade="never", version = "3.0.0")'
-RUN Rscript -e 'remotes::install_version("scran",upgrade="never", version = "1.30.2")'
 RUN Rscript -e 'remotes::install_version("networkD3",upgrade="never", version = "0.4")'
-RUN Rscript -e 'remotes::install_version("MultiAssayExperiment",upgrade="never", version = "1.28.0")'
 RUN Rscript -e 'remotes::install_version("golem",upgrade="never", version = "0.4.1")'
 RUN Rscript -e 'remotes::install_version("ggtext",upgrade="never", version = "0.1.2")'
 RUN Rscript -e 'remotes::install_version("dplyr",upgrade="never", version = "1.1.4")'
 RUN Rscript -e 'remotes::install_version("aricode",upgrade="never", version = "1.0.3")'
+RUN Rscript -e 'remotes::install_version("BiocManager",upgrade="never", version = "3.18")'
+
+RUN Rscript -e 'BiocManager::install("SummarizedExperiment", version = BiocManager::version())'
+RUN Rscript -e 'BiocManager::install("SingleCellExperiment", version = BiocManager::version())'
+RUN Rscript -e 'BiocManager::install("scran",upgrade="never", version = BiocManager::version())'
+RUN Rscript -e 'BiocManager::install("MultiAssayExperiment", version = BiocManager::version())'
+
 RUN mkdir /build_zone
 ADD . /build_zone
 WORKDIR /build_zone
