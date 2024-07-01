@@ -29,7 +29,7 @@ RUN Rscript -e 'remotes::install_version("BiocManager",upgrade="never", version 
 RUN Rscript -e 'BiocManager::install(version = "3.18")'
 RUN Rscript -e 'BiocManager::install("SummarizedExperiment", version = BiocManager::version())'
 RUN Rscript -e 'BiocManager::install("SingleCellExperiment", version = BiocManager::version())'
-RUN Rscript -e 'BiocManager::install("scran",upgrade="never", version = BiocManager::version())'
+RUN Rscript -e 'BiocManager::install("scran", version = BiocManager::version())'
 RUN Rscript -e 'BiocManager::install("MultiAssayExperiment", version = BiocManager::version())'
 
 RUN mkdir /build_zone
