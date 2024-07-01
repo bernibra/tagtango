@@ -40,4 +40,4 @@ WORKDIR /build_zone
 RUN R -e 'remotes::install_local(upgrade="never")'
 RUN rm -rf /build_zone
 EXPOSE 3838
-CMD R -e "library(tagtango);tagtango::run_app(options = list(port = 3838, host = '0.0.0.0'))"
+CMD ["R", "-e", "library(tagtango);tagtango::run_app(options = list(port = 3838, host = '0.0.0.0'))"]
