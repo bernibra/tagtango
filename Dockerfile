@@ -2,6 +2,7 @@ FROM rocker/verse:4.3.2
 RUN apt-get update && apt-get install -y   && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /usr/local/lib/R/etc/ /usr/lib/R/etc/
 RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl', Ncpus = 4)" | tee /usr/local/lib/R/etc/Rprofile.site | tee /usr/lib/R/etc/Rprofile.site
+
 RUN R -e 'install.packages("remotes")'
 RUN Rscript -e 'remotes::install_version("magrittr",upgrade="never", version = "2.0.3")'
 RUN Rscript -e 'remotes::install_version("rlang",upgrade="never", version = "1.1.4")'
@@ -29,6 +30,7 @@ RUN Rscript -e 'remotes::install_version("BiocManager",upgrade="never", version 
 RUN Rscript -e 'BiocManager::install(version = "3.18")'
 RUN Rscript -e 'BiocManager::install("SummarizedExperiment", version = BiocManager::version())'
 RUN Rscript -e 'BiocManager::install("SingleCellExperiment", version = BiocManager::version())'
+RUN Rscript -e 'BiocManager::install("beachmat", version = BiocManager::version())'
 RUN Rscript -e 'BiocManager::install("scran", version = BiocManager::version())'
 RUN Rscript -e 'BiocManager::install("MultiAssayExperiment", version = BiocManager::version())'
 
@@ -37,5 +39,5 @@ ADD . /build_zone
 WORKDIR /build_zone
 RUN R -e 'remotes::install_local(upgrade="never")'
 RUN rm -rf /build_zone
-EXPOSE 80
-CMD R -e "options('shiny.port'=80,shiny.host='0.0.0.0');library(tagtango);tagtango::run_app()"
+EXPOSE 3838
+CMD R -e "library(tagtango);tagtango::run_app(options = list(port = 3838, host = '0.0.0.0'))"
