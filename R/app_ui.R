@@ -46,6 +46,7 @@ app_ui <- function(request) {
         br(),
         br(),
         fluidRow(
+          p("hola"),
           # column(10, align = "right",
           #        shiny::textOutput("error")),
           # column(2, align = "right",

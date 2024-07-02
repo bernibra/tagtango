@@ -24,7 +24,7 @@ run_app <- function(
       ui = app_ui,
       server = app_server,
       onStart = onStart,
-      options = c(options, list(launch.browser = FALSE)),
+      options = c(options),
       enableBookmarking = enableBookmarking,
       uiPattern = uiPattern
     ),
