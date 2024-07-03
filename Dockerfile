@@ -1,6 +1,18 @@
 FROM rocker/shiny:4.3.2
 
-RUN apt-get update && apt-get install -y   && rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && apt-get install -y   && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    libxml2-dev \
+    libcairo2-dev \
+    libsqlite3-dev \
+    libmariadbd-dev \
+    libpq-dev \
+    libssh2-1-dev \
+    unixodbc-dev \
+    libcurl4-openssl-dev \
+    libssl-dev
+
 RUN mkdir -p /usr/local/lib/R/etc/ /usr/lib/R/etc/
 
 RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl', Ncpus = 4)" | tee /usr/local/lib/R/etc/Rprofile.site | tee /usr/lib/R/etc/Rprofile.site
