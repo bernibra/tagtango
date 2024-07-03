@@ -9,9 +9,10 @@ app_server <- function(input, output, session) {
   # defining reactive values
   values <- reactiveValues()
 
+  browser()
+
   # Landing page
-  # output$content <- renderUI(mod_input_data_ui("input_data_1"))
-  output$content <- renderUI(tagList(p("Hola")))
+  output$content <- renderUI(mod_input_data_ui("input_data_1"))
 
   # Landing page logic
   data <- mod_input_data_server("input_data_1")
