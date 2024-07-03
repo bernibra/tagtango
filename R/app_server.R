@@ -9,7 +9,6 @@ app_server <- function(input, output, session) {
   # defining reactive values
   values <- reactiveValues()
 
-  print("Hola")
   # Landing page
   output$content <- renderUI(mod_input_data_ui("input_data_1"))
 
