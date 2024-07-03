@@ -31,10 +31,10 @@ app_ui <- function(request) {
 
   tagList(
     # Leave this function for adding external resources
-    # golem_add_external_resources(),
+    golem_add_external_resources(),
     # Your application UI logic
     fluidPage(
-      shinyjs::useShinyjs(),
+      # shinyjs::useShinyjs(),
       div(id = "centerContainer",
         fluidRow(
             div(style="width:100%; justify-content: center; align: center;",
