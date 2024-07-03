@@ -18,6 +18,8 @@ run_app <- function(
   input_data = NULL,
   ...
 ) {
+  print("Hola 0")
+  print(app_server)
   options(shiny.maxRequestSize = maxRequestSize)
   with_golem_options(
     app = shinyApp(
