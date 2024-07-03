@@ -1,6 +1,24 @@
 FROM rocker/verse:4.3.2
+
 RUN apt-get update && apt-get install -y   && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /usr/local/lib/R/etc/ /usr/lib/R/etc/
+
+## install debian packages
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    libxml2-dev \
+    libcairo2-dev \
+    libsqlite3-dev \
+    libmariadbd-dev \
+    libpq-dev \
+    libssh2-1-dev \
+    unixodbc-dev \
+    libcurl4-openssl-dev \
+    libssl-dev
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean
+
 RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl', Ncpus = 4)" | tee /usr/local/lib/R/etc/Rprofile.site | tee /usr/lib/R/etc/Rprofile.site
 
 RUN R -e 'install.packages("remotes")'
@@ -39,5 +57,5 @@ ADD . /build_zone
 WORKDIR /build_zone
 RUN R -e 'remotes::install_local(upgrade="never")'
 RUN rm -rf /build_zone
-EXPOSE 3838
-CMD ["R", "-e", "library(tagtango);tagtango::run_app(options = list(port = 3838, host = '0.0.0.0'))"]
+EXPOSE 80
+CMD ["R", "-e", "library(tagtango);tagtango::run_app(options = list(port = 80, host = '0.0.0.0'))"]
