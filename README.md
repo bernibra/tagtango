@@ -98,9 +98,6 @@ criteria are met:
   specifications stated below.
 - The cells in all elements of the `ExperimentList` should be the same
   (and have matching names).
-- The name of the element in `ExperimentList` corresponding to the
-  CITE-seq data should be either ‘ADT’ or ‘Antibody-Derived tags’. Any
-  other name won’t be considered as ADT data.
 - Different annotations should be stored as columns of the `colData`
   data.frame within the object.
 
