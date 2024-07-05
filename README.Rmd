@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 Welcome to the `tagtango` project!
 
-`tagtango` is a powerful web application designed for the comprehensive analysis and comparison of multiple cell annotations performed on a single-cell dataset. Leveraging both RNA and CITE-seq data, this tool allows you to untangle the differences and similarities of cell populations, effectively distinguishing real differences across cell annotations from background noise.
+`tagtango` is a powerful web application designed for the comprehensive analysis and comparison of multiple cell annotations performed on a single-cell dataset. Leveraging different data modalities, this tool allows you to untangle the differences and similarities of cell populations, effectively distinguishing real differences across cell annotations from background noise.
 
 The web application is currently accessible online [here](https://bernibra.shinyapps.io/tagtango/). Please note that the server hosting the app is operating with limited RAM memory and may experience difficulties handling high traffic. We will soon be upgrading to a more robust hosting solution.
 
@@ -90,7 +90,7 @@ Notice that the column and row names of each `SingleCellExperiment` in the `Expe
 ### `SingleCellExperiment` Object Expectations
 If providing a `SingleCellExperiment` object, ensure the following criteria are met:
 
-* The CITE-seq data should be normalized using the R package `ADTnorm` and stored as a `logcounts` assay within the `SingleCellExperiment` object.
+* The data should be normalized and stored as a `logcounts` assay within the `SingleCellExperiment` object. For example, in the manuscript, the CITE-seq data was normalized using the R package `ADTnorm`.
 * Define row and column names within the `SingleCellExperiment` object.
 * Different annotations should be stored as columns of the `colData` data.frame within the object.
 

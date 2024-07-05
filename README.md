@@ -13,7 +13,7 @@ Welcome to the `tagtango` project!
 
 `tagtango` is a powerful web application designed for the comprehensive
 analysis and comparison of multiple cell annotations performed on a
-single-cell dataset. Leveraging both RNA and CITE-seq data, this tool
+single-cell dataset. Leveraging different data modalities, this tool
 allows you to untangle the differences and similarities of cell
 populations, effectively distinguishing real differences across cell
 annotations from background noise.
@@ -135,9 +135,9 @@ annotations are stored in `MultiAssayExperiment::colData(test_sce)`.
 If providing a `SingleCellExperiment` object, ensure the following
 criteria are met:
 
-- The CITE-seq data should be normalized using the R package `ADTnorm`
-  and stored as a `logcounts` assay within the `SingleCellExperiment`
-  object.
+- The data should be normalized and stored as a `logcounts` assay within
+  the `SingleCellExperiment` object. For example, in the manuscript, the
+  CITE-seq data was normalized using the R package `ADTnorm`.
 - Define row and column names within the `SingleCellExperiment` object.
 - Different annotations should be stored as columns of the `colData`
   data.frame within the object.
