@@ -4,7 +4,7 @@
         - https://github.com/LieberInstitute/spatialLIBD/blob/devel/README.Rmd
 -->
 
-# [tagtango](https://bernibra.shinyapps.io/tagtango/)
+# [tagtango](https://tagtango.unil.ch/)
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -19,10 +19,10 @@ populations, effectively distinguishing real differences across cell
 annotations from background noise.
 
 The web application is currently accessible online
-[here](https://bernibra.shinyapps.io/tagtango/). Please note that the
-server hosting the app is operating with limited RAM memory and may
-experience difficulties handling high traffic. We will soon be upgrading
-to a more robust hosting solution.
+[here](https://tagtango.unil.ch/). Please note that the server hosting
+the app is operating with limited RAM memory and may experience
+difficulties handling high traffic. We will soon be upgrading to a more
+robust hosting solution.
 
 ## Running the app locally using R
 
