@@ -37,6 +37,8 @@ rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley 
 
   if(is.null(valley)){
     valley_ <- mean(colMeans(fexp))
+  }else{
+    valley_ <- valley
   }
 
   newdata <- tryCatch({

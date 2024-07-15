@@ -389,7 +389,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
       },
       content = function(file) {
         # Write the R file that will be downloaded
-        values$code_rose_figures <- generate_code_rose(values$norm, values$code_fselection, values$code_sselection, data$data_type)
+        values$code_rose_figures <- generate_code_rose(values$norm, values$code_fselection, values$code_sselection, data$data_type, values$valley_position)
 
         if(!is.null(values$network$rna_umap)){
           values$code_umap_rna <- generate_code_umap("dat$network$rna_umap", values$code_fselection, values$code_sselection, xlabel = data$RNAtitle$x, ylabel = data$RNAtitle$y, label = "first projection")

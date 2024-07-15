@@ -5,7 +5,7 @@
 #' @return Returns a string
 #'
 #' @noRd
-generate_code_rose <- function(norm, fselection, sselection, data_type){
+generate_code_rose <- function(norm, fselection, sselection, data_type, valley){
   if(!is.null(sselection) && !is.null(norm)){
     code_figures <- c("## Bar plot\n",
                              paste0("g <- bar_diff(norm = dat$data$norm",
@@ -13,7 +13,7 @@ generate_code_rose <- function(norm, fselection, sselection, data_type){
                                     ", first_selection = first_selection",
                                     ", second_selection = second_selection",
                                     ", n_bars = 10",
-                                    ifelse(data_type=="RNA", "", ", valley = 3"),
+                                    ifelse(is.null(valley), "", paste0(", valley = ", valley)),
                                     ")\nprint(g$p)\n"
                              ),
                              "## First rose plot\n",
@@ -21,7 +21,7 @@ generate_code_rose <- function(norm, fselection, sselection, data_type){
                                     ", data = dat$network$dat",
                                     ", selected = first_selection",
                                     ", n_petals = g$markers",
-                                    ifelse(data_type=="RNA", "", ", valley = 3"),
+                                    ifelse(is.null(valley), "", paste0(", valley = ", valley)),
                                     ", title = ftitle",
                                     ", quant = quant",
                                     ")\nprint(p1)\n"
@@ -31,7 +31,7 @@ generate_code_rose <- function(norm, fselection, sselection, data_type){
                                     ", data = dat$network$dat",
                                     ", selected = second_selection",
                                     ", n_petals = g$markers",
-                                    ifelse(data_type=="RNA", "", ", valley = 3"),
+                                    ifelse(is.null(valley), "", paste0(", valley = ", valley)),
                                     ", title = stitle",
                                     ", quant = quant",
                                     ")\nprint(p2)\n")
@@ -42,7 +42,7 @@ generate_code_rose <- function(norm, fselection, sselection, data_type){
                                     ", data = dat$network$dat",
                                     ", selected = first_selection",
                                     ", n_petals = 10",
-                                    ifelse(data_type=="RNA", "", ", valley = 3"),
+                                    ifelse(is.null(valley), "", paste0(", valley = ", valley)),
                                     ", title = ftitle",
                                     ", quant = quant",
                                     ")\nprint(p1)\n"
