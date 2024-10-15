@@ -1,12 +1,12 @@
 Package: tagtango
-Title: A web app for comparing cell annotations
+Title: A web app for comparing cell annotations or clusterings
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Bernat",
            family = "Bramon Mora",
            role = c("aut", "cre"),
            email = "bernat.bramon@gmail.com")
-Description: Importing a SingleCellExperiment or a data.frame, tagtango will allow you to understand the differences and similarities across cell populations. 
+Description: The tagtango app is flexible in handling various data types. For now, however, it only accepts input in the form of either a MultiAssayExperiment object stored as an RDS file, a SingleCellExperiment object stored as an RDS file, or a data.frame stored as an RDS, CSV, or TSV file. 
 License: MIT + file LICENSE
 Imports: 
     aricode,
