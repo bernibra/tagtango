@@ -24,8 +24,10 @@ scatter_plot <- function(data, labels, values = c("a", "b"), title = "UMAP of th
     data <- data[sample(nrow(data), sampling), ]
   }
 
+  alpha <- 0.2 + (abs(nrow(data)-sampling)/sampling)*0.6
+
   return(data %>% dplyr::arrange(labels) %>% ggplot(aes(x=V1, y=V2, color = labels)) +
-           geom_point(size = 0.5, alpha = 0.2) +
+           geom_point(size = 0.5, alpha = alpha) +
            scale_colour_manual(values = values) +
            xlab(xlabel) +
            ylab(ylabel) +

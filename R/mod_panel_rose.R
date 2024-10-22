@@ -73,7 +73,6 @@ mod_panel_rose_server <- function(id, values,
 
         fexp <- values$norm[(rownames(values$norm) %in% rownames(values$network$dat)[values$first_selection]), ]
         ncell <- nrow(fexp)
-        browser()
         data <- find_markers(extra = 0, n = 15, mat = fexp, quant = values$quantiles, zero = values$valley_position)
 
         output$options_tab <- renderUI({
