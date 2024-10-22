@@ -57,6 +57,11 @@ mod_cell_filtering_server <- function(id, dat){
           output$filter_variable_holder <- renderUI({})
           shinyalert::shinyalert(title = "Oups!", type = "warning", text = "This variable has only one unique value; you can't filter all cells.",
                                  closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
+        }else if(any(is.na(choices)) | any(is.nan(choices))){
+          values$variable <- NULL
+          output$filter_variable_holder <- renderUI({})
+          shinyalert::shinyalert(title = "Oups!", type = "warning", text = "The filtering variable cannot contain NA or NaN values; modify the object or change the variable and try again",
+                                 closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
         }else{
           values$variable <- input$filter_variable
           output$filter_variable_holder <- renderUI({

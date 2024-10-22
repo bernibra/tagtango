@@ -129,7 +129,7 @@ mod_input_data_server <- function(id){
             column(4, align = "left", style = "padding: 1em; vertical-align: middle;",
                    column(12, class = "inner_box",
                             shinyWidgets::pickerInput(
-                              ns("data_type"),labelMandatory("Data type"),
+                              ns("data_type"),labelMandatory("Experiment"),
                               choices = choices,
                               multiple = multiple,
                               selected = selected, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "e.g. ADT")
@@ -179,9 +179,9 @@ mod_input_data_server <- function(id){
           selected <- NULL
           multiple <- T
         }else if(!is.null(values$data$sce)){
-          choices <- c("RNA", "ADT")
-          selected <- NULL
-          multiple <- T
+          choices <- c("Undefined expression data")
+          selected <- "Undefined expression data"
+          multiple <- F
         }else{
           choices <- c("No expression data")
           selected <- "No expression data"
@@ -199,7 +199,7 @@ mod_input_data_server <- function(id){
             column(4, align = "left", style = "padding: 1em; vertical-align: middle;",
                    column(12, class = "inner_box",
                           shinyWidgets::pickerInput(
-                            ns("data_type"),labelMandatory("Data type"),
+                            ns("data_type"),labelMandatory("Experiment"),
                             choices = choices,
                             multiple = multiple,
                             selected = selected, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner")
@@ -263,10 +263,26 @@ mod_input_data_server <- function(id){
           values$default_configuration <- NULL
         }
 
-        maxlabels <- max(c(length(unique(values$data$dat[,input$left])),length(unique(values$data$dat[,input$right]))))
+        unique_left <- unique(values$data$dat[,input$left])
+        unique_right <- unique(values$data$dat[,input$right])
+        maxlabels <- max(c(length(unique_left),length(unique_right)))
+        NAorNaN <- any(c(any(is.na(unique_left)), any(is.nan(unique_left)),
+                         any(is.na(unique_right)), any(is.nan(unique_right))))
 
         if(maxlabels>1000){
           values$ReadError <- "One of the two annotations have more than 1000 labels. Change it to something more managable as this seems unreasonable..."
+          output$additional_info <- renderUI({})
+          shinyjs::disable("load", asis = T)
+          shinyalert::shinyalert(title = "Oups!", type = "warning", text = values$ReadError,
+                                 closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
+        }else if(maxlabels<=1){
+          values$ReadError <- "Both annotations have less than 2 labels. Change at least one of them to an annotation with multiple labels."
+          output$additional_info <- renderUI({})
+          shinyjs::disable("load", asis = T)
+          shinyalert::shinyalert(title = "Oups!", type = "warning", text = values$ReadError,
+                                 closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
+        }else if(NAorNaN){
+          values$ReadError <- "One or both annotations contain NA or NaN values. Modify the object, turning these into strings, or change the annotations."
           output$additional_info <- renderUI({})
           shinyjs::disable("load", asis = T)
           shinyalert::shinyalert(title = "Oups!", type = "warning", text = values$ReadError,

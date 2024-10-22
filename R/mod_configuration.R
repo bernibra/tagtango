@@ -12,9 +12,8 @@ mod_configuration_ui <- function(id, default_value){
   tagList(
     div(style = "padding: 1em; padding-top: 0em;",
         tags$details(
-          tags$summary("Configuration"),
+          tags$summary("How should the data be processed?"),
           column(12, align = "left", style = "padding: 1em; vertical-align: middle;",
-                 p("How should the data be processed?"),
                  div(class ="outerDiv_container",
                      div(class = "outerDiv",
                           column(2, align = "right",

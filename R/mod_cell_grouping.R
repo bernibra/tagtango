@@ -53,6 +53,10 @@ mod_cell_grouping_server <- function(id, dat){
           values$variable <- NULL
           shinyalert::shinyalert(title = "Oups!", type = "warning", text = "This variable has only one unique value.",
                                  closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
+        }else if(any(is.na(choices)) | any(is.nan(choices))){
+          values$variable <- NULL
+          shinyalert::shinyalert(title = "Oups!", type = "warning", text = "The grouping variable cannot contain NA or NaN value types; modify the object or change the variable and try again",
+                                 closeOnClickOutside = T, closeOnEsc = T, animation = "pop", confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
         }else{
           values$variable <- input$grouping
         }
