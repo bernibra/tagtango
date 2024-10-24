@@ -172,6 +172,14 @@ mod_input_data_server <- function(id){
       values$ReadError <- values$data$ReadError
       values$filename <- input$data$datapath
 
+      # Spit out warning if any
+      if(values$data$warning!=""){
+        shinyalert::shinyalert(title = "Oups!", type = "warning", text = values$data$warning,
+                               closeOnClickOutside = T, closeOnEsc = T, animation = "pop",
+                               confirmButtonText = "Got it", className = "warning_popup", confirmButtonCol = "#909097")
+      }
+
+      # Check out the data
       if(!is.null(values$data$dat)){
 
         if(!is.null(values$data$mae)){

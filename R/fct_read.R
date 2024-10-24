@@ -17,13 +17,15 @@ read_input.default <- function(filename, run_test_data = FALSE, data = NULL, ...
   if(is.na(filename)){
     return(list(sce = NULL,
                 mae = NULL,
-                dat = NULL, ReadError = "Error loading the data. Refer to the app's manual and README page for specifications on the input format."))
+                dat = NULL, ReadError = "Error loading the data. Refer to the app's manual and README page for specifications on the input format.",
+                warning = ""))
   }
 
   if(is.null(filename)){
     return(list(sce = NULL,
                 mae = NULL,
-                dat = NULL, ReadError = "No data"))
+                dat = NULL, ReadError = "No data",
+                warning = ""))
   }
 
   if(run_test_data){
@@ -47,7 +49,8 @@ read_input.default <- function(filename, run_test_data = FALSE, data = NULL, ...
   return(list(
     sce = NULL,
     mae = NULL,
-    dat = NULL, ReadError = "Wrong file type"))
+    dat = NULL, ReadError = "Wrong file type",
+    warning = ""))
 }
 
 # Read tesdata
@@ -69,7 +72,8 @@ read_input.test <- function(){
 
     dat <- list(
       sce = test_data, mae = NULL,
-      dat = dat, ReadError = "Valid data")
+      dat = dat, ReadError = "Valid data",
+      warning = "")
 
   }else{
     coldat <- as.data.frame(MultiAssayExperiment::colData(test_data))
@@ -88,7 +92,8 @@ read_input.test <- function(){
       mae = test_data,
       sce = NULL,
       dat = coldat,
-      ReadError = "Valid data"
+      ReadError = "Valid data",
+      warning = ""
     )
   }
 
@@ -104,15 +109,21 @@ read_input.object <- function(mat, typ, ...){
     return(list(
       sce = NULL,
       mae = NULL,
-      dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " ")))
+      dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " "),
+      warning = ""))
   }
 
   if(class(mat)[1]=="SingleCellExperiment"){
 
-    if("logcounts" %in% SummarizedExperiment::assayNames(mat)){
-      sce <- mat
+    sce <- mat
+
+    if(!("logcounts" %in% SummarizedExperiment::assayNames(sce))){
+      assaynames <- SummarizedExperiment::assayNames(sce)
+      assaypicked <- assaynames[length(assaynames)]
+      SummarizedExperiment::assayNames(sce)[length(assaynames)] <- "logcounts"
+      warning <- paste0("There is no assay in the SingleCellExperiment named 'logcounts'. Picking '",assaypicked,"' by default")
     }else{
-      sce <- NULL
+      warning <- ""
     }
 
     dat <- as.data.frame(SingleCellExperiment::colData(mat))
@@ -126,15 +137,28 @@ read_input.object <- function(mat, typ, ...){
 
     dat <- list(
       sce = sce, mae = NULL,
-      dat = dat, ReadError = "Valid data")
+      dat = dat, ReadError = "Valid data",
+      warning = warning)
 
   }else if (class(mat)[1]=="MultiAssayExperiment"){
 
     mae <- mat
 
     dat <- as.data.frame(MultiAssayExperiment::colData(mae))
+
+    warning <- ""
+
     for (j in names(mae)){
+
       sce <- MultiAssayExperiment::experiments(mae)[[j]]
+
+      if(!("logcounts" %in% SummarizedExperiment::assayNames(sce))){
+        assaynames <- SummarizedExperiment::assayNames(sce)
+        assaypicked <- assaynames[length(assaynames)]
+        SummarizedExperiment::assayNames(MultiAssayExperiment::experiments(mae)[[j]])[length(assaynames)] <- "logcounts"
+        warning <- paste0(warning, "For the '",j,"' experiment, there is no assay named 'logcounts'; picking '",assaypicked,"' by default. ")
+      }
+
       if(length(SingleCellExperiment::reducedDimNames(sce))!=0){
         for(i in SingleCellExperiment::reducedDimNames(sce)){
           d <- as.data.frame(SingleCellExperiment::reducedDim(sce, type = i)[,1:2])
@@ -148,17 +172,18 @@ read_input.object <- function(mat, typ, ...){
       sce = NULL,
       mae = mae,
       dat = dat,
-      ReadError = "Valid data")
+      ReadError = "Valid data",
+      warning = warning)
   }else{
     dat <- tryCatch({
       dat_ <- as.data.frame(mat)
       if(all(dim(dat_)>c(1,1))){
-        list(sce = NULL, mae = NULL, dat = as.data.frame(mat), ReadError = "Valid data")
+        list(sce = NULL, mae = NULL, dat = as.data.frame(mat), ReadError = "Valid data", warning = "")
       }else{
-        list(sce = NULL, mae = NULL, dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " "))
+        list(sce = NULL, mae = NULL, dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " "), warning = "")
       }
     }, error = function(e) {
-      list(sce = NULL, mae = NULL, dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " "))
+      list(sce = NULL, mae = NULL, dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " "), warning = "")
     })
   }
 
@@ -187,9 +212,9 @@ read_input.csv <- function(filename, ...){
 
   # Load file as matrix using readr and tibble
   dat <- tryCatch({
-    list(sce = NULL, mae = NULL, dat = as.data.frame(utils::read.csv(file = filename, header = T)), ReadError = "Valid data")
+    list(sce = NULL, mae = NULL, dat = as.data.frame(utils::read.csv(file = filename, header = T)), ReadError = "Valid data", warning = "")
   }, error = function(e) {
-    list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Wrong file type")
+    list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Wrong file type", warning = "")
   })
 
   return(dat)
@@ -204,11 +229,11 @@ check_dim <- function(x, collimit){
   }
 
   if(nrow(x$dat)==0){
-    return(list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Empty data"))
+    return(list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Empty data", warning = ""))
   }
 
   if(ncol(x$dat)>collimit){
-    return(list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Too many columns"))
+    return(list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Too many columns", warning = ""))
   }
   return(x)
 }
