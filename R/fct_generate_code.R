@@ -13,6 +13,7 @@ generate_code_rose <- function(norm, fselection, sselection, data_type, valley){
                                     ", first_selection = first_selection",
                                     ", second_selection = second_selection",
                                     ", n_bars = 10",
+                                    ", quant = quant",
                                     ifelse(is.null(valley), "", paste0(", valley = ", valley)),
                                     ")\nprint(g$p)\n"
                              ),

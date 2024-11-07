@@ -20,6 +20,12 @@ app_server <- function(input, output, session) {
   observeEvent(input$load,{
     dat <- data()
 
+    # Remove NAs and NaNs
+    dat$dat[,dat$right] <- NAorNANcheck(dat$dat[,dat$right])
+    dat$dat[,dat$left] <- NAorNANcheck(dat$dat[,dat$left])
+    dat$dat[,dat$grouping_variable] <- NAorNANcheck(dat$dat[,dat$grouping_variable])
+    dat$dat[,dat$filter_variable] <- NAorNANcheck(dat$dat[,dat$filter_variable])
+
     # Filter data if there are filtering parameters defined -------------------
     if(!is.null(dat$filter_variable)){
 

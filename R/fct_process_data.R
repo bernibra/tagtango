@@ -14,6 +14,8 @@
 #' @param grouping_variable grouping variable found in `dat`
 #' @param grouping_values values in `grouping_variable` that need to be filtered
 #' @param min_counts minimum number of cells in a link for this to be displayed
+#' @param dimension internal variable to determine whether the data is a data frame (=0), a low-dimension dataset (=1), or a high-dimension dataset (=1).
+#' @param input_data object inputed directly.
 #'
 #' @return Returns a list containing two attributes: data and network. The first contains the data filtered according to the grouping and filtering values. The second, contains the data organized in a manner that is readible for the sankeyNetwork.
 #' @export
@@ -21,10 +23,20 @@ process_data <- function(filename, data_type, left, right,
                          pc1_axis1 = NULL, pc1_axis2 = NULL,
                          pc2_axis1 = NULL, pc2_axis2 = NULL,
                          filter_variable = NULL, filter_values = NULL,
-                         grouping_variable = NULL, grouping_values = NULL, min_counts = NULL){
+                         grouping_variable = NULL, grouping_values = NULL,
+                         min_counts = NULL,
+                         dimension = NULL,
+                         input_data = NULL){
 
   if(is.null(filename)){
-    data <- read_input("test_data", run_test_data = TRUE)
+    if(is.null(input_data)){
+      data <- read_input("test_data", run_test_data = TRUE)
+    }else{
+      data <-  read_input(filename = "argument", data = input_data)
+      if(data$ReadError != "Valid data"){
+        stop(data$ReadError)
+      }
+    }
   }else{
     data <- read_input(filename)
     if(data$ReadError != "Valid data"){
@@ -55,7 +67,11 @@ process_data <- function(filename, data_type, left, right,
       dat = data$dat,
       left = left,
       right = right,
-      sce = sce,
+      grouping_variable = grouping_variable,
+      filter_variable = filter_variable,
+      filter_values = filter_values,
+      norm = sce,
+      dimension = dimension,
       rna_umap = rna,
       adt_umap = adt,
       data_type = data_type
@@ -68,53 +84,73 @@ process_data <- function(filename, data_type, left, right,
     stop("There is something odd regarding the data inputed. Please refer to the app's manual and README page for specifications on the input format.")
   }
 
-  if(any(gsub("[[:punct:]]", " ", tolower(dat$data_type)) == c("adt", "antibody capture", "protein data", "antibody derived tags", "scadt"))){
+  # Remove NAs and NaNs
+  dat$dat[,dat$right] <- NAorNANcheck(dat$dat[,dat$right])
+  dat$dat[,dat$left] <- NAorNANcheck(dat$dat[,dat$left])
+  dat$dat[,dat$grouping_variable] <- NAorNANcheck(dat$dat[,dat$grouping_variable])
+  dat$dat[,dat$filter_variable] <- NAorNANcheck(dat$dat[,dat$filter_variable])
+
+  # Filter data if there are filtering parameters defined -------------------
+  if(!is.null(dat$filter_variable)){
+
+    if(!is.null(dat$rna_umap)){
+      dat$rna_umap <- dat$rna_umap[!(dat$dat[,dat$filter_variable] %in% dat$filter_values),]
+    }
+
+    if(!is.null(dat$adt_umap)){
+      dat$adt_umap <- dat$adt_umap[!(dat$dat[,dat$filter_variable] %in% dat$filter_values),]
+    }
+
+    dat$norm <- dat$norm[, !(dat$dat[,dat$filter_variable] %in% dat$filter_values)]
+    dat$dat <- dat$dat %>% dplyr::filter(!(!!dplyr::sym(dat$filter_variable) %in% !!dat$filter_values))
+  }
+
+  # Remove unnecessary information
+  if (is.null(dat$grouping_variable)){
+    dat$dat <- dat$dat %>% dplyr::select(!!dplyr::sym(dat$left), !!dplyr::sym(dat$right))
+  }else{
+    dat$dat <- dat$dat %>% dplyr::select(!!dplyr::sym(dat$grouping_variable), !!dplyr::sym(dat$left), !!dplyr::sym(dat$right))
+  }
+
+  # Work on the expression data to transform accordingly
+  if(dat$dimension == 0){
+
+    dat$norm <- NULL
+    data_type <- "No expression data"
+    dataproblem <- NULL
+
+  }else if(dat$dimension == 1){
 
     dat$norm <- tryCatch({
-      t(as.matrix(SingleCellExperiment::logcounts(dat$sce)))
+      Matrix::t(SingleCellExperiment::logcounts(dat$norm))
     }, error = function(e) {
       NULL
     })
 
     dataproblem <- run_basic_checks(norm = dat$norm, dat = dat$dat, maxcol = 2000)
 
-  }else if(dat$data_type == "No expression data"){
-
-    dat$norm <- NULL
-    dataproblem <- NULL
+    data_type <- "ADT"
 
   }else{
 
-    dat$norm <- tryCatch({
-      dge_rna_data(dat$sce, dat$dat, dat$left, dat$right, numberOFgenes = 5)
+    genes <- tryCatch({
+      dge_rna_data(dat$norm, dat$dat, dat$left, dat$right, numberOFgenes = ifelse(nrow(dat$norm)>=10, 10, nrow(dat$norm)))
     }, error = function(e) {
       NULL
     })
 
+    dat$norm <- dat$norm[rownames(dat$norm) %in% genes,]
+    dat$norm <- tryCatch({Matrix::t(SingleCellExperiment::logcounts(dat$norm))}, error = function(e) {NULL})
+
     dataproblem <- run_basic_checks(norm = dat$norm, dat = dat$dat)
 
+    data_type <- "RNA"
   }
+
+  dat$data_type <- data_type
 
   if(!is.null(dataproblem)){
     stop(dataproblem)
-  }
-
-  if(!(is.null(filter_variable) || is.null(filter_values))){
-
-    if(!(filter_variable %in% colnames(dat$dat))){
-      stop("The filtering variable does not exist in the input data.frame or colData.")
-    }
-
-    if(!is.null(dat$rna_umap)){
-      dat$rna_umap <- dat$rna_umap[!(dat$dat[,filter_variable] %in% filter_values),]
-    }
-
-    if(!is.null(dat$adt_umap)){
-      dat$adt_umap <- dat$adt_umap[!(dat$dat[,filter_variable] %in% filter_values),]
-    }
-
-    dat$dat <- dat$dat %>% dplyr::filter(!(!!dplyr::sym(filter_variable) %in% !!filter_values))
-
   }
 
   network <- tryCatch({

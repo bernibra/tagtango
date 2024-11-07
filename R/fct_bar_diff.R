@@ -8,13 +8,18 @@
 #' @param n_bars if an integer value, it defines the number of bars of the plot, selecting those that are most "relevant". If an array with marker names, it uses those.
 #' @param valley the value in `norm` corresponding to the valley separating positive and negative peak for CITE-seq data.
 #' @param palette color palette, default "BrBG"
+#' @param quant position of positive and negative peak for normalized data.
 #'
 #' @return returns a list containing a ggplot object and the list of markers selected and used.
 #' @export
-bar_diff <- function(norm, data, first_selection, second_selection, n_bars = 10, valley = NULL, palette="BrBG"){
+bar_diff <- function(norm, data, first_selection, second_selection, n_bars = 10, valley = NULL, palette="BrBG", quant = NULL){
 
   if(is.null(title)){
     title <- ""
+  }
+
+  if(is.null(quant)){
+    quant <- stats::quantile(as.numeric(norm), probs = c(0.05, 0.95))
   }
 
   markers <- NULL
@@ -36,12 +41,8 @@ bar_diff <- function(norm, data, first_selection, second_selection, n_bars = 10,
   sexp <- norm[(rownames(norm) %in% rownames(data)[second_selection]), ]
   sncell <- nrow(sexp)
 
-  if(is.null(valley)){
-    valley <- mean(colMeans(fexp))
-  }
-
   data_diff <- tryCatch({
-    find_markers_diff(extra = 0, n = n, mat_left = fexp, mat_right = sexp, zero = valley)
+    find_markers_diff(extra = 0, n = n, mat_left = fexp, mat_right = sexp, zero = valley, quant = quant)
   }, error = function(e) {
     NULL
   })

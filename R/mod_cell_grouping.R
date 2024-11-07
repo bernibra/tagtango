@@ -43,7 +43,8 @@ mod_cell_grouping_server <- function(id, dat){
 
     observeEvent(dataListen(), {
       if(!is.null(input$grouping)){
-        choices <- unique(dat$data$dat[,input$grouping])
+        choices <- NAorNANcheck(dat$data$dat[,input$grouping])
+        choices <- unique(choices)
 
         if(length(choices)>100){
           values$variable <- NULL

@@ -130,11 +130,20 @@ mod_sankeyNetwork_server <- function(id, data){
       ))
     )})
 
+
     values$network <- load_data(dat = values$dat, left = data$left, right = data$right,
                                 rna_umap = values$rna_umap, adt_umap = values$adt_umap)
+
     values$max_value$numMax <- max(values$network$links$value)
-    values$quantiles <- stats::quantile(data$norm, probs = c(0.05, 0.95))
-    values$density <- tryCatch({stats::density(as.numeric(data$norm))}, error = function(e) {NULL})
+
+    values$quantiles <- tryCatch({stats::quantile(data$norm, probs = c(0.05, 0.95))}, error = function(e) {NULL})
+    if(is.null(values$quantiles)){
+      values$quantiles <- tryCatch({stats::quantile(as.numeric(data$norm), probs = c(0.05, 0.95))}, error = function(e) {NULL})
+    }
+    values$density <- tryCatch({stats::density(data$norm)}, error = function(e) {NULL})
+    if(is.null(values$density)){
+      values$density <- tryCatch({stats::density(as.numeric(data$norm))}, error = function(e) {NULL})
+    }
 
     # Dropdown menu with filtering parameters ---------------------------------
     # Defining the values for the cells per link parameter dynamically is actually a pain in the butt
@@ -196,8 +205,15 @@ mod_sankeyNetwork_server <- function(id, data){
                             grouping_variable = data$grouping_variable, grouping_values = input$cells,
                             min_counts = numVal_d())
 
-      values$quantiles <- stats::quantile(values$norm, probs = c(0.05, 0.95))
+      values$quantiles <- tryCatch({stats::quantile(values$norm, probs = c(0.05, 0.95))}, error = function(e) {NULL})
+      if(is.null(values$quantiles)){
+        values$quantiles <- tryCatch({stats::quantile(as.numeric(values$norm), probs = c(0.05, 0.95))}, error = function(e) {NULL})
+      }
       values$density <- tryCatch({stats::density(values$norm)}, error = function(e) {NULL})
+      if(is.null(values$density)){
+        values$density <- tryCatch({stats::density(as.numeric(values$norm))}, error = function(e) {NULL})
+      }
+
     }, ignoreInit = TRUE, priority = 99, ignoreNULL = TRUE)
 
     observeEvent(dataListen(), {
@@ -240,7 +256,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
         values$width <- (input$width - (8/12) * 0.7 * input$width)/2
         values$height <- (input$width - (8/12) * 0.7 * input$width)/2
 
-        values$code_fselection <- "quant <- stats::quantile(dat$data$norm, probs = c(0.05, 0.95))\n\n## first selection\n\n"
+        values$code_fselection <- "quant <- stats::quantile(as.numeric(dat$data$norm), probs = c(0.05, 0.95))\n\n## first selection\n\n"
 
         if(is.null(input$target1)){
           values$first_selection <- values$network$dat$i==input$source1
@@ -409,6 +425,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
                        ", filter_values = ", rsym(data$filter_values),
                        ", grouping_variable = ", rsym(data$grouping_variable),
                        ", grouping_values = ", rsym(input$cells),
+                       ", dimension = ", data$dimension,
                        ", min_counts = ", numVal_d(),
                        ")\n"),
                   "## Diagram",

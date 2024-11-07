@@ -35,14 +35,8 @@ rose_plot <- function(norm, data, selected, n_petals = 10, title = NULL, valley 
   fexp <- norm[(rownames(norm) %in% rownames(data)[selected]), ]
   ncell <- nrow(fexp)
 
-  if(is.null(valley)){
-    valley_ <- mean(colMeans(fexp))
-  }else{
-    valley_ <- valley
-  }
-
   newdata <- tryCatch({
-    find_markers(extra = 0, n = n, mat = fexp, quant = quant, zero = valley_)
+    find_markers(extra = 0, n = n, mat = fexp, quant = quant, zero = valley)
       }, error = function(e) {
     NULL
     })

@@ -91,7 +91,7 @@ Notice that the column and row names of each `SingleCellExperiment` in the `Expe
 If providing a `SingleCellExperiment` object, ensure the following criteria are met:
 
 * The data should be normalized and stored as a `logcounts` assay within the `SingleCellExperiment` object. For example, in the manuscript, the CITE-seq data was normalized using the R package `ADTnorm`.
-* Define row and column names within the `SingleCellExperiment` object.
+* Define unique row and column names within the `SingleCellExperiment` object.
 * Different annotations should be stored as columns of the `colData` data.frame within the object.
 
 An example of a `SingleCellExperiment` that can be used as input by `tagtango` can be generated as:

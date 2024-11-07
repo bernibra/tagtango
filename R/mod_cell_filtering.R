@@ -46,7 +46,9 @@ mod_cell_filtering_server <- function(id, dat){
 
     observeEvent(dataListen(), {
       if(!is.null(input$filter_variable)){
-        choices <- unique(dat$data$dat[,input$filter_variable])
+        choices <- NAorNANcheck(dat$data$dat[,input$filter_variable])
+        choices <- unique(choices)
+
         if(length(choices)>1000){
           values$variable <- NULL
           output$filter_variable_holder <- renderUI({})

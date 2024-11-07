@@ -188,3 +188,20 @@ coherence <- function(df){
   mat <- as.matrix(table(df))
   return(sum(apply(mat, which.max(dim(mat)), max))/sum(mat))
 }
+
+#' Transform labels
+#'
+#' @description A little function to transform labels into strings while checking for NA and NAN values
+#' @param df a data frame with annotations.
+#' @param label label
+#'
+#' @return The transformed annotations and a test_pass variable
+#'
+#' @noRd
+NAorNANcheck <- function(x){
+  x <- as.character(x)
+  x[is.na(x)] <- "NA"
+  x[is.nan(x)] <- "NaN"
+  return(x)
+}
+

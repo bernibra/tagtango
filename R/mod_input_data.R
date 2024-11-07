@@ -271,9 +271,14 @@ mod_input_data_server <- function(id){
           values$default_configuration <- NULL
         }
 
-        unique_left <- unique(values$data$dat[,input$left])
-        unique_right <- unique(values$data$dat[,input$right])
+        # Find unique values and run checks
+        unique_left <- NAorNANcheck(values$data$dat[,input$left])
+        unique_left <- unique(unique_left)
+        unique_right <- NAorNANcheck(values$data$dat[,input$right])
+        unique_right <- unique(unique_right)
         maxlabels <- max(c(length(unique_left),length(unique_right)))
+
+        # Old check but worth keeping
         NAorNaN <- any(c(any(is.na(unique_left)), any(is.nan(unique_left)),
                          any(is.na(unique_right)), any(is.nan(unique_right))))
 
@@ -346,7 +351,10 @@ mod_input_data_server <- function(id){
     return(
       reactive(
         c(list(
-          code = paste0(values$code, "dat <- process_data(filename = ", rsym(values$filename),
+          code = paste0(values$code,
+                        ifelse(!is.null(values$loading_ui), "", "# the object `input_data' should point at the input data object\n\n"),
+                        "dat <- process_data(filename = ", rsym(values$filename),
+                        ", input_data = ", ifelse(!is.null(values$loading_ui), "NULL", "input_data"),
                         ", data_type = ", rsym(values$data_type),
                         ", left = ", rsym(input$left),
                         ", right = ", rsym(input$right)),
