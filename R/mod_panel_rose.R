@@ -47,14 +47,19 @@ mod_panel_rose_server <- function(id, values,
                                             height = values$height-panel_padding)
                           )
                         ),
-                        uiOutput(ns("options_tab"))
+                        uiOutput(ns("options_tab")),
+                        div(style = "position: relative;",
+                            shiny::actionButton(ns("inforose1"), label = "i",
+                                                style = "bottom: -2px; right:-2px;",
+                                                class = "btn btn-custom bttn-panel")
+                        )
 
           )
         })
 
         output$options_tab <- renderUI({
           tagList(
-            fluidRow(column(7, offset = 5, align="right",
+            fluidRow(column(5, offset = 1, align="right",
                             shinyWidgets::pickerInput(
                               inputId = ns("nmark"),
                               label = "",
@@ -77,7 +82,7 @@ mod_panel_rose_server <- function(id, values,
 
         output$options_tab <- renderUI({
           tagList(
-            fluidRow(column(7, offset = 5, align="right",
+            fluidRow(column(5, offset = 1, align="right",
                             shinyWidgets::pickerInput(
                               inputId = ns("nmark"),
                               label = "",
@@ -104,6 +109,12 @@ mod_panel_rose_server <- function(id, values,
           absolutePanel(id = "controls", class = paste0("panel panel-default ", class),
                         top = top, left = left, width = values$width, fixed=TRUE,
                         draggable = F, height = "auto",
+#
+#                         div(style = "position: relative; top: 0%; left: 100%;",
+#                                shiny::actionButton(ns("info-rose"), label = "i",
+#                                                         class = "btn btn-custom bttn-panel")
+#                         ),
+#
                         shiny::tabsetPanel(
                           shiny::tabPanel("1st selection",plotOutput(ns("rose"),
                                                                      width = values$width-panel_padding,
@@ -115,7 +126,14 @@ mod_panel_rose_server <- function(id, values,
                                                                    width = values$width-panel_padding,
                                                                    height = values$height-panel_padding)),
                         ),
-                        uiOutput(ns("options_tab"))
+                        uiOutput(ns("options_tab")),
+                        div(style = "position: relative;",
+                               shiny::actionButton(ns("inforose2"), label = "i",
+                                                        style = "bottom: -2px; right:-2px;",
+                                                        class = "btn btn-custom bttn-panel")
+                        ),
+
+
           )
         })
 
@@ -135,19 +153,20 @@ mod_panel_rose_server <- function(id, values,
 
         output$options_tab <- renderUI({
           tagList(
-            fluidRow(column(7, offset = 5, align="right",
-                            shinyWidgets::pickerInput(
-                              inputId = ns("nmark"),
-                              label = "",
-                              choices = data_diff$all,
-                              options = shinyWidgets::pickerOptions(
-                                actionsBox = FALSE,
-                                countSelectedText = "show {0}",
-                                selectedTextFormat = "count > 2"
-                              ),
-                              multiple = TRUE, selected = data_diff$selected
-                            )
-            ),
+            fluidRow(
+              column(5, offset = 1, align="right",
+                     shinyWidgets::pickerInput(
+                       inputId = ns("nmark"),
+                       label = "",
+                       choices = data_diff$all,
+                       options = shinyWidgets::pickerOptions(
+                         actionsBox = FALSE,
+                         countSelectedText = "show {0}",
+                         selectedTextFormat = "count > 2"
+                       ),
+                       multiple = TRUE, selected = data_diff$selected
+                     ),
+                  ),
             )
           )
         })
@@ -173,6 +192,26 @@ mod_panel_rose_server <- function(id, values,
 
     }, ignoreInit = TRUE, priority = 9, ignoreNULL = TRUE)
 
+    observeEvent(input$inforose1, {
+      shinyalert::shinyalert(html=T, text = tagList(
+        h4("Rose plot", style = "text-align: justify;"),
+        p("For any the given selection in the diagram, the rose plot displays the average expression of those markers selected as relevant. The farther the bar is from the center of the plot, the higher is the average expression for that marker. A rose plot provides a quick way to identify marker profiles/signatures for any given selection in the diagram.", style = "text-align: justify;")
+      ),
+                             closeOnClickOutside = T, closeOnEsc = T, animation = "pop",type = "info",
+                             confirmButtonText = "Got it", className = "information_popup", confirmButtonCol = "#909097")
+    })
+
+    observeEvent(input$inforose2, {
+      shinyalert::shinyalert(html=T, text = tagList(
+        h4("Rose plot", style = "text-align: justify;"),
+        p("For any the given selection in the diagram, the rose plot displays the average expression of those markers selected as relevant. The farther the bar is from the center of the plot, the higher is the average expression for that marker. A rose plot provides a quick way to identify marker profiles/signatures for any given selection in the diagram.", style = "text-align: justify;"),
+        br(),
+        h4("Bar plot", style = "text-align: justify;"),
+        p("To study the differences between the two selections, we use the more traditional 'bar plot'. This displays, side-by-side, the distribution of values for the different relevant markers for each selection in the diagram.", style = "text-align: justify;")
+      ),
+                             closeOnClickOutside = T, closeOnEsc = T, animation = "pop",type = "info",
+                             confirmButtonText = "Got it", className = "information_popup", confirmButtonCol = "#909097")
+    })
 
   })
 }

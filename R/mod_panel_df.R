@@ -51,7 +51,7 @@ mod_panel_df_server <- function(id, values,
                         #   )
                         # ),
                         br(),
-                        fluidRow(column(12, p("The overall Adjusted Mutual Information (AMI) is calculated following the 'aricode' R package, scaling the results between 0 (random) and 1 (identical). The coherence reflects the extend to which the link or nodes selected show agreement across annotations (", tags$a("see details", href = "https://github.com/bernibra/tagtango/blob/main/inst/coherence-README.md", target = "_blank", style="padding: 0; text-decoration: underline; color: blue;"), ").",
+                        fluidRow(column(12, p("The overall Adjusted Mutual Information (AMI) is calculated following the 'aricode' R package, scaling the results between 0 (random) and 1 (identical). The coherence reflects the extend to which the link or nodes selected show agreement across annotations/labels/groups (", tags$a("see details", href = "https://github.com/bernibra/tagtango/blob/main/inst/coherence-README.md", target = "_blank", style="padding: 0; text-decoration: underline; color: blue;"), ").",
                                         align = "justify", style="color:#3D405B"))),
 
           )
@@ -94,7 +94,7 @@ mod_panel_df_server <- function(id, values,
                         fluidRow(column(6, h5("Overlap", align = "left", style="color:#3D405B; border: none;")),
                                  column(6,h5(textOutput(ns("overlap")), align = "right", style="color:#3D405B; border: none;"))),
                         br(),
-                        fluidRow(column(12, p("The overall Adjusted Mutual Information (AMI) is calculated following the 'aricode' R package, scaling the results between 0 (random) and 1 (identical). The coherence reflects the extend to which the link or nodes selected show agreement across annotations (", tags$a("see details", href = "https://github.com/bernibra/tagtango/blob/main/inst/coherence-README.md", target = "_blank", style="padding: 0; text-decoration: underline; color: blue;"), ").",
+                        fluidRow(column(12, p("The overall Adjusted Mutual Information (AMI) is calculated following the 'aricode' R package, scaling the results between 0 (random) and 1 (identical). The coherence reflects the extend to which the link or nodes selected show agreement across annotations/labels/groups (", tags$a("see details", href = "https://github.com/bernibra/tagtango/blob/main/inst/coherence-README.md", target = "_blank", style="padding: 0; text-decoration: underline; color: blue;"), ").",
                                               align = "justify", style="color:#3D405B")))
           )
         })

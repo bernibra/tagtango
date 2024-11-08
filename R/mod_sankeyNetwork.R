@@ -80,7 +80,9 @@ mod_sankeyNetwork_ui <- function(id){
         column(8, offset = 2, align="right",
                shiny::downloadButton(outputId = ns("download"), label = "Download", class = "custom"),
                shiny::actionButton(inputId = ns("restart"), label = "Restart", class = "custom"),
-               shiny::actionButton(inputId = ns("stopapp"), label = "Stop", class = "custom")
+               shiny::actionButton(inputId = ns("stopapp"), label = "Stop", class = "custom"),
+               # shinyBS::bsTooltip(ns("download"), "This will download the R code to reproduce the different figures",
+               #                    "bottom", options = list(delay = list(show=1500))),
         ),
       )
     ),

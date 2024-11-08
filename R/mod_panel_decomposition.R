@@ -44,14 +44,19 @@ mod_panel_decomposition_server <- function(id, values, panel_padding = 20, rnati
         output$panel <- renderUI({
           absolutePanel(id = "controls", class = "panel panel-default topleft white",
                         top = "98%", left = "99%", width = values$width, fixed=TRUE,
-                        draggable = TRUE, height = "auto",
+                        draggable = F, height = "auto",
                         fluidRow(
                           uiOutput(ns("options_tab")),
                           column(12,
                                  plotOutput(ns("decomposition"),
                                             height = values$height-panel_padding,
                                             width = values$width-panel_padding)
-                          )
+                          ),
+                        ),
+                        div(style = "position: relative;",
+                            shiny::actionButton(ns("UMAPinfo"), label = "i",
+                                                style = "bottom: -2px; left:-2px;",
+                                                class = "btn btn-custom bttn-panel")
                         )
           )
         })
@@ -122,6 +127,15 @@ mod_panel_decomposition_server <- function(id, values, panel_padding = 20, rnati
           width = values$width-panel_padding)
       }
     }, ignoreInit = TRUE, priority = 10, ignoreNULL = TRUE)
+
+    observeEvent(input$UMAPinfo, {
+      shinyalert::shinyalert(html=T, text = tagList(
+        h4("Scatter plot", style = "text-align: justify;"),
+        p("The scatter plot displays the position of the cells/spots/rows/elements within the selection along the chosen axes/dimensions. For example, if the axes selected are the principal components for the expression of a set of markers, the scatter plot will showcase where each selection is positioned along those axes.", style = "text-align: justify;")
+      ),
+      closeOnClickOutside = T, closeOnEsc = T, animation = "pop",type = "info",
+      confirmButtonText = "Got it", className = "information_popup", confirmButtonCol = "#909097")
+    })
 
   })
 }
