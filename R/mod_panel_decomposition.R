@@ -55,7 +55,7 @@ mod_panel_decomposition_server <- function(id, values, panel_padding = 20, rnati
                         ),
                         div(style = "position: relative;",
                             shiny::actionButton(ns("UMAPinfo"), label = "i",
-                                                style = "bottom: -2px; left:-2px;",
+                                                style = "bottom: -1px; left:-1px;",
                                                 class = "btn btn-custom bttn-panel")
                         )
           )

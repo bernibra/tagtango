@@ -50,7 +50,7 @@ mod_panel_rose_server <- function(id, values,
                         uiOutput(ns("options_tab")),
                         div(style = "position: relative;",
                             shiny::actionButton(ns("inforose1"), label = "i",
-                                                style = "bottom: -2px; right:-2px;",
+                                                style = "bottom: -1px; right:-1px;",
                                                 class = "btn btn-custom bttn-panel")
                         )
 
@@ -129,7 +129,7 @@ mod_panel_rose_server <- function(id, values,
                         uiOutput(ns("options_tab")),
                         div(style = "position: relative;",
                                shiny::actionButton(ns("inforose2"), label = "i",
-                                                        style = "bottom: -2px; right:-2px;",
+                                                        style = "bottom: -1px; right:-1px;",
                                                         class = "btn btn-custom bttn-panel")
                         ),
 
@@ -195,7 +195,7 @@ mod_panel_rose_server <- function(id, values,
     observeEvent(input$inforose1, {
       shinyalert::shinyalert(html=T, text = tagList(
         h4("Rose plot", style = "text-align: justify;"),
-        p("For any the given selection in the diagram, the rose plot displays the average expression of those markers selected as relevant. The farther the bar is from the center of the plot, the higher is the average expression for that marker. A rose plot provides a quick way to identify marker profiles/signatures for any given selection in the diagram.", style = "text-align: justify;")
+        p("A rose plot is a circular chart analogous to a bar chart. For any the given selection in the diagram, the rose plot displays the average expression of those markers selected as relevant. The farther the petal/bar is from the center of the plot, the higher is the average expression for that marker. A rose plot provides a quick way to identify marker profiles/signatures for any given selection in the diagram. Use the tab under the rose plot to add or remove markers from the visualization.", style = "text-align: justify;")
       ),
                              closeOnClickOutside = T, closeOnEsc = T, animation = "pop",type = "info",
                              confirmButtonText = "Got it", className = "information_popup", confirmButtonCol = "#909097")
@@ -204,10 +204,10 @@ mod_panel_rose_server <- function(id, values,
     observeEvent(input$inforose2, {
       shinyalert::shinyalert(html=T, text = tagList(
         h4("Rose plot", style = "text-align: justify;"),
-        p("For any the given selection in the diagram, the rose plot displays the average expression of those markers selected as relevant. The farther the bar is from the center of the plot, the higher is the average expression for that marker. A rose plot provides a quick way to identify marker profiles/signatures for any given selection in the diagram.", style = "text-align: justify;"),
+        p("A rose plot is a circular chart analogous to a bar chart. For any the given selection in the diagram, the rose plot displays the average expression of those markers selected as relevant. The farther the petal/bar is from the center of the plot, the higher is the average expression for that marker. A rose plot provides a quick way to identify marker profiles/signatures for any given selection in the diagram. Use the tab under the rose plot to add or remove markers from the visualization.", style = "text-align: justify;"),
         br(),
         h4("Bar plot", style = "text-align: justify;"),
-        p("To study the differences between the two selections, we use the more traditional 'bar plot'. This displays, side-by-side, the distribution of values for the different relevant markers for each selection in the diagram.", style = "text-align: justify;")
+        p("To study the differences between the two selections, we use a more traditional bar plot. This displays, side-by-side, the distribution of values for the different relevant markers for each selection in the diagram. Use the tab under the bar plot to add or remove markers from the visualization.", style = "text-align: justify;")
       ),
                              closeOnClickOutside = T, closeOnEsc = T, animation = "pop",type = "info",
                              confirmButtonText = "Got it", className = "information_popup", confirmButtonCol = "#909097")

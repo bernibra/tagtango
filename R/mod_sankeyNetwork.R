@@ -81,8 +81,8 @@ mod_sankeyNetwork_ui <- function(id){
                shiny::downloadButton(outputId = ns("download"), label = "Download", class = "custom"),
                shiny::actionButton(inputId = ns("restart"), label = "Restart", class = "custom"),
                shiny::actionButton(inputId = ns("stopapp"), label = "Stop", class = "custom"),
-               # shinyBS::bsTooltip(ns("download"), "This will download the R code to reproduce the different figures",
-               #                    "bottom", options = list(delay = list(show=1500))),
+               shiny::actionButton(ns("sankeyinfo"), label = "i",
+                                   class = "btn btn-custom bttn-panel-dark")
         ),
       )
     ),
@@ -388,6 +388,15 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
 
     }
 
+    # sankey information on click ----------------------------------------------------
+    observeEvent(input$sankeyinfo,{
+      shinyalert::shinyalert(html=T, text = tagList(
+        h4("Sankey diagram", style = "text-align: justify;"),
+        p("A sankey diagram is a network representation of the overlap between the two sets of annotations, where nodes on each side represent the different annotations and links characterize their associations (how many cells/spots/elements each pair share).", style = "text-align: justify;")
+      ),
+      closeOnClickOutside = T, closeOnEsc = T, animation = "pop",type = "info",
+      confirmButtonText = "Got it", className = "information_popup", confirmButtonCol = "#909097")
+    })
 
     # Restart app on click ----------------------------------------------------
     observeEvent(input$restart,{

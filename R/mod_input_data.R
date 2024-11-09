@@ -13,7 +13,7 @@ mod_input_data_ui <- function(id){
     fluidRow(
       column(12,
              div(style="width:100%; justify-content: center;",
-                 div(style="text-align: justify;", p("Welcome to our web app for comparing annotations for single-cell data. Trying to compare annotations generated using different strategies/data is akin to orchestrating a dance-off among immune cells \u2014 everyone's moving in different directions, some are doing their own interpretative dance, and the floor transforms into a captivating whirlwind of immune activity. It's a genomic dance party where the only rule is that there are no rules, and the real puzzle is discovering who brought salsa to the immune tango showdown. Let the annotation extravaganza begin!"))
+                 div(style="text-align: justify;", p("Explore the delicate dance of annotations within your data. This tool is designed to simplify the comparison of cell annotations across single-cell datasets. With different methods and data types often producing varied results, ", tags$em("tagtango"), " allows you to see how cell populations overlap or differ across annotations, making it easy for anyone to incorporate annotation comparisons as a routine part of their analysis."))
              ))
     ),
     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
@@ -58,7 +58,7 @@ mod_input_data_server <- function(id){
     values$umap <- data.frame(rna_first = NULL, rna_second = NULL, adt_first = NULL, adt_second = NULL)
     values$ReadError <- "No data"
     values$code <- "library(tagtango)\n\n"
-
+    values$webapp <- if(golem::get_golem_options(which = "maxRequestSize")<3000*1024^2){TRUE}else{FALSE}
     values$loading_ui <- if(is.null(golem::get_golem_options(which = "input_data"))){TRUE}else{NULL}
     values$inputfile <- if(is.null(golem::get_golem_options(which = "input_data"))){NULL}else{list(datapath="argument")}
 
@@ -66,7 +66,10 @@ mod_input_data_server <- function(id){
 
     observeEvent(values$loading_ui, {
       output$data_message <- renderUI({
-        p("The app expects a `MultiAssayExperiment` object, a `SingleCellExperiment` or `data.frame` with annotations as colData or columns, respectively.")
+        p("The app expects a `MultiAssayExperiment` object, a `SingleCellExperiment` or `data.frame` with annotations as colData or columns, respectively. For further details visit the ",
+          tags$a("tagtango repository", href="https://github.com/bernibra/tagtango", style = "color: #F4BA02;", target="_blank"),
+          ".", ifelse(values$webapp, " We recommend locally installing and using the R package for the analysis of large datasets.", "")
+          )
       })
 
       output$data_holder <- renderUI({

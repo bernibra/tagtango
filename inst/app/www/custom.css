@@ -584,4 +584,11 @@ h5 {
   border: none;
 }
 
+.bttn-panel-dark {
+    padding-right: 0px;
+    padding-left: 0px;
+    font-family: monospace;
+    font-weight: 400;
+    width: 34px;
+}
 

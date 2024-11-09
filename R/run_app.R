@@ -28,6 +28,6 @@ run_app <- function(
       enableBookmarking = enableBookmarking,
       uiPattern = uiPattern
     ),
-    golem_opts = list(input_data = input_data, ...)
+    golem_opts = list(input_data = input_data, maxRequestSize = maxRequestSize, ...)
   )
 }
