@@ -18,14 +18,15 @@ read_input.default <- function(filename, run_test_data = FALSE, data = NULL, ...
     return(list(sce = NULL,
                 mae = NULL,
                 dat = NULL, ReadError = "Error loading the data. Refer to the app's manual and README page for specifications on the input format.",
-                warning = ""))
+                warning = "",
+                defaultdecom = NULL))
   }
 
   if(is.null(filename)){
     return(list(sce = NULL,
                 mae = NULL,
                 dat = NULL, ReadError = "No data",
-                warning = ""))
+                warning = "", defaultdecom = NULL))
   }
 
   if(run_test_data){
@@ -50,7 +51,7 @@ read_input.default <- function(filename, run_test_data = FALSE, data = NULL, ...
     sce = NULL,
     mae = NULL,
     dat = NULL, ReadError = "Wrong file type",
-    warning = ""))
+    warning = "", defaultdecom = NULL))
 }
 
 # Read tesdata
@@ -61,11 +62,15 @@ read_input.test <- function(){
 
   if(class(test_data)[1]=="SingleCellExperiment"){
 
+    defaultdecom <- NULL
     dat <- as.data.frame(SingleCellExperiment::colData(test_data))
     if(length(SingleCellExperiment::reducedDimNames(test_data))!=0){
       for(i in SingleCellExperiment::reducedDimNames(test_data)){
         d <- as.data.frame(SingleCellExperiment::reducedDim(test_data, type = i)[,1:2])
-        colnames(d) <- paste0(i, c("_first_axis", "_second_axis"))
+        if(is.null(defaultdecom)){
+          defaultdecom <- paste0(i, c("_first", "_second"))
+        }
+        colnames(d) <- paste0(i, c("_first", "_second"))
         dat <- cbind(dat, d)
       }
     }
@@ -73,15 +78,22 @@ read_input.test <- function(){
     dat <- list(
       sce = test_data, mae = NULL,
       dat = dat, ReadError = "Valid data",
-      warning = "")
+      warning = "",
+      defaultdecom = defaultdecom)
 
   }else{
+
     coldat <- as.data.frame(MultiAssayExperiment::colData(test_data))
+    defaultdecom <- NULL
+
     for (j in names(test_data)){
       sce <- MultiAssayExperiment::experiments(test_data)[[j]]
       if(length(SingleCellExperiment::reducedDimNames(sce))!=0){
         for(i in SingleCellExperiment::reducedDimNames(sce)){
           d <- as.data.frame(SingleCellExperiment::reducedDim(sce, type = i)[,1:2])
+          if(is.null(defaultdecom)){
+            defaultdecom <- paste0(j, "_", i, c("_first", "_second"))
+          }
           colnames(d) <- paste0(j, "_", i, c("_first", "_second"))
           coldat <- cbind(coldat, d)
         }
@@ -93,7 +105,8 @@ read_input.test <- function(){
       sce = NULL,
       dat = coldat,
       ReadError = "Valid data",
-      warning = ""
+      warning = "",
+      defaultdecom = defaultdecom
     )
   }
 
@@ -110,7 +123,7 @@ read_input.object <- function(mat, typ, ...){
       sce = NULL,
       mae = NULL,
       dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " "),
-      warning = ""))
+      warning = "", defaultdecom = NULL))
   }
 
   if(class(mat)[1]=="SingleCellExperiment"){
@@ -127,9 +140,13 @@ read_input.object <- function(mat, typ, ...){
     }
 
     dat <- as.data.frame(SingleCellExperiment::colData(mat))
+    defaultdecom <- NULL
     if(length(SingleCellExperiment::reducedDimNames(mat))!=0){
       for(i in SingleCellExperiment::reducedDimNames(mat)){
         d <- as.data.frame(SingleCellExperiment::reducedDim(mat, type = i)[,1:2])
+        if(is.null(defaultdecom)){
+          defaultdecom <- paste0(i, c("_first", "_second"))
+        }
         colnames(d) <- paste0(i, c("_first", "_second"))
         dat <- cbind(dat, d)
       }
@@ -138,7 +155,8 @@ read_input.object <- function(mat, typ, ...){
     dat <- list(
       sce = sce, mae = NULL,
       dat = dat, ReadError = "Valid data",
-      warning = warning)
+      warning = warning,
+      defaultdecom = defaultdecom)
 
   }else if (class(mat)[1]=="MultiAssayExperiment"){
 
@@ -148,6 +166,7 @@ read_input.object <- function(mat, typ, ...){
 
     warning <- ""
 
+    defaultdecom <- NULL
     for (j in names(mae)){
 
       sce <- MultiAssayExperiment::experiments(mae)[[j]]
@@ -162,6 +181,9 @@ read_input.object <- function(mat, typ, ...){
       if(length(SingleCellExperiment::reducedDimNames(sce))!=0){
         for(i in SingleCellExperiment::reducedDimNames(sce)){
           d <- as.data.frame(SingleCellExperiment::reducedDim(sce, type = i)[,1:2])
+          if(is.null(defaultdecom)){
+            defaultdecom <- paste0(j, "_", i, c("_first", "_second"))
+          }
           colnames(d) <- paste0(j, "_", i, c("_first", "_second"))
           dat <- cbind(dat, d)
         }
@@ -173,17 +195,19 @@ read_input.object <- function(mat, typ, ...){
       mae = mae,
       dat = dat,
       ReadError = "Valid data",
-      warning = warning)
+      warning = warning,
+      defaultdecom = defaultdecom)
+
   }else{
     dat <- tryCatch({
       dat_ <- as.data.frame(mat)
       if(all(dim(dat_)>c(1,1))){
-        list(sce = NULL, mae = NULL, dat = as.data.frame(mat), ReadError = "Valid data", warning = "")
+        list(sce = NULL, mae = NULL, dat = as.data.frame(mat), ReadError = "Valid data", warning = "", defaultdecom = NULL)
       }else{
-        list(sce = NULL, mae = NULL, dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " "), warning = "")
+        list(sce = NULL, mae = NULL, dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " "), warning = "", defaultdecom = NULL)
       }
     }, error = function(e) {
-      list(sce = NULL, mae = NULL, dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " "), warning = "")
+      list(sce = NULL, mae = NULL, dat = NULL, ReadError = paste("Wrong", typ , "type", sep = " "), warning = "", defaultdecom = NULL)
     })
   }
 
@@ -212,9 +236,9 @@ read_input.csv <- function(filename, ...){
 
   # Load file as matrix using readr and tibble
   dat <- tryCatch({
-    list(sce = NULL, mae = NULL, dat = as.data.frame(utils::read.csv(file = filename, header = T)), ReadError = "Valid data", warning = "")
+    list(sce = NULL, mae = NULL, dat = as.data.frame(utils::read.csv(file = filename, header = T)), ReadError = "Valid data", warning = "", defaultdecom = NULL)
   }, error = function(e) {
-    list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Wrong file type", warning = "")
+    list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Wrong file type", warning = "", defaultdecom = NULL)
   })
 
   return(dat)
@@ -229,11 +253,11 @@ check_dim <- function(x, collimit){
   }
 
   if(nrow(x$dat)==0){
-    return(list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Empty data", warning = ""))
+    return(list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Empty data", warning = "", defaultdecom = NULL))
   }
 
   if(ncol(x$dat)>collimit){
-    return(list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Too many columns", warning = ""))
+    return(list(sce = NULL, mae = NULL, dat = NULL, ReadError = "Too many columns", warning = "", defaultdecom = NULL))
   }
   return(x)
 }

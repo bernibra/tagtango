@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_input_data_UMAP_ui <- function(id, choices){
+mod_input_data_UMAP_ui <- function(id, choices, defaults){
   ns <- NS(id)
   tagList(
     div(style = "padding: 1em; padding-top: 0em;",
@@ -19,12 +19,12 @@ mod_input_data_UMAP_ui <- function(id, choices){
                   column(6,
                          shinyWidgets::pickerInput(ns("RNA_first_axis"),"First axis:",
                                                    choices = choices, multiple = T,
-                                                   selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "None"))
+                                                   selected = if(is.null(defaults)){NULL}else{defaults[1]}, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "None"))
                   ),
                   column(6,
                          shinyWidgets::pickerInput(ns("RNA_second_axis"),"Second axis:",
                                                    choices = choices, multiple = T,
-                                                   selected = NULL, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "None"))
+                                                   selected = if(is.null(defaults)){NULL}else{defaults[2]}, options = shinyWidgets::pickerOptions(maxOptions = 1, style = "custom-inner", title = "None"))
                   )
           ),
         ),

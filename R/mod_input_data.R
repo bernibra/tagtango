@@ -320,7 +320,7 @@ mod_input_data_server <- function(id){
                   h4("Additional Information"),
                   mod_cell_grouping_ui(ns("cell_grouping_1"), choices = colnames(values$data$dat)),
                   mod_cell_filtering_ui(ns("cell_filtering_1"), choices = colnames(values$data$dat)),
-                  mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat))
+                  mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat), defaults = values$data$defaultdecom)
                 )
               })
             }else{
@@ -330,7 +330,7 @@ mod_input_data_server <- function(id){
                   h4("Additional Information"),
                   mod_cell_grouping_ui(ns("cell_grouping_1"), choices = colnames(values$data$dat)),
                   mod_cell_filtering_ui(ns("cell_filtering_1"), choices = colnames(values$data$dat)),
-                  mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat)),
+                  mod_input_data_UMAP_ui(ns("input_data_UMAP_1"), choices = colnames(values$data$dat), defaults = values$data$defaultdecom),
                   mod_configuration_ui(ns("configuration_1"), default_value = values$default_configuration)
                 )
               })
