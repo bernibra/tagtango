@@ -11,7 +11,8 @@ bar_diff(
   second_selection,
   n_bars = 10,
   valley = NULL,
-  palette = "BrBG"
+  palette = "BrBG",
+  quant = NULL
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ bar_diff(
 \item{valley}{the value in `norm` corresponding to the valley separating positive and negative peak for CITE-seq data.}
 
 \item{palette}{color palette, default "BrBG"}
+
+\item{quant}{position of positive and negative peak for normalized data.}
 }
 \value{
 returns a list containing a ggplot object and the list of markers selected and used.

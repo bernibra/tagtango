@@ -58,7 +58,12 @@ mod_input_data_server <- function(id){
     values$umap <- data.frame(rna_first = NULL, rna_second = NULL, adt_first = NULL, adt_second = NULL)
     values$ReadError <- "No data"
     values$code <- "library(tagtango)\n\n"
-    values$webapp <- if(golem::get_golem_options(which = "maxRequestSize")<3000*1024^2){TRUE}else{FALSE}
+    values$webapp <- NULL
+    if(!is.null(golem::get_golem_options(which = "maxRequestSize"))){
+      values$webapp <- if(golem::get_golem_options(which = "maxRequestSize")<3000*1024^2){TRUE}else{FALSE}
+    }else{
+      values$webapp <- FALSE
+    }
     values$loading_ui <- if(is.null(golem::get_golem_options(which = "input_data"))){TRUE}else{NULL}
     values$inputfile <- if(is.null(golem::get_golem_options(which = "input_data"))){NULL}else{list(datapath="argument")}
 

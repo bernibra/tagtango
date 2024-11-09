@@ -17,7 +17,9 @@ process_data(
   filter_values = NULL,
   grouping_variable = NULL,
   grouping_values = NULL,
-  min_counts = NULL
+  min_counts = NULL,
+  dimension = NULL,
+  input_data = NULL
 )
 }
 \arguments{
@@ -46,6 +48,10 @@ process_data(
 \item{grouping_values}{values in `grouping_variable` that need to be filtered}
 
 \item{min_counts}{minimum number of cells in a link for this to be displayed}
+
+\item{dimension}{internal variable to determine whether the data is a data frame (=0), a low-dimension dataset (=1), or a high-dimension dataset (=1).}
+
+\item{input_data}{object inputed directly.}
 }
 \value{
 Returns a list containing two attributes: data and network. The first contains the data filtered according to the grouping and filtering values. The second, contains the data organized in a manner that is readible for the sankeyNetwork.

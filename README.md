@@ -1,5 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 <!-- Good examples for for the README and article:
         - https://github.com/LieberInstitute/spatialLIBD/blob/devel/README.Rmd
 -->
@@ -7,6 +8,7 @@
 # [tagtango](https://tagtango.unil.ch/)
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 Welcome to the `tagtango` project!
@@ -113,7 +115,8 @@ data(test_data)
 test_data
 #> A MultiAssayExperiment object of 2 listed
 #>  experiments with user-defined names and respective classes.
-#>  Containing an ExperimentList class object of length 2:
+#>  Containing an
+#> ExperimentList class object of length 2:
 #>  [1] RNA: SingleCellExperiment with 33538 rows and 7472 columns
 #>  [2] ADT: SingleCellExperiment with 17 rows and 7472 columns
 #> Functionality:
@@ -138,7 +141,8 @@ criteria are met:
 - The data should be normalized and stored as a `logcounts` assay within
   the `SingleCellExperiment` object. For example, in the manuscript, the
   CITE-seq data was normalized using the R package `ADTnorm`.
-- Define row and column names within the `SingleCellExperiment` object.
+- Define unique row and column names within the `SingleCellExperiment`
+  object.
 - Different annotations should be stored as columns of the `colData`
   data.frame within the object.
 
