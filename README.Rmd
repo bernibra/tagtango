@@ -33,7 +33,7 @@ If you prefer running the app locally, you can also install it as an R package f
 
 ```{r 'install', eval = FALSE}
 # install.packages("remotes")
-remotes::install_github("bernibra/tagtango") 
+BiocManager::install("bernibra/tagtango")
 ```
 
 and run:
