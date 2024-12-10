@@ -1,6 +1,6 @@
 #' Process data as the shiny application
 #'
-#' @description A utility function for reading a processing the data as `tagtango` does.
+#' @description A utility function for reading a processing the data as `tagtango' does.
 #' @param filename path to data file
 #' @param data_type experiment used in the MultiAssayExperiment or data contained in logcounts in SingleCellExperiment
 #' @param left annotation in the left of the diagram
@@ -9,10 +9,10 @@
 #' @param pc1_axis2 second axis of first dimension reduction space
 #' @param pc2_axis1 first axis of second dimension reduction space
 #' @param pc2_axis2 second axis of second dimension reduction space
-#' @param filter_variable filtering variable found in `dat`
-#' @param filter_values values in `filter_variable` that need to be excluded
-#' @param grouping_variable grouping variable found in `dat`
-#' @param grouping_values values in `grouping_variable` that need to be filtered
+#' @param filter_variable filtering variable found in `dat'
+#' @param filter_values values in `filter_variable' that need to be excluded
+#' @param grouping_variable grouping variable found in `dat'
+#' @param grouping_values values in `grouping_variable' that need to be filtered
 #' @param min_counts minimum number of cells in a link for this to be displayed
 #' @param dimension internal variable to determine whether the data is a data frame (=0), a low-dimension dataset (=1), or a high-dimension dataset (=1).
 #' @param input_data object inputed directly.

@@ -1,12 +1,12 @@
 #' Generate a ggplot rose plot with marker expression
 #'
-#' @description A function to generate a rose plot as `tagtango` does.
-#' @param norm normalized expression data with cells as rows and columns as markers/genes (i.e. function `process_data()` should provide this under the attribute `data`)
-#' @param data data.frame with the different annotations, where each row represent a cell. The rownames should match those of `norm` (i.e. function `process_data()` should provide this under the attribute `network`).
-#' @param selected boolean array with selected cells as True values, for all cells in `data`.
+#' @description A function to generate a rose plot as `tagtango' does.
+#' @param norm normalized expression data with cells as rows and columns as markers/genes (i.e. function `process_data()' should provide this under the attribute `data')
+#' @param data data.frame with the different annotations, where each row represent a cell. The rownames should match those of `norm' (i.e. function `process_data()' should provide this under the attribute `network').
+#' @param selected boolean array with selected cells as TRUE values, for all cells in `data'.
 #' @param n_petals if an integer value, it defines the number of petals of the rose plot, selecting those that are most "relevant". If an array with marker names, it uses those.
-#' @param title main plot title. Default `NULL`.
-#' @param valley the value in `norm` corresponding to the valley separating positive and negative peak for CITE-seq data.
+#' @param title main plot title. Default `NULL'.
+#' @param valley the value in `norm' corresponding to the valley separating positive and negative peak for CITE-seq data.
 #' @param palette color palette, default "RdYlGn".
 #' @param quant position of positive and negative peak for normalized data.
 #' @param ... parameters passed to the underlying function.

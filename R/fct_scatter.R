@@ -1,10 +1,10 @@
 #' Generate a ggplot scatter plot
 #'
-#' @description A function to generate a scatter plot as `tagtango` does.
+#' @description A function to generate a scatter plot as `tagtango' does.
 #' @param data data.frame with dimension reduction axes.
-#' @param labels array with labels for first (and potentially second selections), for all cells in `data`.
-#' @param values boolean array with second selection cells as True values, for all cells in `data`.
-#' @param title boolean array with second selection cells as True values, for all cells in `data`.
+#' @param labels array with labels for first (and potentially second selections), for all cells in `data'.
+#' @param values boolean array with second selection cells as TRUE values, for all cells in `data'.
+#' @param title boolean array with second selection cells as TRUE values, for all cells in `data'.
 #' @param xlabel the text for the x axis.
 #' @param ylabel the text for the y axis.
 #'

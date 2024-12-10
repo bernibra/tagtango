@@ -52,7 +52,7 @@ app_ui <- function(request) {
           #        shiny::actionButton(inputId = "load", label = "Load data", class = "custom")
           # )
           shiny::absolutePanel(bottom = "3%", right = "3%", height = "auto", width = "auto",draggable = F, fixed = T,
-                               shiny::actionButton(inputId = "load", label = "Load data", class = "custom")
+                               shiny::actionButton(inputId = "load", label = "Visualize data", class = "custom")
                                )
         )
       ),
