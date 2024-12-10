@@ -1,6 +1,6 @@
 #' Run the Shiny Application
 #'
-#' @param maxRequestSize maximum file size allowed in the application, in bytes. Default is 3Gb. Icrease at your own risk.
+#' @param maxRequestSize maximum file size allowed in the application, in bytes. Default is 3Gb. Increase at your own risk.
 #' @param input_data dataset added via the command line. This will skip the process of uploading data unless the data is malformatted.
 #' @param ... arguments to pass to golem_opts.
 #' See `?golem::get_golem_options' for more details.

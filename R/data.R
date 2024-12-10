@@ -4,7 +4,7 @@
 #' Peripheral blood mononuclear cells (PBMCs) from a healthy donor stained with TotalSeq-B antibodies.
 #'
 #' @format ## `test_data`
-#' A SingleCellExperment with 7472 cells, 17 protein markers, and 33538 gene IDs:
+#' A SingleCellExperiment with 7472 cells, 17 protein markers, and 33538 gene IDs:
 #' \describe{
 #'   \item{date}{November 19, 2018}
 #' }

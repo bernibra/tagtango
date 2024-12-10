@@ -1,6 +1,6 @@
 Package: tagtango
 Title: A web app for comparing cell annotations or clusterings
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: 
     person(given = "Bernat",
            family = "Bramon Mora",

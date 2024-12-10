@@ -14,10 +14,10 @@
 #' @param grouping_variable grouping variable found in `dat'
 #' @param grouping_values values in `grouping_variable' that need to be filtered
 #' @param min_counts minimum number of cells in a link for this to be displayed
-#' @param dimension internal variable to determine whether the data is a data frame (=0), a low-dimension dataset (=1), or a high-dimension dataset (=1).
+#' @param dimension internal variable to determine whether the data is a data frame (=0), a low-dimension dataset (=1), or a high-dimension dataset (=2).
 #' @param input_data object inputed directly.
 #'
-#' @return Returns a list containing two attributes: data and network. The first contains the data filtered according to the grouping and filtering values. The second, contains the data organized in a manner that is readible for the sankeyNetwork.
+#' @return Returns a list containing two attributes: data and network. The first contains the data filtered according to the grouping and filtering values. The second, contains the data organized in a manner that is readible by the sankeyNetwork.
 #' @export
 process_data <- function(filename, data_type, left, right,
                          pc1_axis1 = NULL, pc1_axis2 = NULL,
