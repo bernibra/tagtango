@@ -39,23 +39,23 @@ process_data(
 
 \item{pc2_axis2}{second axis of second dimension reduction space}
 
-\item{filter_variable}{filtering variable found in `dat`}
+\item{filter_variable}{filtering variable found in `dat'}
 
-\item{filter_values}{values in `filter_variable` that need to be excluded}
+\item{filter_values}{values in `filter_variable' that need to be excluded}
 
-\item{grouping_variable}{grouping variable found in `dat`}
+\item{grouping_variable}{grouping variable found in `dat'}
 
-\item{grouping_values}{values in `grouping_variable` that need to be filtered}
+\item{grouping_values}{values in `grouping_variable' that need to be filtered}
 
 \item{min_counts}{minimum number of cells in a link for this to be displayed}
 
-\item{dimension}{internal variable to determine whether the data is a data frame (=0), a low-dimension dataset (=1), or a high-dimension dataset (=1).}
+\item{dimension}{internal variable to determine whether the data is a data frame (=0), a low-dimension dataset (=1), or a high-dimension dataset (=2).}
 
 \item{input_data}{object inputed directly.}
 }
 \value{
-Returns a list containing two attributes: data and network. The first contains the data filtered according to the grouping and filtering values. The second, contains the data organized in a manner that is readible for the sankeyNetwork.
+Returns a list containing two attributes: data and network. The first contains the data filtered according to the grouping and filtering values. The second, contains the data organized in a manner that is readible by the sankeyNetwork.
 }
 \description{
-A utility function for reading a processing the data as `tagtango` does.
+A utility function for reading a processing the data as `tagtango' does.
 }

@@ -17,17 +17,17 @@ rose_plot(
 )
 }
 \arguments{
-\item{norm}{normalized expression data with cells as rows and columns as markers/genes (i.e. function `process_data()` should provide this under the attribute `data`)}
+\item{norm}{normalized expression data with cells as rows and columns as markers/genes (i.e. function `process_data()' should provide this under the attribute `data')}
 
-\item{data}{data.frame with the different annotations, where each row represent a cell. The rownames should match those of `norm` (i.e. function `process_data()` should provide this under the attribute `network`).}
+\item{data}{data.frame with the different annotations, where each row represent a cell. The rownames should match those of `norm' (i.e. function `process_data()' should provide this under the attribute `network').}
 
-\item{selected}{boolean array with selected cells as True values, for all cells in `data`.}
+\item{selected}{boolean array with selected cells as TRUE values, for all cells in `data'.}
 
 \item{n_petals}{if an integer value, it defines the number of petals of the rose plot, selecting those that are most "relevant". If an array with marker names, it uses those.}
 
-\item{title}{main plot title. Default `NULL`.}
+\item{title}{main plot title. Default `NULL'.}
 
-\item{valley}{the value in `norm` corresponding to the valley separating positive and negative peak for CITE-seq data.}
+\item{valley}{the value in `norm' corresponding to the valley separating positive and negative peak for CITE-seq data.}
 
 \item{palette}{color palette, default "RdYlGn".}
 
@@ -39,5 +39,5 @@ rose_plot(
 returns a ggplot object.
 }
 \description{
-A function to generate a rose plot as `tagtango` does.
+A function to generate a rose plot as `tagtango' does.
 }

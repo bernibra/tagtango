@@ -16,11 +16,11 @@ scatter_plot(
 \arguments{
 \item{data}{data.frame with dimension reduction axes.}
 
-\item{labels}{array with labels for first (and potentially second selections), for all cells in `data`.}
+\item{labels}{array with labels for first (and potentially second selections), for all cells in `data'.}
 
-\item{values}{boolean array with second selection cells as True values, for all cells in `data`.}
+\item{values}{boolean array with second selection cells as TRUE values, for all cells in `data'.}
 
-\item{title}{boolean array with second selection cells as True values, for all cells in `data`.}
+\item{title}{boolean array with second selection cells as TRUE values, for all cells in `data'.}
 
 \item{xlabel}{the text for the x axis.}
 
@@ -30,5 +30,5 @@ scatter_plot(
 returns a ggplot object.
 }
 \description{
-A function to generate a scatter plot as `tagtango` does.
+A function to generate a scatter plot as `tagtango' does.
 }

@@ -35,12 +35,12 @@ request to determine whether the \code{ui} should be used to handle the
 request. Note that the entire request path must match the regular
 expression in order for the match to be considered successful.}
 
-\item{maxRequestSize}{maximum file size allowed in the application, in bytes. Default is 3Gb. Icrease at your own risk.}
+\item{maxRequestSize}{maximum file size allowed in the application, in bytes. Default is 3Gb. Increase at your own risk.}
 
 \item{input_data}{dataset added via the command line. This will skip the process of uploading data unless the data is malformatted.}
 
 \item{...}{arguments to pass to golem_opts.
-See `?golem::get_golem_options` for more details.}
+See `?golem::get_golem_options' for more details.}
 }
 \description{
 Run the Shiny Application

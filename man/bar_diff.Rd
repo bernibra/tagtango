@@ -16,17 +16,17 @@ bar_diff(
 )
 }
 \arguments{
-\item{norm}{normalized expression data with cells as rows and columns as markers/genes (i.e. function `process_data()` should provide this under the attribute `data`)}
+\item{norm}{normalized expression data with cells as rows and columns as markers/genes (i.e. function `process_data()' should provide this under the attribute `data')}
 
-\item{data}{data.frame with the different annotations, where each row represent a cell. The rownames should match those of `norm` (i.e. function `process_data()` should provide this under the attribute `network`).}
+\item{data}{data.frame with the different annotations, where each row represent a cell. The rownames should match those of `norm' (i.e. function `process_data()' should provide this under the attribute `network`).}
 
-\item{first_selection}{boolean array with first selection cells as True values, for all cells in `data`.}
+\item{first_selection}{boolean array with first selection cells as TRUE values, for all cells in `data'.}
 
-\item{second_selection}{boolean array with second selection cells as True values, for all cells in `data`.}
+\item{second_selection}{boolean array with second selection cells as TRUE values, for all cells in `data'.}
 
 \item{n_bars}{if an integer value, it defines the number of bars of the plot, selecting those that are most "relevant". If an array with marker names, it uses those.}
 
-\item{valley}{the value in `norm` corresponding to the valley separating positive and negative peak for CITE-seq data.}
+\item{valley}{the value in `norm' corresponding to the valley separating positive and negative peak for CITE-seq data.}
 
 \item{palette}{color palette, default "BrBG"}
 
@@ -36,5 +36,5 @@ bar_diff(
 returns a list containing a ggplot object and the list of markers selected and used.
 }
 \description{
-A function to generate a barlot as `tagtango` does.
+A function to generate a barlot as `tagtango' does.
 }
