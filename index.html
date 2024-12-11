@@ -49,6 +49,8 @@
 <div class="page-header"><h1 id="tagtango">
 <a href="https://tagtango.unil.ch/" class="external-link">tagtango</a><a class="anchor" aria-label="anchor" href="#tagtango"></a>
 </h1></div>
+<!-- badges: start -->
+<!-- badges: end -->
 <p>Welcome to the <code>tagtango</code> project!</p>
 <p><code>tagtango</code> is a powerful web application designed for the comprehensive analysis and comparison of multiple cell annotations performed on a single-cell dataset. Leveraging different data modalities, this tool allows you to untangle the differences and similarities of cell populations, effectively distinguishing real differences across cell annotations from background noise.</p>
 <p>The web application is currently accessible online <a href="https://tagtango.unil.ch/" class="external-link">here</a>. Please note that the server hosting the app is operating with limited RAM memory and may experience difficulties handling high traffic. We will soon be upgrading to a more robust hosting solution.</p>
@@ -73,6 +75,70 @@
 <p>Note that you will need to have <a href="https://docs.docker.com/get-docker/" class="external-link">Docker</a> installed in your machine. Once the project is built, you can then run the container via</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-p</span> 3838:3838 tagtango</span></code></pre></div>
 <p>and use the app in any web browser with the web address <code>http://0.0.0.0:3838</code></p>
+</div>
+<div class="section level2">
+<h2 id="input-data-requirements">Input Data Requirements<a class="anchor" aria-label="anchor" href="#input-data-requirements"></a>
+</h2>
+<p>As of now, please be aware that the hosting server has limitations, and the dataset size should not exceed 1GB (use the <code>maxRequestSize</code> parameter when running the application locally to increase this limit at your own risk). We advise against accessing the web application on a phone screen as the visualization may not be optimal. For the best user experience, we recommend using a desktop or tablet device.</p>
+<div class="section level3">
+<h3 id="accepted-data-formats">Accepted Data Formats<a class="anchor" aria-label="anchor" href="#accepted-data-formats"></a>
+</h3>
+<p>The <code>tagtango</code> app is flexible in handling various data types. For now, however, it only accepts input in the form of either a <code>MultiAssayExperiment</code> object stored as an RDS file, a <code>SingleCellExperiment</code> object stored as an RDS file, or a <code>data.frame</code> stored as an RDS, CSV, or TSV file. Expect this to change in the near future.</p>
+</div>
+<div class="section level3">
+<h3 id="multiassayexperiment-object-expectations">
+<code>MultiAssayExperiment</code> Object Expectations<a class="anchor" aria-label="anchor" href="#multiassayexperiment-object-expectations"></a>
+</h3>
+<p>If providing a <code>MultiAssayExperiment</code> object, ensure the following criteria are met:</p>
+<ul>
+<li>The elements of the <a href="https://rdrr.io/bioc/MultiAssayExperiment/f/vignettes/MultiAssayExperiment.Rmd" class="external-link"><code>ExperimentList</code></a> container should be <code>SingleCellExperiments</code> following the specifications stated below.</li>
+<li>The cells in all elements of the <code>ExperimentList</code> should be the same (and have matching names).</li>
+<li>Different annotations should be stored as columns of the <code>colData</code> data.frame within the object.</li>
+</ul>
+<p>As test dataset, a preprocessed and annotated <a href="https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/pbmc_10k_protein_v3" class="external-link">10x dataset</a> is provided with the package. This is a <code>MultiAssayExperiment</code> with Peripheral Blood Mononuclear Cells (PBMCs) from a healthy donor stained with a few TotalSeq-B antibodies, and is readily accessible via:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tagtango.bernatbramon.com">tagtango</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">)</span></span>
+<span><span class="va">test_data</span></span>
+<span><span class="co">#&gt; A MultiAssayExperiment object of 2 listed</span></span>
+<span><span class="co">#&gt;  experiments with user-defined names and respective classes.</span></span>
+<span><span class="co">#&gt;  Containing an</span></span>
+<span><span class="co">#&gt; ExperimentList class object of length 2:</span></span>
+<span><span class="co">#&gt;  [1] RNA: SingleCellExperiment with 33538 rows and 7472 columns</span></span>
+<span><span class="co">#&gt;  [2] ADT: SingleCellExperiment with 17 rows and 7472 columns</span></span>
+<span><span class="co">#&gt; Functionality:</span></span>
+<span><span class="co">#&gt;  experiments() - obtain the ExperimentList instance</span></span>
+<span><span class="co">#&gt;  colData() - the primary/phenotype DataFrame</span></span>
+<span><span class="co">#&gt;  sampleMap() - the sample coordination DataFrame</span></span>
+<span><span class="co">#&gt;  `$`, `[`, `[[` - extract colData columns, subset, or experiment</span></span>
+<span><span class="co">#&gt;  *Format() - convert into a long or wide DataFrame</span></span>
+<span><span class="co">#&gt;  assays() - convert ExperimentList to a SimpleList of matrices</span></span>
+<span><span class="co">#&gt;  exportClass() - save data to flat files</span></span></code></pre></div>
+<p>Notice that the column and row names of each <code>SingleCellExperiment</code> in the <code>ExperimentList</code> object are not <code>NULL</code>, and that the different annotations are stored in <code>MultiAssayExperiment::colData(test_sce)</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="singlecellexperiment-object-expectations">
+<code>SingleCellExperiment</code> Object Expectations<a class="anchor" aria-label="anchor" href="#singlecellexperiment-object-expectations"></a>
+</h3>
+<p>If providing a <code>SingleCellExperiment</code> object, ensure the following criteria are met:</p>
+<ul>
+<li>The data should be normalized and stored as a <code>logcounts</code> assay within the <code>SingleCellExperiment</code> object. For example, in the manuscript, the CITE-seq data was normalized using the R package <code>ADTnorm</code>.</li>
+<li>Define unique row and column names within the <code>SingleCellExperiment</code> object.</li>
+<li>Different annotations should be stored as columns of the <code>colData</code> data.frame within the object.</li>
+</ul>
+<p>An example of a <code>SingleCellExperiment</code> that can be used as input by <code>tagtango</code> can be generated as:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">test_data</span><span class="op">[[</span><span class="st">"ADT"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="dataframe-expectations">
+<code>data.frame</code> Expectations<a class="anchor" aria-label="anchor" href="#dataframe-expectations"></a>
+</h3>
+<p>If providing a <code>data.frame</code>, the app expects different annotations to be stored as columns.</p>
+<p>An example of a <code>data.frame</code> that can be used as input by <code>tagtango</code> can be generated as:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">MultiAssayExperiment</span><span class="fu">::</span><span class="fu">colData</span><span class="op">(</span><span class="va">test_data</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
