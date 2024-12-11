@@ -11,3 +11,7 @@
 ^rsconnect$
 ^Dockerfile$
 ^\.dockerignore$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
