@@ -7,10 +7,6 @@
 
 # [tagtango](https://tagtango.unil.ch/)
 
-<!-- badges: start -->
-
-<!-- badges: end -->
-
 Welcome to the `tagtango` project!
 
 `tagtango` is a powerful web application designed for the comprehensive

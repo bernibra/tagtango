@@ -18,9 +18,6 @@ knitr::opts_chunk$set(
 
 # [tagtango](https://tagtango.unil.ch/)
 
-<!-- badges: start -->
-<!-- badges: end -->
-
 Welcome to the `tagtango` project!
 
 `tagtango` is a powerful web application designed for the comprehensive analysis and comparison of multiple cell annotations performed on a single-cell dataset. Leveraging different data modalities, this tool allows you to untangle the differences and similarities of cell populations, effectively distinguishing real differences across cell annotations from background noise.
