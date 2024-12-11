@@ -18,7 +18,7 @@ bar_diff(
 \arguments{
 \item{norm}{normalized expression data with cells as rows and columns as markers/genes (i.e. function `process_data()' should provide this under the attribute `data')}
 
-\item{data}{data.frame with the different annotations, where each row represent a cell. The rownames should match those of `norm' (i.e. function `process_data()' should provide this under the attribute `network`).}
+\item{data}{data.frame with the different annotations, where each row represent a cell. The rownames should match those of `norm' (i.e. function `process_data()' should provide this under the attribute `network').}
 
 \item{first_selection}{boolean array with first selection cells as TRUE values, for all cells in `data'.}
 
