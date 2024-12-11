@@ -1,0 +1,9 @@
+pandoc: 3.1.11
+pkgdown: 2.1.1
+pkgdown_sha: ~
+articles:
+  tagtango: tagtango.html
+last_built: 2024-12-11T14:30Z
+urls:
+  reference: http://www.bernatbramon.com/tagtango/reference
+  article: http://www.bernatbramon.com/tagtango/articles
