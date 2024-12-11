@@ -33,7 +33,7 @@ package from Github
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("bernibra/tagtango") 
+BiocManager::install("bernibra/tagtango")
 ```
 
 and run:
