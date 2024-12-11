@@ -41,9 +41,9 @@ test_data[["ADT"]]
 
 ### Data frame object
 
-Providing a data frame object is the simplest way to run `tagtango`. The application expects different annotations to be stored as columns of the data frame. An example of a data frame that can be used as input by `tagtango` can be generated as:
+Providing a data frame object is the simplest way to run `tagtango`. The application expects different annotations to be stored as columns of the data frame. An example of a data frame that can be used as input by `tagtango` can be generated again with:
 
-```{r 'df2', eval = TRUE}
+```{r 'df2', eval = FALSE}
 MultiAssayExperiment::colData(test_data)
 ```
 
@@ -54,13 +54,13 @@ To highlight the versatility of `tagtango`, we tested our software on a differen
 Following the input data requirements outlined above, we prepared the dataset with R to be studied with `tagtango`. First, we followed [Pardo et. al., (2022)](https://doi.org/10.1186/s12864-022-08601-w), and downloaded the spatial transcriptomics dataset.
 
 ```{r 'loaddatasce', eval = FALSE, message=FALSE, warning=FALSE, echo=FALSE}
-# Load libraries
-library(spatialLIBD)
-library(SingleCellExperiment)
-library(scater)
-
-# Download data
-spe <- readRDS("../../tagtango-manuscript/data/spatialLIBD/processed/spatial.rds")
+# # Load libraries
+# library(spatialLIBD)
+# library(SingleCellExperiment)
+# library(scater)
+# 
+# # Download data
+# spe <- readRDS("../../tagtango-manuscript/data/spatialLIBD/processed/spatial.rds")
 ```
 
 ```{r 'fetch', eval = FALSE}
@@ -97,124 +97,103 @@ rownames(sce) <- rowData(sce)$gene_name
 colnames(sce) <- rownames(data.frame(colData(sce)))
 ```
 
-<!-- Using `tagtango`, we then compared sets of annotations for this dataset. A first interesting comparison is that between the consensus manual annotations and one of the best performing unsupervised clustering method used in ([Maynard et. al., 2021](https://doi.org/10.1038/s41593-020-00787-0)). In particular, we focused on the differences between 'ground truth' annotations and annotations using highly variable genes from _scran_ ([Lun et. al., 2016](https://doi.org/10.1186/s13059-016-0947-7)), 50 PCs for dimension reduction, and spatial coordinates as features (i.e. method `HVG\_PCA\_spatial` as described in [Maynard et. al., 2021](https://doi.org/10.1038/s41593-020-00787-0)). Figure 1 explores the comparison between spots manually labelled as White Matter (WM) but annotated as two different clusters in the unsupervised approach. Notice that  we used `tagtango` to filter out the results, focussing on one sample (i.e. labelled as `151675') excluding non-tissue spots (i.e. classified as `NA' in the manual annotations). This comparison identified key genes driving the distinction between sub-populations within the manually annotated WM region. These include known WM and L5 marker genes such as MBP, which, coupled with the fact that spots in cluster 4 did not intersect with spots manually labelled as L5 or L6, suggests additional modularity within the WM layer. Similarly, SNAP25 is also identified as relevant, a marker gene for gray matter/neurons that was used to define the sample orientation by \citet{maynardTranscriptomescaleSpatialGene2021}. Finally, MOBP was also selected as relevant, a gene identified as top 10th most variable markers across layers by the author but that our comparison suggests this also show some level of modularity within WM. -->
+Using `tagtango`, we then compared sets of annotations for this dataset. A first interesting comparison is that between the consensus manual annotations and one of the best performing unsupervised clustering method used in ([Maynard et. al., 2021](https://doi.org/10.1038/s41593-020-00787-0)). In particular, we focused on the differences between 'ground truth' annotations and annotations using highly variable genes from _scran_ ([Lun et. al., 2016](https://doi.org/10.1186/s13059-016-0947-7)), 50 PCs for dimension reduction, and spatial coordinates as features (i.e. method `HVG\_PCA\_spatial` as described in [Maynard et. al., 2021](https://doi.org/10.1038/s41593-020-00787-0)). Figure 1 explores the comparison between spots manually labelled as White Matter (WM) but annotated as two different clusters in the unsupervised approach. Notice that  we used `tagtango` to filter out the results, focusing on one sample (i.e. labelled as `151675`) excluding non-tissue spots (i.e. classified as `NA` in the manual annotations). This comparison identified key genes driving the distinction between sub-populations within the manually annotated WM region. These include known WM and L5 marker genes such as MBP, which, coupled with the fact that spots in cluster 4 did not intersect with spots manually labelled as L5 or L6, suggests additional modularity within the WM layer. Similarly, a marker gene for gray matter/neurons that was used to define the sample orientation by [Maynard et. al., 2021](https://doi.org/10.1038/s41593-020-00787-0), SNAP25 is also identified as relevant. Finally, MOBP, a gene identified as top 10th most variable markers across layers by the author but that our comparison suggests this also show some level of modularity within WM, was also selected as relevant.
 
-<!-- \begin{figure}[!t] -->
-<!--   \centering -->
-<!--     \includegraphics[width=0.8\textwidth]{figures/figureS1} -->
-<!--     	  \vspace{0.1cm} -->
-<!-- 	   \caption{\hlc{Overview of the comparison between layer annotations in the brain cortex dataset. Panel (a) displays a Sankey diagram comparing the manual and unsupervised annotations. The diagram was filtered using `tagtango` to only include cells from sample `151675' and in-tissue spots. The coloured links in the diagram indicate the cell populations selected for deeper analysis. Panel (b) displays a direct comparison of the normalized RNA expression for the two selected cell populations, including only markers selected as relevant. The colours of the bars match those of the selected links in panel (a). Panel (c) presents the spatial representation of all spots, where the colours of the points match those of the selected links in panel (a).}} -->
-<!-- 	   %5-4 -->
-<!--       \label{fig:spatial1} -->
-<!-- \end{figure} -->
+![Figure 1: Overview of the comparison between layer annotations in the brain cortex dataset. Panel (a) displays a Sankey diagram comparing the manual and unsupervised annotations. The diagram was filtered using `tagtango` to only include cells from sample `151675' and in-tissue spots. The coloured links in the diagram indicate the cell populations selected for White Matter (WM). Panel (b) displays a direct comparison of the normalized RNA expression for the two selected cell populations, including only markers selected as relevant. The colours of the bars match those of the selected links in panel (a). Panel (c) presents the spatial representation of all spots, where the colours of the points match those of the selected links in panel (a).](figureS1.png){width=100%}
 
-<!-- \hlc{Notice that there are multiple types of comparisons that could be performed with `tagtango`. For example, we could try to understand differences between the way the different co-authors of the study labelled the spots, annotations that are also provided with the R package. Likewise, we could focus on comparing full layers, reproducing the authors results and potentially identifying additional marker genes separating the cortex layers.} -->
 
-<!-- \section*{\hlc{Supplementary usage scenario: understanding batch effects}} -->
+Notice that there are multiple types of comparisons that could be performed with `tagtango`. For example, we could try to understand differences between the way the different co-authors of the study labelled the spots, annotations that are also provided with the R package. Likewise, we could focus on comparing full layers, reproducing the authors results and potentially identifying additional marker genes separating the cortex layers.
 
-<!-- \hlc{An interesting use case for `tagtango` is the identification of marker differences across batches. To illustrate this, we used the same spatial dataset described in the previous section to compare manually annotated brain layers to the donor IDs. Supplementary Figure \ref{fig:spatial2} explores the differences between WM in donors `Br8100' and `Br5595'. In this case, we see strong differences in the normalized expression of several interesting genes. For example, we see large differences again for MBP, a marker gene that is central to the manual annotations. Likewise, we see batch effects in other notable genes such as CNP, identified by \citealt{zengLargeScaleCellularResolutionGene2012} as brain cortex cell-type marker genes conserved between Human and Mouse. Finally, we see also differences for MOBP, highlighting this gene as not only variable across layers but also across batches.} -->
+## Supplementary usage scenario: understanding batch effects
 
-<!-- \begin{figure}[!t] -->
-<!--   \centering -->
-<!--     \includegraphics[width=0.8\textwidth]{figures/figureS2} -->
-<!--     	  \vspace{0.1cm} -->
-<!-- 	   \caption{\hlc{Overview of the comparison between samples in the brain cortex dataset. Panel (a) displays a Sankey diagram comparing the manual annotations and donor ID. The diagram was filtered using `tagtango` to only include in-tissue spots. The coloured links in the diagram indicate the cell populations selected for deeper analysis. Panel (b) displays a direct comparison of the normalized RNA expression for the two selected cell populations, including only markers selected as relevant. The colours of the bars match those of the selected links in panel (a). Panel (c) presents the UMAP representation of the RNA expression for all spots, where the colours of the points match those of the selected links in panel (a).}} -->
-<!-- 	   %5-4 -->
-<!--       \label{fig:spatial2} -->
-<!-- \end{figure} -->
+An interesting use case for `tagtango` is the identification of marker differences across batches. To illustrate this, we used the same spatial dataset described in the previous section to compare manually annotated brain layers to the donor IDs. Figure 2 explores the differences between WM in donors `Br8100` and `Br5595`. In this case, we see strong differences in the normalized expression of several interesting genes. For example, we see large differences again for MBP, a marker gene that is central to the manual annotations. Likewise, we see batch effects in other notable genes such as CNP, identified by [Zeng et. al., 2021](https://doi.org/10.1016/j.cell.2012.02.052) as brain cortex cell-type marker genes conserved between Human and Mouse. Finally, we see also differences for MOBP, highlighting this gene as not only variable across layers but also across batches.
 
-<!-- \section*{\hlc{Supplementary usage scenario: comparing single-cell datasets}} -->
+![Figure 2: Overview of the comparison between samples in the brain cortex dataset. Panel (a) displays a Sankey diagram comparing the manual annotations and donor ID. The diagram was filtered using `tagtango` to only include in-tissue spots. The coloured links in the diagram indicate the cell populations selected for deeper analysis. Panel (b) displays a direct comparison of the normalized RNA expression for the two selected cell populations, including only markers selected as relevant. The colours of the bars match those of the selected links in panel (a). Panel (c) presents the UMAP representation of the RNA expression for all spots, where the colours of the points match those of the selected links in panel (a).](figureS2.png){width=100%}
 
-<!-- \hlc{As the final usage case scenario, we showcased how `tagtango` can be used to compare datasets. To do so, we used two independent 10x datasets: PBMCs from a healthy donor obtained by 10x Genomics from AllCells ([](https://doi.org/))\citep{genomics10kHumanPBMCs2021}, and PBMCs form a diseased Acute Lymphoblastic Leukemia donor obtained by 10x Genomics from Sanguine Biosciences ([](https://doi.org/))\citep{genomics10kHumanDiseased2024}. -->
+## Supplementary usage scenario: comparing single-cell datasets
 
-<!-- In order to analyse the datasets together with `tagtango`, we first independently processed and annotated each of them. To do so, we followed a three-step process: first, we downloaded the corresponding h5 file from the 10x Genomics platform; we then processed each dataset using the R packages `Seurat' ([](https://doi.org/))\citep{haoDictionaryLearningIntegrative2023}, `SingleCellExperiment' ([](https://doi.org/))\citep{amezquitaOrchestratingSinglecellAnalysis2020} and `scater' ([](https://doi.org/))\citep{mccarthyScaterPreprocessingQuality2017}; and we use the R packages 'celldex' and `SingleR' ([](https://doi.org/))\citep{aranReferencebasedAnalysisLung2019} to annotate the single-cell datasets, identifying the main cell types. In R, the processing of each dataset is as follows:} -->
+As the final usage case scenario, we showcased how `tagtango` can be used to compare datasets. To do so, we used two independent 10x datasets: PBMCs from a healthy donor obtained by 10x Genomics from AllCells ([10x Genomics, 2021](https://www.10xgenomics.com/datasets/10-k-human-pbm-cs-5-v-2-0-chromium-x-2-standard-6-1-0)), and PBMCs form a diseased Acute Lymphoblastic Leukemia donor obtained by 10x Genomics from Sanguine Biosciences ([10x Genomics, 2024](https://www.10xgenomics.com/datasets/10k_5p_Human_diseased_PBMC_ALL_Fresh)).
 
-<!-- \begin{lstlisting}[language=R] -->
-<!--  # Load libraries -->
-<!--  library(Seurat) -->
-<!--  library(SingleCellExperiment) -->
-<!--  library(scater) -->
-<!--  library(SingleR) -->
-<!--  library(celldex) -->
+In order to analyse the datasets together with `tagtango`, we first independently processed and annotated each of them. To do so, we followed a three-step process: first, we downloaded the corresponding h5 file from the 10x Genomics platform; we then processed each dataset using the R packages `Seurat` ([Hao et. al., 2023](https://doi.org/10.1038/s41587-023-01767-y)), `SingleCellExperiment` ([Amezquita et. al., 2020](https://doi.org/10.1038/s41592-019-0654-x)) and `scater` ([McCarthy et. al., 2017](https://doi.org/10.1093/bioinformatics/btw777)); and we use the R packages `celldex` and `SingleR` ([Liu et. al., 2019](https://doi.org/10.1038/s41590-018-0276-y)) to annotate the single-cell datasets, identifying the main cell types. In R, the processing of each dataset is as follows:}
 
-<!--  # Set path to the h5 file downloaded from www.10xgenomics.com -->
-<!--  path <- "path_to_h5_file" -->
+```{r 'merge1', eval = FALSE}
+# Load libraries
+library(Seurat)
+library(SingleCellExperiment)
+library(scater)
+library(SingleR)
+library(celldex)
 
-<!--  # Load raw data -->
-<!--  sce <- as.SingleCellExperiment( -->
-<!--          CreateSeuratObject( -->
-<!--               Seurat::Read10X_h5(path) -->
-<!--          ) -->
-<!--    ) -->
+# Set path to the h5 file downloaded from www.10xgenomics.com
+path <- "path_to_h5_file"
 
-<!--  # calculate the proportion of mitochondrial reads  -->
-<!--  mt.genes <- rownames(sce)[grep("^MT-",rownames(sce))]  -->
-<!--  sce <- addPerCellQC(sce, subsets = list(Mito = mt.genes)) -->
+# Load raw data
+sce <- as.SingleCellExperiment(
+       CreateSeuratObject(
+            Seurat::Read10X_h5(path)
+       )
+ )
 
-<!--  # perform QC -->
-<!--  qc.lib <- isOutlier(sce$sum, log=TRUE, type="lower") -->
-<!--  qc.nexprs <- isOutlier(sce$detected, log=TRUE, type="lower") -->
-<!--  qc.mito <- isOutlier(sce$subsets_Mito_percent, type="higher") -->
-<!--  sce$discard <- qc.lib | qc.nexprs | qc.mito -->
-<!--  sce <- sce[,!sce$discard] -->
+# calculate the proportion of mitochondrial reads
+mt.genes <- rownames(sce)[grep("^MT-",rownames(sce))]
+sce <- addPerCellQC(sce, subsets = list(Mito = mt.genes))
 
-<!--  # Normalize counts -->
-<!--  sce <- computeLibraryFactors(sce) -->
-<!--  sce <- logNormCounts(sce) -->
+# perform QC
+qc.lib <- isOutlier(sce$sum, log=TRUE, type="lower")
+qc.nexprs <- isOutlier(sce$detected, log=TRUE, type="lower")
+qc.mito <- isOutlier(sce$subsets_Mito_percent, type="higher")
+sce$discard <- qc.lib | qc.nexprs | qc.mito
+sce <- sce[,!sce$discard]
 
-<!--  # Annotate dataset with SingleR -->
-<!--  ref <- BlueprintEncodeData() -->
-<!--  pred <- SingleR(test=sce, ref=ref, labels=ref$label.main) -->
-<!--  colData(sce) <- cbind(colData(sce), Main.labels = pred$labels)  -->
+# Normalize counts
+sce <- computeLibraryFactors(sce)
+sce <- logNormCounts(sce)
 
-<!-- \end{lstlisting} -->
+# Annotate dataset with SingleR
+ref <- BlueprintEncodeData()
+pred <- SingleR(test=sce, ref=ref, labels=ref$label.main)
+colData(sce) <- cbind(colData(sce), Main.labels = pred$labels)
+```
 
-<!-- \hlc{This workflow provided us with two annotated `SingleCellExperiment`, one for the healthy patient (i.e.~\texttt{sce\_healthy}) and one for the cancer patient (i.e.~\texttt{sce\_cancer}). The last step before analysing the files with `tagtango` was to integrate these objects, removing biologically irrelevant batch effects. To do so, we used packages `scran' ([](https://doi.org/))\citep{lunStepbystepWorkflowLowlevel2016} and `batchelor' ([](https://doi.org/))\citep{haghverdiBatchEffectsSinglecell2018} to correct the log-expression values via linear regression:} -->
 
-<!-- \begin{lstlisting}[language=R] -->
-<!--  # Load libraries -->
-<!--  library(scran) -->
-<!--  library(batchelor) -->
+This workflow provided us with two annotated `SingleCellExperiment`, one for the healthy patient (i.e.~`sce\_healthy`) and one for the cancer patient (i.e.~`sce\_cancer`). The last step before analysing the files with `tagtango` was to integrate these objects, removing biologically irrelevant batch effects. To do so, we used packages `scran` ([Lun et. al., 2016](https://doi.org/10.12688/f1000research.9501.2)) and `batchelor` ([Haghverdi et. al., 2018](https://doi.org/10.1038/nbt.4091)) to correct the log-expression values via linear regression:
 
-<!--  # Find genes in common -->
-<!--  universe <- intersect(rownames(sce_cancer_clean), rownames(sce_healthy_clean)) -->
+```{r 'merge2', eval = FALSE}
+# Load libraries
+library(scran)
+library(batchelor)
 
-<!--  # Variance model -->
-<!--  dec_cancer_clean <- modelGeneVarByPoisson(sce_cancer)[universe,] -->
-<!--  dec_healthy_clean <- modelGeneVarByPoisson(sce_healthy)[universe,] -->
+# Find genes in common
+universe <- intersect(rownames(sce_cancer_clean), rownames(sce_healthy_clean))
 
-<!--  # Find HVGs -->
-<!--  combined.dec <- combineVar(dec_cancer_clean, dec_healthy_clean) -->
-<!--  chosen.hvgs <- combined.dec$bio > 0 -->
+# Variance model
+dec_cancer_clean <- modelGeneVarByPoisson(sce_cancer)[universe,]
+dec_healthy_clean <- modelGeneVarByPoisson(sce_healthy)[universe,]
 
-<!--  # Per-batch scaling normalization -->
-<!--  rescaled <- multiBatchNorm(sce_cancer[universe,], sce_healthy[universe,]) -->
-<!--  pbmc_cancer <- rescaled[[1]] -->
-<!--  pbmc_healthy <- rescaled[[2]] -->
+# Find HVGs
+combined.dec <- combineVar(dec_cancer_clean, dec_healthy_clean)
+chosen.hvgs <- combined.dec$bio > 0
 
-<!--  # Merge datasets and calculate TSNA -->
-<!--  rescaled <- rescaleBatches(pbmc_cancer, pbmc_healthy) -->
-<!--  rescaled <- runPCA(rescaled, subset_row=chosen.hvgs,  -->
-<!--                    exprs_values="corrected", -->
-<!--                    BSPARAM=BiocSingular::RandomParam()) -->
-<!--  rescaled <- runTSNE(rescaled, dimred="PCA") -->
+# Per-batch scaling normalization
+rescaled <- multiBatchNorm(sce_cancer[universe,], sce_healthy[universe,])
+pbmc_cancer <- rescaled[[1]]
+pbmc_healthy <- rescaled[[2]]
 
-<!--  # Copy annotations and batch information -->
-<!--  rescaled$batch <- factor(rescaled$batch, levels = c(1,2), labels = c("cancer", "healthy")) -->
-<!--  rescaled$annotations <- c(pbmc_cancer$Main.labels, pbmc_healthy$Main.labels)  -->
+# Merge datasets and calculate TSNA
+rescaled <- rescaleBatches(pbmc_cancer, pbmc_healthy)
+rescaled <- runPCA(rescaled, subset_row=chosen.hvgs,
+                 exprs_values="corrected",
+                 BSPARAM=BiocSingular::RandomParam())
+rescaled <- runTSNE(rescaled, dimred="PCA")
 
-<!-- \end{lstlisting} -->
+# Copy annotations and batch information
+rescaled$batch <- factor(rescaled$batch, levels = c(1,2), labels = c("cancer", "healthy"))
+rescaled$annotations <- c(pbmc_cancer$Main.labels, pbmc_healthy$Main.labels)
+```
 
-<!-- \hlc{Using `tagtango`, we then compared the batch information and the annotations found with `singleR' (Supplementary Figure \ref{fig:multidata}). In particular, we focused on the differences across cells annotated as CD4+ T-cells across the two datasets. Again, `tagtango` highlighted differences in the normalized expression of several interesting genes, all related to immune response in cancer. Notably, JUNB has been identified in the past as a gatekeeper for a certain type of lymphoid leukemia ([](https://doi.org/))\citep{ottJunBGatekeeperBlymphoid2007}, and LTB has been shown to promote the development of T-cell acute lymphoblastic leukemia ([](https://doi.org/))\citep{fernandesLymphotoxinvReceptorMicroenvironmental2015}. Likewise, genes such as CD27 or IL-32 have been closely associated to the clinical outcome and prognostic of acute lymphoblastic leukemia patients ([](https://doi.org/))\citep{chenCD27ExpressionIts2017, abobakrClinicalPrognosticSignificance2023, shimParadoxicalEffectInterleukin322022}, and there are links between the expression of IL-7R and TCF7 with subsets of these patients ([](https://doi.org/))\citep{oliveiraIL7RmediatedSignalingTcell2019, vanthilloOncogenicCooperationTCF7SPI12021}. Overall, `tagtango` was able to quickly identify genes that are associated with lymphocyte development, transcriptional regulation, and immune signaling pathways in acute lymphoblastic leukemia patients.} -->
+Using `tagtango`, we then compared the batch information and the annotations found with `singleR` (Figure 3). In particular, we focused on the differences across cells annotated as CD4+ T-cells across the two datasets. Again, `tagtango` highlighted differences in the normalized expression of several interesting genes, all related to immune response in cancer. Notably, JUNB has been identified in the past as a gatekeeper for a certain type of lymphoid leukemia ([Ott et. al., 2007](https://doi.org/10.1038/sj.onc.1210285)), and LTB has been shown to promote the development of T-cell acute lymphoblastic leukemia ([Fernandes et. al., 2015](https://doi.org/10.1111/bjh.13760)). Likewise, genes such as CD27 or IL-32 have been closely associated to the clinical outcome and prognostic of acute lymphoblastic leukemia patients ([Chen et. al., 2017;](https://doi.org/10.1038/bcj.2017.55) [Abobakr et. al., 2023;](https://doi.org/10.1016/j.htct.2023.10.003) [Shim et. al., 2022](https://doi.org/10.3389/fimmu.2022.837590)), and there are links between the expression of IL-7R and TCF7 with subsets of these patients ([Oliveira et. al., 2019;](https://doi.org/10.1016/j.jbior.2018.09.012) [Van Thillo et. al., 2021](https://doi.org/10.1038/s41467-021-24442-9)). Overall, `tagtango` was able to quickly identify genes that are associated with lymphocyte development, transcriptional regulation, and immune signaling pathways in acute lymphoblastic leukemia patients. However, further work would be required to validate these findings and ensure their biological relevance.
 
-<!-- \begin{figure}[!t] -->
-<!--   \centering -->
-<!--     \includegraphics[width=0.83\textwidth]{figures/figureS3} -->
-<!--     	  \vspace{0.1cm} -->
-<!-- 	   \caption{\hlc{Overview of the comparison between datasets using `tagtango`. Panel (a) displays a Sankey diagram comparing the batch information and main cell types. The coloured links in the diagram indicate the cell populations selected for deeper analysis. Panel (b) displays a direct comparison of the normalized and batch-corrected RNA expression for the two selected cell populations, including only markers selected as relevant. The colours of the bars match those of the selected links in panel (a). Panel (c) presents the TSNE representation of the RNA expression, where the colours of the points match those of the selected links in panel (a).}} -->
-<!-- 	   %5-4 -->
-<!--       \label{fig:multidata} -->
-<!-- \end{figure} -->
+![Figure 3: Overview of the comparison between datasets using `tagtango`. Panel (a) displays a Sankey diagram comparing the batch information and main cell types. The coloured links in the diagram indicate the cell populations selected for deeper analysis. Panel (b) displays a direct comparison of the normalized and batch-corrected RNA expression for the two selected cell populations, including only markers selected as relevant. The colours of the bars match those of the selected links in panel (a). Panel (c) presents the TSNE representation of the RNA expression, where the colours of the points match those of the selected links in panel (a).](figureS3.png){width=100%}
 
 
 
