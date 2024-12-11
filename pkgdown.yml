@@ -1,9 +1,9 @@
-pandoc: '3.5'
+pandoc: 3.1.11
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   tagtango: tagtango.html
-last_built: 2024-12-11T14:53Z
+last_built: 2024-12-11T15:12Z
 urls:
-  reference: https://bernibra.github.io/tagtango/articles/tagtango.html/reference
-  article: https://bernibra.github.io/tagtango/articles/tagtango.html/articles
+  reference: https://www.bernatbramon.com/tagtango/reference
+  article: https://www.bernatbramon.com/tagtango/articles
