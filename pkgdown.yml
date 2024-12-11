@@ -3,4 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   tagtango: tagtango.html
-last_built: 2024-12-11T14:33Z
+last_built: 2024-12-11T14:36Z
+urls:
+  reference: https://bernibra.github.io/tagtango/articles/tagtango.html/reference
+  article: https://bernibra.github.io/tagtango/articles/tagtango.html/articles
