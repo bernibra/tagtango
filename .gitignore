@@ -54,8 +54,7 @@ rsconnect/
 .Rdata
 .quarto
 inst/doc
-/doc/*R
-/doc/*Rmd
+/doc/
 /Meta/
 /renv/
 renv.lock
