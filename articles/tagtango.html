@@ -29,7 +29,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="active nav-item"><a class="nav-link" href="../articles/tagtango.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/tagtango.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -87,7 +87,7 @@ Peripheral Blood Mononuclear Cells (PBMCs) from a healthy donor stained
 with a few TotalSeq-B antibodies (<a href="https://doi.org/" class="external-link">10x
 Genomics, 2018</a>), and is readily accessible via:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bernibra.github.io/tagtango/articles/tagtango.html">tagtango</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">tagtango</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">)</span></span>
 <span><span class="va">test_data</span></span></code></pre></div>
 <pre><code><span><span class="co">## A MultiAssayExperiment object of 2 listed</span></span>
@@ -285,23 +285,23 @@ followed <a href="https://doi.org/10.1186/s12864-022-08601-w" class="external-li
 al., (2022)</a>, and downloaded the spatial transcriptomics dataset.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load libraries</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">spatialLIBD</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/LieberInstitute/spatialLIBD" class="external-link">spatialLIBD</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scater</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Download data</span></span>
-<span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu">fetch_data</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"spe"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/spatialLIBD/man/fetch_data.html" class="external-link">fetch_data</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"spe"</span><span class="op">)</span></span></code></pre></div>
 <p>The data comes in the form of a <code>SpatialExperiment</code> R
 object. We reshaped the data into a <code>SingleCellExperiment</code>
 object using</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span> logcounts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span> <span class="op">)</span>,</span>
-<span>        colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span>, <span class="fu">spatialCoords</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span> <span class="op">)</span>,</span>
+<span>        colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/SpatialExperiment/man/SpatialExperiment-methods.html" class="external-link">spatialCoords</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span> <span class="op">)</span>,</span>
 <span>        rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span></span>
 <span>     <span class="op">)</span></span>
 <span>    </span>
-<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runUMAP</span><span class="op">(</span><span class="va">sce</span>, exprs_values <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/runUMAP.html" class="external-link">runUMAP</a></span><span class="op">(</span><span class="va">sce</span>, exprs_values <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></code></pre></div>
 <p>Notice that the spatial coordinates of the spatial transcriptomics
 dataset were added as columns in the <code>colData</code> object (these
 could also be added as part of the <code>reducedDims</code> object), and
@@ -422,38 +422,38 @@ In R, the processing of each dataset is as follows:}</p>
 <code class="sourceCode R"><span><span class="co"># Load libraries</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scater</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleR</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">celldex</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/LTLA/SingleR" class="external-link">SingleR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/LTLA/celldex" class="external-link">celldex</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Set path to the h5 file downloaded from www.10xgenomics.com</span></span>
 <span><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"path_to_h5_file"</span></span>
 <span></span>
 <span><span class="co"># Load raw data</span></span>
-<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">as.SingleCellExperiment</span><span class="op">(</span></span>
-<span>       <span class="fu">CreateSeuratObject</span><span class="op">(</span></span>
-<span>            <span class="fu">Seurat</span><span class="fu">::</span><span class="fu">Read10X_h5</span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/as.SingleCellExperiment.html" class="external-link">as.SingleCellExperiment</a></span><span class="op">(</span></span>
+<span>       <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span></span>
+<span>            <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.org/seurat/reference/Read10X_h5.html" class="external-link">Read10X_h5</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span>
 <span>       <span class="op">)</span></span>
 <span> <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># calculate the proportion of mitochondrial reads</span></span>
 <span><span class="va">mt.genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^MT-"</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">addPerCellQC</span><span class="op">(</span><span class="va">sce</span>, subsets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Mito <span class="op">=</span> <span class="va">mt.genes</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/addPerCellQCMetrics.html" class="external-link">addPerCellQC</a></span><span class="op">(</span><span class="va">sce</span>, subsets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Mito <span class="op">=</span> <span class="va">mt.genes</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># perform QC</span></span>
-<span><span class="va">qc.lib</span> <span class="op">&lt;-</span> <span class="fu">isOutlier</span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">sum</span>, log<span class="op">=</span><span class="cn">TRUE</span>, type<span class="op">=</span><span class="st">"lower"</span><span class="op">)</span></span>
-<span><span class="va">qc.nexprs</span> <span class="op">&lt;-</span> <span class="fu">isOutlier</span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">detected</span>, log<span class="op">=</span><span class="cn">TRUE</span>, type<span class="op">=</span><span class="st">"lower"</span><span class="op">)</span></span>
-<span><span class="va">qc.mito</span> <span class="op">&lt;-</span> <span class="fu">isOutlier</span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">subsets_Mito_percent</span>, type<span class="op">=</span><span class="st">"higher"</span><span class="op">)</span></span>
+<span><span class="va">qc.lib</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/isOutlier.html" class="external-link">isOutlier</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">sum</span>, log<span class="op">=</span><span class="cn">TRUE</span>, type<span class="op">=</span><span class="st">"lower"</span><span class="op">)</span></span>
+<span><span class="va">qc.nexprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/isOutlier.html" class="external-link">isOutlier</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">detected</span>, log<span class="op">=</span><span class="cn">TRUE</span>, type<span class="op">=</span><span class="st">"lower"</span><span class="op">)</span></span>
+<span><span class="va">qc.mito</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/isOutlier.html" class="external-link">isOutlier</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">subsets_Mito_percent</span>, type<span class="op">=</span><span class="st">"higher"</span><span class="op">)</span></span>
 <span><span class="va">sce</span><span class="op">$</span><span class="va">discard</span> <span class="op">&lt;-</span> <span class="va">qc.lib</span> <span class="op">|</span> <span class="va">qc.nexprs</span> <span class="op">|</span> <span class="va">qc.mito</span></span>
 <span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="va">sce</span><span class="op">[</span>,<span class="op">!</span><span class="va">sce</span><span class="op">$</span><span class="va">discard</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Normalize counts</span></span>
-<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">computeLibraryFactors</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
-<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">logNormCounts</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/librarySizeFactors.html" class="external-link">computeLibraryFactors</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html" class="external-link">logNormCounts</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Annotate dataset with SingleR</span></span>
-<span><span class="va">ref</span> <span class="op">&lt;-</span> <span class="fu">BlueprintEncodeData</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu">SingleR</span><span class="op">(</span>test<span class="op">=</span><span class="va">sce</span>, ref<span class="op">=</span><span class="va">ref</span>, labels<span class="op">=</span><span class="va">ref</span><span class="op">$</span><span class="va">label.main</span><span class="op">)</span></span>
+<span><span class="va">ref</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleR/man/datasets.html" class="external-link">BlueprintEncodeData</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleR/man/SingleR.html" class="external-link">SingleR</a></span><span class="op">(</span>test<span class="op">=</span><span class="va">sce</span>, ref<span class="op">=</span><span class="va">ref</span>, labels<span class="op">=</span><span class="va">ref</span><span class="op">$</span><span class="va">label.main</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>, Main.labels <span class="op">=</span> <span class="va">pred</span><span class="op">$</span><span class="va">labels</span><span class="op">)</span></span></code></pre></div>
 <p>This workflow provided us with two annotated
 <code>SingleCellExperiment</code>, one for the healthy patient
@@ -466,11 +466,11 @@ packages <code>scran</code> (<a href="https://doi.org/10.12688/f1000research.950
 correct the log-expression values via linear regression:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load libraries</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MarioniLab/scran/" class="external-link">scran</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scran</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">batchelor</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Find genes in common</span></span>
-<span><span class="va">universe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">intersect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce_cancer_clean</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce_healthy_clean</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">universe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">intersect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce_cancer_clean</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce_healthy_clean</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Variance model</span></span>
 <span><span class="va">dec_cancer_clean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scran/man/modelGeneVarByPoisson.html" class="external-link">modelGeneVarByPoisson</a></span><span class="op">(</span><span class="va">sce_cancer</span><span class="op">)</span><span class="op">[</span><span class="va">universe</span>,<span class="op">]</span></span>
@@ -481,16 +481,16 @@ correct the log-expression values via linear regression:</p>
 <span><span class="va">chosen.hvgs</span> <span class="op">&lt;-</span> <span class="va">combined.dec</span><span class="op">$</span><span class="va">bio</span> <span class="op">&gt;</span> <span class="fl">0</span></span>
 <span></span>
 <span><span class="co"># Per-batch scaling normalization</span></span>
-<span><span class="va">rescaled</span> <span class="op">&lt;-</span> <span class="fu">multiBatchNorm</span><span class="op">(</span><span class="va">sce_cancer</span><span class="op">[</span><span class="va">universe</span>,<span class="op">]</span>, <span class="va">sce_healthy</span><span class="op">[</span><span class="va">universe</span>,<span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">rescaled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/batchelor/man/multiBatchNorm.html" class="external-link">multiBatchNorm</a></span><span class="op">(</span><span class="va">sce_cancer</span><span class="op">[</span><span class="va">universe</span>,<span class="op">]</span>, <span class="va">sce_healthy</span><span class="op">[</span><span class="va">universe</span>,<span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">pbmc_cancer</span> <span class="op">&lt;-</span> <span class="va">rescaled</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">pbmc_healthy</span> <span class="op">&lt;-</span> <span class="va">rescaled</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Merge datasets and calculate TSNA</span></span>
-<span><span class="va">rescaled</span> <span class="op">&lt;-</span> <span class="fu">rescaleBatches</span><span class="op">(</span><span class="va">pbmc_cancer</span>, <span class="va">pbmc_healthy</span><span class="op">)</span></span>
-<span><span class="va">rescaled</span> <span class="op">&lt;-</span> <span class="fu">runPCA</span><span class="op">(</span><span class="va">rescaled</span>, subset_row<span class="op">=</span><span class="va">chosen.hvgs</span>,</span>
+<span><span class="va">rescaled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/batchelor/man/rescaleBatches.html" class="external-link">rescaleBatches</a></span><span class="op">(</span><span class="va">pbmc_cancer</span>, <span class="va">pbmc_healthy</span><span class="op">)</span></span>
+<span><span class="va">rescaled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">rescaled</span>, subset_row<span class="op">=</span><span class="va">chosen.hvgs</span>,</span>
 <span>                 exprs_values<span class="op">=</span><span class="st">"corrected"</span>,</span>
 <span>                 BSPARAM<span class="op">=</span><span class="fu">BiocSingular</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/BiocSingularParam.html" class="external-link">RandomParam</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">rescaled</span> <span class="op">&lt;-</span> <span class="fu">runTSNE</span><span class="op">(</span><span class="va">rescaled</span>, dimred<span class="op">=</span><span class="st">"PCA"</span><span class="op">)</span></span>
+<span><span class="va">rescaled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/runTSNE.html" class="external-link">runTSNE</a></span><span class="op">(</span><span class="va">rescaled</span>, dimred<span class="op">=</span><span class="st">"PCA"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Copy annotations and batch information</span></span>
 <span><span class="va">rescaled</span><span class="op">$</span><span class="va">batch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">rescaled</span><span class="op">$</span><span class="va">batch</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cancer"</span>, <span class="st">"healthy"</span><span class="op">)</span><span class="op">)</span></span>
