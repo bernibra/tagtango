@@ -272,7 +272,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
           values$code_fselection <- paste0(values$code_fselection, "ftitle <- ", rsym(input$target1), "\n")
         }else{
           values$first_selection <- (values$network$dat$i==input$source1 & values$network$dat$j==input$target1)
-          maintitle <- paste0(input$source1, " \u27A4 ", input$target1)
+          maintitle <- paste0(input$source1, " ➤ ", input$target1)
           values$code_fselection <- paste0(values$code_fselection, "first_selection <- (dat$network$dat$i==", rsym(input$source1), " & dat$network$dat$j==", rsym(input$target1), ")\n")
           values$code_fselection <- paste0(values$code_fselection, "ftitle <- paste0(", rsym(input$source1), ",' -> ',", rsym(input$target1),  ")\n")
         }
@@ -315,7 +315,7 @@ networkD3::sankeyNetwork(Links = dat$network$links, Nodes = dat$network$nodes,
           values$code_sselection <- paste0(values$code_sselection, "stitle <- ", rsym(input$target2), "\n")
         }else{
           values$second_selection <- (values$network$dat$i==input$source2 & values$network$dat$j==input$target2)
-          maintitle <- paste0(input$source2, " \u27A4 ", input$target2)
+          maintitle <- paste0(input$source2, " ➤ ", input$target2)
           values$code_sselection <- paste0(values$code_sselection, "second_selection <- (dat$network$dat$i==", rsym(input$source2), " & dat$network$dat$j==", rsym(input$target2), ")\n")
           values$code_sselection <- paste0(values$code_sselection, "stitle <- paste0(", rsym(input$source2), ",' -> ',", rsym(input$target2),  ")\n")
         }
