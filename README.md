@@ -32,7 +32,7 @@ If you prefer running the app locally, you can also install it as an R
 package from Github
 
 ``` r
-# install.packages("remotes")
+# install.packages("BiocManager")
 BiocManager::install("bernibra/tagtango")
 ```
 
