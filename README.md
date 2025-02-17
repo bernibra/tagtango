@@ -5,7 +5,7 @@
         - https://github.com/LieberInstitute/spatialLIBD/blob/devel/README.Rmd
 -->
 
-# [tagtango](https://tagtango.unil.ch/)
+# [tagtango](https://tagtango.unil.ch/) [![](https://badgen.net/badge/DOI/10.1093%2Fbioinformatics%2Fbtaf012/yellow)](https://doi.org/10.1093/bioinformatics/btaf012)
 
 <!-- badges: start -->
 
